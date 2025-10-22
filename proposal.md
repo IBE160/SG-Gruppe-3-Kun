@@ -45,13 +45,221 @@ The chatbot provides HMSREG users (suppliers, subcontractors, construction worke
 -   **Feedback data** - user satisfaction ratings, helpful/not helpful responses
 -   **Common question analytics** - frequency of topics, unresolved queries
 
-## User Stories
+## User Flow
 
-1. As a supplier, I want to quickly find instructions on how to register workforce and upload all required documentation for compliance audits in HMSREG, so that I can meet project requirements and maintain my status as a verified supplier
-2. As a construction worker, I want to understand why my check-in failed, so that I can resolve the issue and access the site
-3. As a project manager, I want to understand how to verify that all personnel on site have proper competence certifications and that suppliers meet compliance requirements, so that I can fulfill my obligations under the Construction Client Regulations
-4. As a support agent, I want the chatbot to handle common user questions automatically, so that I can focus on more complex support cases
-5. As a subcontractor, I want to know how to upload documentation and add new HMS cards to crew lists, so that I can keep my workforce registrations up to date
+This diagram illustrates the complete interaction flow for the primary use case: a construction worker troubleshooting a failed check-in using the HMSREG chatbot.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    HMSREG Chatbot User Flow                              │
+│              Primary Scenario: Check-in Troubleshooting                  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+                    [Construction Worker arrives at site]
+                                   ↓
+                    [Scans QR code to check-in via mobile app]
+                                   ↓
+                         ┌─────────────────┐
+                         │  CHECK-IN FAILS │
+                         │  Error Message: │
+                         │ "HMS-kort ugyldig"│
+                         └─────────────────┘
+                                   ↓
+                    [Worker frustrated - needs immediate solution]
+                                   ↓
+                    [Opens HMSREG Documentation Chatbot on phone]
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         CHATBOT INTERFACE                                │
+│  [Message Input Field]                                                   │
+│  User types: "Hvorfor feiler innsjekkingen min?"                        │
+│  [Send Button]                                                           │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                         [Submit to Backend API]
+                         POST /api/chat
+                         - message: "Hvorfor feiler..."
+                         - session_id: "abc123"
+                         - timestamp
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          BACKEND PROCESSING                              │
+│                                                                          │
+│  1. Rate Limit Check (slowapi)                                          │
+│     ├─ IP: 10 requests/min, 50/hour ✓                                  │
+│     └─ Session: Under daily limit ✓                                     │
+│                                                                          │
+│  2. Vector Similarity Search (ChromaDB)                                 │
+│     ├─ Embed query with text-embedding-3-small                         │
+│     ├─ Search top-5 relevant chunks                                     │
+│     └─ Best match: "Check-in Troubleshooting" (similarity: 0.85) ✓     │
+│                                                                          │
+│  3. LangChain RAG Pipeline                                              │
+│     ├─ Retrieve: Top 3 chunks (check-in errors, HMS cards, QR codes)   │
+│     ├─ Context window: ~2000 tokens                                     │
+│     └─ Prompt: "Du er HMSREG assistent... [context]... [question]"     │
+│                                                                          │
+│  4. Gemini 2.5 Pro Generation                                           │
+│     ├─ Model: gemini-2.5-pro                                            │
+│     ├─ Temperature: 0.3 (factual responses)                             │
+│     ├─ Max tokens: 500                                                  │
+│     └─ Language: Norwegian (detected from query)                        │
+│                                                                          │
+│  5. Log to Supabase                                                     │
+│     └─ Store: session_id, question, response, similarity, timestamp     │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                    [Response returned to frontend]
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         CHATBOT RESPONSE                                 │
+│                                                                          │
+│  🤖 Bot: Det ser ut som innsjekkingen feiler fordi HMS-kortet ditt      │
+│         ikke er gyldig. La meg hjelpe deg med dette.                    │
+│                                                                          │
+│         Får du en spesifikk feilmelding på skjermen?                    │
+│                                                                          │
+│  [Message Input]                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                    [Worker replies: "HMS-kort ugyldig"]
+                                   ↓
+                    [Backend processes follow-up query]
+                    Similarity: 0.91 ✓
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      DETAILED SOLUTION RESPONSE                          │
+│                                                                          │
+│  🤖 Bot: HMS-kortet ditt har utløpt eller er ugyldig. HMS-kort er       │
+│         gyldige i 5 år fra utstedelsesdato.                             │
+│                                                                          │
+│         **Slik fornyer du HMS-kortet:**                                 │
+│         1. Gå til HMS-kortportalen (link)                               │
+│         2. Logg inn med BankID                                           │
+│         3. Oppdater nødvendige sertifiseringer                          │
+│         4. Betal fornyelsesavgift (ca. 300 kr)                          │
+│         5. Nytt kort utstedes innen 3 virkedager                        │
+│                                                                          │
+│         📚 Les mer: /docs/hms-cards                                      │
+│         💬 Trenger du hjelp? Kontakt support@hmsreg.no                  │
+│                                                                          │
+│         📎 Sources: docs.hmsreg.com/hms-cards/validity                  │
+│                                                                          │
+│  [👍 Helpful] [👎 Not Helpful]                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                         ┌─────────┴─────────┐
+                         ↓                   ↓
+              [Worker clicks 👍]    [Worker clicks 👎]
+                         ↓                   ↓
+              [Positive Feedback]  [Negative Feedback]
+                         ↓                   ↓
+              POST /api/feedback    POST /api/feedback
+              - helpful: true       - helpful: false
+              - conversation_id     - conversation_id
+                         ↓                   ↓
+              [Stored in Supabase]  [Flagged for review]
+                         ↓                   ↓
+              [Analytics updated]   [Alert: Low satisfaction]
+                         │                   │
+                         └─────────┬─────────┘
+                                   ↓
+                    [Worker clicks link: /docs/hms-cards]
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    STATIC DOCUMENTATION PAGE                             │
+│                  (Next.js SSG - Pre-rendered)                            │
+│                                                                          │
+│  # HMS Cards - Validity and Renewal                                     │
+│                                                                          │
+│  ## What is an HMS Card?                                                │
+│  [Detailed article content from /public/articles/hms-cards.md]          │
+│                                                                          │
+│  ## Validity Period                                                     │
+│  - Valid for 5 years from issue date                                    │
+│  - Must be renewed before expiration                                    │
+│                                                                          │
+│  ## Renewal Process                                                     │
+│  [Step-by-step guide with images]                                       │
+│                                                                          │
+│  [Back to Chatbot] [Related: Check-in Procedures] [Contact Support]     │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                    [Worker follows renewal process]
+                                   ↓
+                    [HMS card renewed successfully]
+                                   ↓
+                    [Worker checks in successfully next day]
+                                   ↓
+                              ✅ [END]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         FALLBACK SCENARIO                                │
+│              (If confidence score < 0.7)                                 │
+└─────────────────────────────────────────────────────────────────────────┘
+
+                    [User asks vague question: "hjelp"]
+                                   ↓
+                    [RAG search - low similarity: 0.45]
+                                   ↓
+                         [FALLBACK TRIGGERED]
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│  🤖 Bot: Jeg fant ikke et klart svar. Kan du utdype spørsmålet?         │
+│                                                                          │
+│         **Vanlige emner:**                                              │
+│         • HMS-kort (gyldighet, fornyelse)                               │
+│         • Innsjekking på byggeplass                                     │
+│         • Mannskapsregistrering                                         │
+│         • Dokumentasjonskrav                                            │
+│                                                                          │
+│         📚 Dokumentasjon: docs.hmsreg.com                               │
+│         💬 Support: support@hmsreg.no | Tlf: [nummer]                   │
+│                                                                          │
+│  [Select topic] or [Contact Support]                                    │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                         ┌─────────┴─────────┐
+                         ↓                   ↓
+              [User selects topic]  [User contacts support]
+              "HMS-kort"                     ↓
+                         ↓           [Escalated to human agent]
+              [New search]                   ↓
+              Similarity: 0.89 ✓            [END]
+                         ↓
+              [Relevant answer provided]
+                         ↓
+                       [END]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     SYSTEM MONITORING & ANALYTICS                        │
+│                     (Tracked in Supabase)                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+• Conversation logged with metadata
+• Response time tracked (<5 seconds target)
+• Feedback sentiment analyzed (thumbs up/down ratio)
+• Common questions identified for documentation improvement
+• Failed queries (low confidence) flagged for review
+• Rate limit violations monitored for abuse detection
+• Cost tracking: Gemini 2.5 Pro token usage per conversation
+```
+
+**Key User Types Covered:**
+- Construction workers (primary): Check-in troubleshooting
+- Suppliers: Workforce registration queries
+- Project managers: Compliance verification
+- Support agents: Reference tool for common questions
+- Subcontractors: Documentation and HMS card management
+
+**System Features Demonstrated:**
+- Multi-turn conversation with context
+- RAG-based retrieval with confidence scoring
+- Fallback handling for ambiguous queries
+- Integration with static documentation pages
+- Feedback collection and analytics
+- Rate limiting for abuse prevention
+- Supabase for data persistence
 
 ## Technical Constraints
 
@@ -76,8 +284,9 @@ This section defines the complete technology stack and system architecture for t
          │ HTTPS
          ▼
 ┌─────────────────────────────────────┐
-│       Frontend (React + Vite)       │
+│      Frontend (Next.js 14)          │
 │  - Chat UI (shadcn/ui components)   │
+│  - Static docs pages (SSG)          │
 │  - State management (Context API)   │
 │  - Tailwind CSS styling             │
 └────────┬────────────────────────────┘
@@ -89,30 +298,43 @@ This section defines the complete technology stack and system architecture for t
 │  - LangChain RAG pipeline           │
 │  - Document retrieval logic         │
 │  - Prompt engineering layer         │
+│  - Rate limiting (slowapi)          │
 └────┬────────────────────┬───────────┘
      │                    │
      ▼                    ▼
 ┌──────────────┐   ┌──────────────────┐
 │  Vector DB   │   │  PostgreSQL DB   │
-│  (ChromaDB)  │   │ - Conversations  │
-│ - Embeddings │   │ - Feedback       │
-│ - Doc chunks │   │ - Analytics      │
-└──────────────┘   └──────────────────┘
-     │
+│  (ChromaDB)  │   │   (Supabase)     │
+│ - Embeddings │   │ - Conversations  │
+│ - Doc chunks │   │ - Feedback       │
+└──────────────┘   │ - Analytics      │
+     │             │ - Rate limits    │
+     │             └──────────────────┘
      ▼
 ┌─────────────────────────────────────┐
-│      OpenAI API (Production)        │
-│  - GPT-4o-mini (chat responses)     │
-│  - text-embedding-3-small (search)  │
+│    Google AI API (Production)       │
+│  - Gemini 2.5 Pro (chat responses)  │
+│  - text-embedding-004 (search)      │
 └─────────────────────────────────────┘
 ```
 
 ### Frontend Specification
 
 **Framework & Build Tools:**
-- **React 18** with **TypeScript** - Modern component-based UI with type safety
-- **Vite** - Fast development server and optimized production builds
-- **React Router** - Client-side routing (if multi-page needed)
+- **Next.js 14 (App Router)** with **TypeScript** - Modern full-stack React framework with built-in SSG/SSR capabilities and type safety
+- **File-based routing** - Automatic routing based on file structure in `/app` directory
+- **Static Site Generation (SSG)** - Pre-render documentation pages at build time for optimal performance
+- **Server and Client Components** - Separate static content (Server Components) from dynamic chat UI (Client Components)
+
+**Application Structure:**
+- `/app/page.tsx` - Landing page with chatbot introduction and navigation
+- `/app/chat/page.tsx` - Main chat interface (Client Component with dynamic interaction)
+- `/app/docs/` - Static documentation pages (Server Components, pre-rendered at build time)
+  - `/app/docs/workforce/page.tsx` - Workforce registration guide
+  - `/app/docs/hms-cards/page.tsx` - HMS card information and renewal
+  - `/app/docs/check-in/page.tsx` - Check-in procedures and troubleshooting
+  - `/app/docs/compliance/page.tsx` - Compliance and regulations
+- `/public/articles/` - Markdown files and images for documentation content
 
 **UI & Styling:**
 - **Tailwind CSS** - Utility-first CSS framework for rapid styling
@@ -124,6 +346,7 @@ This section defines the complete technology stack and system architecture for t
 - **Message history** - Local state management with React Context API or Zustand
 - **Mobile-first design** - Responsive breakpoints (sm: 640px, md: 768px, lg: 1024px)
 - **Accessibility** - WCAG 2.1 AA compliance for form inputs and navigation
+- **Session tracking** - Unique session IDs for rate limiting and analytics
 
 **State Management:**
 - **React Context API** - Lightweight solution for conversation state
@@ -276,7 +499,7 @@ This outlines the detailed approach for collecting, processing, and maintaining 
    - **Chunks**: 500-2000 chunks after splitting
    - **Embeddings**: 500-2000 vectors (1536 dimensions each)
    - **Storage**: ~50-200 MB for ChromaDB (including metadata)
-   - **One-time embedding cost**: $0.50 - $2.00 (OpenAI text-embedding-3-small)
+   - **One-time embedding cost**: Free (Google text-embedding-004)
 
 8. **Documentation Coverage Validation**
 
@@ -306,8 +529,10 @@ This outlines the detailed approach for collecting, processing, and maintaining 
   - **Collections** - `hmsreg_docs` collection for all documentation chunks
 
 **Relational Database (Structured Data):**
-- **PostgreSQL** - Robust relational database
-  - **Free tier** - Railway, Supabase, or Neon (1GB storage)
+- **PostgreSQL on Supabase** - Managed PostgreSQL database with built-in features
+  - **Free tier** - 500MB database storage, 1GB file storage, 50,000 monthly active users
+  - **Features**: Auto-generated REST API, Row Level Security, real-time subscriptions, built-in auth (optional)
+  - **SDK Support**: JavaScript/TypeScript (Next.js frontend), Python (FastAPI backend)
   - **Schema design:**
     ```
     conversations
@@ -326,6 +551,14 @@ This outlines the detailed approach for collecting, processing, and maintaining 
     ├── helpful (BOOLEAN)
     ├── comment (TEXT, optional)
     └── timestamp (TIMESTAMP)
+
+    rate_limits
+    ├── id (UUID, primary key)
+    ├── ip_address (VARCHAR, indexed)
+    ├── session_id (VARCHAR, indexed)
+    ├── request_count (INTEGER)
+    ├── window_start (TIMESTAMP)
+    └── last_request (TIMESTAMP)
 
     analytics
     ├── id (UUID, primary key)
@@ -347,19 +580,20 @@ This outlines the detailed approach for collecting, processing, and maintaining 
 - **Claude Pro** - Subscription-based access for AI-assisted coding
 
 **Production (API-based):**
-- **OpenAI API** - Pay-per-use for deployed chatbot
-  - **LLM**: GPT-4o-mini ($0.150 per 1M input tokens, $0.600 per 1M output tokens)
-  - **Embeddings**: text-embedding-3-small ($0.020 per 1M tokens)
-  - **Estimated cost**: ~$5-15/month for moderate usage (100-500 conversations/month)
+- **Google AI API** - Pay-per-use for deployed chatbot
+  - **LLM**: Gemini 2.5 Pro (Free tier: 15 requests/minute, 1500 requests/day; Paid pricing TBD)
+  - **Embeddings**: text-embedding-004 (Free tier available)
+  - **Estimated cost**: Free for development and moderate usage within limits; ~$5-15/month if exceeding free tier (100-500 conversations/month)
+  - **Benefits**: State-of-the-art multilingual support including Norwegian, advanced reasoning capabilities, large context window, cost-effective with generous free tier
 
 **RAG Architecture:**
-- **Embedding Model**: text-embedding-3-small (1536 dimensions)
+- **Embedding Model**: text-embedding-004 (768 dimensions)
   - Excellent Norwegian language support
-  - Cost-effective for production
+  - Free tier available for production
 - **Retrieval Strategy**:
   - Top-k similarity search (k=3-5 most relevant chunks)
   - Minimum similarity threshold: 0.7 (configurable)
-  - Context window: ~4000 tokens for GPT-4o-mini
+  - Context window: Large context capacity for Gemini 2.5 Pro
 - **Prompt Engineering**:
   ```
   System: Du er en hjelpsom assistent for HMSREG-dokumentasjon...
@@ -401,8 +635,8 @@ The chatbot implements a multi-level fallback mechanism to handle cases where it
    - Use semantic similarity to find 3 most related topics
 
 4. **Error States and Handling**
-   - **OpenAI API timeout (>30s)**: "Systemet tar lengre tid enn vanlig. Vennligst prøv igjen."
-   - **OpenAI API failure (500 error)**: "Chatboten er midlertidig utilgjengelig. Kontakt support@hmsreg.no for hjelp."
+   - **Google AI API timeout (>30s)**: "Systemet tar lengre tid enn vanlig. Vennligst prøv igjen."
+   - **Google AI API failure (500 error)**: "Chatboten er midlertidig utilgjengelig. Kontakt support@hmsreg.no for hjelp."
    - **Rate limit exceeded**: "For mange forespørsler. Vennligst vent et øyeblikk og prøv igjen."
    - **ChromaDB connection error**: Serve cached responses or gracefully inform user of technical issue
    - **Network timeout**: Retry once, then show error message with offline fallback instructions
@@ -419,7 +653,7 @@ The chatbot implements a multi-level fallback mechanism to handle cases where it
      - Show common topic categories: "Mannskapsregistrering", "HMS-kort", "Dokumentasjon", "Inn-/utsjekking"
 
 **Norwegian Language Handling:**
-- **Model selection**: GPT-4o-mini has strong Norwegian support (tested with bokmål)
+- **Model selection**: Gemini 2.5 Pro has excellent Norwegian support with strong multilingual capabilities (Bokmål and Nynorsk)
 - **Prompt language**: System prompts and instructions in Norwegian
 - **Terminology**: Custom glossary for HMSREG-specific terms (HMS-kort, seriøsitetskontroll, etc.)
 
@@ -441,14 +675,27 @@ The chatbot implements a multi-level fallback mechanism to handle cases where it
 
 **Database Hosting:**
 - **ChromaDB**: Deployed with backend (Docker container or local persistence)
-- **PostgreSQL**: Railway built-in database or Supabase free tier
+- **PostgreSQL**: Supabase free tier (500MB database, managed service)
 
 **Environment Variables:**
 ```
-OPENAI_API_KEY=sk-...
-DATABASE_URL=postgresql://...
+# Google AI
+GOOGLE_API_KEY=AIza...
+
+# Supabase
+SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_KEY=eyJhbG...
+SUPABASE_SERVICE_KEY=eyJhbG... (backend only)
+
+# ChromaDB
 CHROMA_PERSIST_DIRECTORY=/data/chroma
+
+# CORS
 CORS_ORIGINS=https://chatbot.example.com
+
+# Rate Limiting
+MAX_REQUESTS_PER_MINUTE=10
+MAX_REQUESTS_PER_HOUR=50
 ```
 
 **CI/CD:**
@@ -468,28 +715,33 @@ CORS_ORIGINS=https://chatbot.example.com
 - **Total development cost**: ~$20
 
 **Production Phase (Monthly):**
-- **OpenAI API**: $5-15/month (estimated 100-500 conversations)
-  - Assuming avg 500 tokens/query × 300 queries = ~$2-5/month
-  - Embeddings for documentation: One-time ~$0.50 for 50,000 tokens
+- **Google AI API**: $0-15/month (estimated 100-500 conversations)
+  - Free tier: 15 RPM, 1500 RPD - likely sufficient for moderate usage
+  - If exceeding free tier: Costs depend on Gemini 2.5 Pro pricing (expected to be competitive)
+  - Embeddings: Free tier available
+  - **Benefits**: Cost-effective with generous free tier, excellent Norwegian support, large context window
 - **Railway hosting**: Free tier initially, $5/month if usage exceeds free limits
+- **Supabase**: Free tier (500MB database, sufficient for MVP and moderate production use)
 - **Domain (optional)**: $12/year (~$1/month)
-- **Total monthly cost**: $5-20/month
+- **Total monthly cost**: $0-20/month (potentially free with generous API limits)
 
 ### Technology Justification
 
 **Why These Choices:**
-1. **React + TypeScript**: Industry standard, excellent AI coding assistant support, strong ecosystem
+1. **Next.js 14 + TypeScript**: Modern full-stack framework ideal for mixed static/dynamic content, excellent for documentation pages + chat interface, industry standard with strong AI coding assistant support
 2. **FastAPI**: Best Python framework for AI/ML integration, async support, automatic API docs
-3. **LangChain**: De facto standard for RAG applications, extensive documentation, active community
+3. **LangChain**: De facto standard for RAG applications, extensive documentation, active community, supports Google AI integration
 4. **ChromaDB**: Free, easy to set up, perfect for course project scale (<10k documents)
-5. **OpenAI GPT-4o-mini**: Best Norwegian language support, reliable API, cost-effective for production
-6. **PostgreSQL**: Industry standard, free tiers available, easy migration from SQLite
+5. **Google Gemini 2.5 Pro**: State-of-the-art multilingual Norwegian support, large context window, generous free tier (1500 requests/day), cost-effective for production, advanced reasoning capabilities
+6. **Supabase (PostgreSQL)**: Managed PostgreSQL with generous free tier, excellent Next.js integration, built-in features (auth, real-time, storage)
 
 **Alternatives Considered:**
-- ~~Next.js~~ - Adds SSR complexity not needed for chat UI
+- ~~React + Vite~~ - Would require separate solution for static documentation pages, lacks built-in SSG
 - ~~LlamaIndex~~ - Similar to LangChain but less mature documentation
 - ~~Pinecone~~ - Paid vector DB, unnecessary cost for project scale
-- ~~Anthropic Claude API~~ - More expensive than GPT-4o-mini, similar Norwegian support
+- ~~OpenAI GPT-4/GPT-3.5~~ - More expensive than Gemini Pro, no free tier for production use
+- ~~Anthropic Claude API~~ - More expensive than Gemini Pro, limited free tier
+- ~~Railway/Neon for PostgreSQL~~ - Supabase offers better integration and more features in free tier
 
 ## Development Timeline and Milestones
 
@@ -505,20 +757,24 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 **Tasks:**
 - [ ] Create GitHub repository with initial project structure
 - [ ] Set up Python virtual environment (Python 3.11+)
-- [ ] Initialize React + Vite frontend project with TypeScript
-- [ ] Install core dependencies (FastAPI, LangChain, React, Tailwind CSS)
+- [ ] Initialize Next.js 14 frontend project with TypeScript and App Router
+- [ ] Create application structure (`/app/page.tsx`, `/app/chat/`, `/app/docs/`, `/public/articles/`)
+- [ ] Install core dependencies (FastAPI, LangChain, Next.js, Tailwind CSS, shadcn/ui)
+- [ ] Set up Supabase project and create database schema (conversations, feedback, rate_limits, analytics tables)
 - [ ] Scrape/download documentation from docs.hmsreg.com
   - Identify key documentation sections (Getting Started, HMS Cards, Check-in Procedures, etc.)
   - Use Beautiful Soup + requests to extract content
-  - Parse HTML to clean text format
-- [ ] Create initial document collection (save as JSON/markdown files)
+  - Parse HTML to clean text format and save as Markdown
+- [ ] Create initial document collection (save as Markdown files in `/public/articles/`)
 - [ ] Set up ChromaDB locally with test data
-- [ ] Configure environment variables (.env files)
+- [ ] Configure environment variables (.env files - Google AI, Supabase, ChromaDB)
 
 **Deliverables:**
-- Working development environment (frontend + backend)
-- Complete HMSREG documentation dataset (50-200 pages)
+- Working development environment (Next.js frontend + FastAPI backend)
+- Supabase project configured with database schema
+- Complete HMSREG documentation dataset (50-200 pages) saved as Markdown in `/public/articles/`
 - Initial ChromaDB collection with sample embeddings
+- Static documentation pages skeleton created in `/app/docs/`
 - Project README with setup instructions
 
 **Risks & Contingencies:**
@@ -536,17 +792,23 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 
 **Tasks:**
 - [ ] Implement document chunking strategy (RecursiveCharacterTextSplitter, 500-1000 chars)
-- [ ] Generate embeddings for all documentation chunks using OpenAI text-embedding-3-small
+- [ ] Generate embeddings for all documentation chunks using Google text-embedding-004
 - [ ] Store embeddings in ChromaDB with metadata (source page, topic category)
 - [ ] Create FastAPI application structure
   - `POST /api/chat` endpoint (accept user message, return bot response)
+  - `POST /api/feedback` endpoint
   - `GET /api/health` endpoint
 - [ ] Implement LangChain RAG chain
   - Vector similarity search (top-k=3-5 chunks)
   - Prompt template with Norwegian instructions
-  - Integration with OpenAI GPT-4o-mini (or Gemini for testing)
+  - Integration with Google Gemini 2.5 Pro
+- [ ] Implement IP-based rate limiting with slowapi
+  - 10 requests per minute per IP
+  - 50 requests per hour per IP
+  - Store rate limit data in Supabase
 - [ ] Test retrieval accuracy with sample questions
 - [ ] Implement basic error handling and logging
+- [ ] Integrate Supabase Python client for conversation logging
 
 **Deliverables:**
 - Working FastAPI backend with `/api/chat` endpoint
@@ -556,7 +818,7 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 
 **Risks & Contingencies:**
 - **Risk**: Embedding costs may be higher than expected
-  - **Mitigation**: Use Gemini free tier for development, only switch to OpenAI for final testing
+  - **Mitigation**: Use Gemini free tier for development and production
 - **Risk**: Retrieval quality may be poor initially
   - **Mitigation**: Iterate on chunk size, overlap, and similarity threshold
 
@@ -568,15 +830,22 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 - Implement streaming responses and conversation state
 
 **Tasks:**
-- [ ] Create React components:
-  - ChatWindow (main container)
+- [ ] Create Next.js pages and components:
+  - `/app/chat/page.tsx` - Main chat page (Client Component)
+  - ChatWindow component (main container)
   - MessageList (displays conversation history)
   - MessageInput (user input field with send button)
   - MessageBubble (individual message component)
+- [ ] Create static documentation pages in `/app/docs/`:
+  - Workforce registration page
+  - HMS cards page
+  - Check-in procedures page
+  - Compliance page
+- [ ] Integrate Supabase client in Next.js for session tracking and feedback
 - [ ] Style with Tailwind CSS and shadcn/ui components
 - [ ] Implement React Context API for conversation state
 - [ ] Connect frontend to backend `/api/chat` endpoint
-  - Use fetch or axios for API calls
+  - Use fetch for API calls
   - Implement Server-Sent Events (SSE) for streaming (optional for MVP)
 - [ ] Add loading states and error messages
 - [ ] Implement localStorage for session persistence (optional)
@@ -655,10 +924,10 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
   - Add thumbs up/down buttons to each response
   - Create `POST /api/feedback` endpoint
   - Store feedback in database
-- [ ] Set up PostgreSQL database:
-  - Deploy on Railway or Supabase free tier
-  - Create schema (conversations, feedback, analytics tables)
-  - Implement database models with SQLAlchemy/Pydantic
+- [ ] Verify Supabase database is production-ready:
+  - Confirm schema is properly set up (conversations, feedback, rate_limits, analytics tables)
+  - Test database connection from backend
+  - Implement database models with Supabase Python client and Pydantic
 - [ ] Log all conversations:
   - Store user messages, bot responses, timestamps
   - Record similarity scores and sources cited
@@ -669,7 +938,7 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
   - Identify most common unresolved queries
 - [ ] Error handling improvements:
   - API timeout handling
-  - Graceful degradation if OpenAI API fails
+  - Graceful degradation if Google AI API fails
   - Rate limiting protection
 
 **Deliverables:**
@@ -750,8 +1019,8 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 **Top Risks:**
 1. **Documentation scraping complexity** - May require manual collection or alternative tools (Playwright)
 2. **RAG accuracy below 80%** - May need iterative prompt engineering and chunking refinement
-3. **Norwegian language quality** - GPT-4o-mini performance may vary; test thoroughly
-4. **API cost overruns** - Use free tiers (Gemini) during development, monitor OpenAI usage closely
+3. **Norwegian language quality** - Gemini 2.5 Pro performance may vary; test thoroughly
+4. **API cost overruns** - Use free tiers (Gemini) during development and production, monitor API usage closely
 5. **Deployment challenges** - Test early, use well-documented platforms (Vercel, Railway)
 
 **Mitigation Strategy:**
