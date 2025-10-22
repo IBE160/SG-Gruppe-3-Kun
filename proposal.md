@@ -45,13 +45,221 @@ The chatbot provides HMSREG users (suppliers, subcontractors, construction worke
 -   **Feedback data** - user satisfaction ratings, helpful/not helpful responses
 -   **Common question analytics** - frequency of topics, unresolved queries
 
-## User Stories
+## User Flow
 
-1. As a supplier, I want to quickly find instructions on how to register workforce and upload all required documentation for compliance audits in HMSREG, so that I can meet project requirements and maintain my status as a verified supplier
-2. As a construction worker, I want to understand why my check-in failed, so that I can resolve the issue and access the site
-3. As a project manager, I want to understand how to verify that all personnel on site have proper competence certifications and that suppliers meet compliance requirements, so that I can fulfill my obligations under the Construction Client Regulations
-4. As a support agent, I want the chatbot to handle common user questions automatically, so that I can focus on more complex support cases
-5. As a subcontractor, I want to know how to upload documentation and add new HMS cards to crew lists, so that I can keep my workforce registrations up to date
+This diagram illustrates the complete interaction flow for the primary use case: a construction worker troubleshooting a failed check-in using the HMSREG chatbot.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    HMSREG Chatbot User Flow                              │
+│              Primary Scenario: Check-in Troubleshooting                  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+                    [Construction Worker arrives at site]
+                                   ↓
+                    [Scans QR code to check-in via mobile app]
+                                   ↓
+                         ┌─────────────────┐
+                         │  CHECK-IN FAILS │
+                         │  Error Message: │
+                         │ "HMS-kort ugyldig"│
+                         └─────────────────┘
+                                   ↓
+                    [Worker frustrated - needs immediate solution]
+                                   ↓
+                    [Opens HMSREG Documentation Chatbot on phone]
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         CHATBOT INTERFACE                                │
+│  [Message Input Field]                                                   │
+│  User types: "Hvorfor feiler innsjekkingen min?"                        │
+│  [Send Button]                                                           │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                         [Submit to Backend API]
+                         POST /api/chat
+                         - message: "Hvorfor feiler..."
+                         - session_id: "abc123"
+                         - timestamp
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          BACKEND PROCESSING                              │
+│                                                                          │
+│  1. Rate Limit Check (slowapi)                                          │
+│     ├─ IP: 10 requests/min, 50/hour ✓                                  │
+│     └─ Session: Under daily limit ✓                                     │
+│                                                                          │
+│  2. Vector Similarity Search (ChromaDB)                                 │
+│     ├─ Embed query with text-embedding-3-small                         │
+│     ├─ Search top-5 relevant chunks                                     │
+│     └─ Best match: "Check-in Troubleshooting" (similarity: 0.85) ✓     │
+│                                                                          │
+│  3. LangChain RAG Pipeline                                              │
+│     ├─ Retrieve: Top 3 chunks (check-in errors, HMS cards, QR codes)   │
+│     ├─ Context window: ~2000 tokens                                     │
+│     └─ Prompt: "Du er HMSREG assistent... [context]... [question]"     │
+│                                                                          │
+│  4. GPT-5-mini Generation                                               │
+│     ├─ Model: gpt-5-mini                                                │
+│     ├─ Temperature: 0.3 (factual responses)                             │
+│     ├─ Max tokens: 500                                                  │
+│     └─ Language: Norwegian (detected from query)                        │
+│                                                                          │
+│  5. Log to Supabase                                                     │
+│     └─ Store: session_id, question, response, similarity, timestamp     │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                    [Response returned to frontend]
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         CHATBOT RESPONSE                                 │
+│                                                                          │
+│  🤖 Bot: Det ser ut som innsjekkingen feiler fordi HMS-kortet ditt      │
+│         ikke er gyldig. La meg hjelpe deg med dette.                    │
+│                                                                          │
+│         Får du en spesifikk feilmelding på skjermen?                    │
+│                                                                          │
+│  [Message Input]                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                    [Worker replies: "HMS-kort ugyldig"]
+                                   ↓
+                    [Backend processes follow-up query]
+                    Similarity: 0.91 ✓
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      DETAILED SOLUTION RESPONSE                          │
+│                                                                          │
+│  🤖 Bot: HMS-kortet ditt har utløpt eller er ugyldig. HMS-kort er       │
+│         gyldige i 5 år fra utstedelsesdato.                             │
+│                                                                          │
+│         **Slik fornyer du HMS-kortet:**                                 │
+│         1. Gå til HMS-kortportalen (link)                               │
+│         2. Logg inn med BankID                                           │
+│         3. Oppdater nødvendige sertifiseringer                          │
+│         4. Betal fornyelsesavgift (ca. 300 kr)                          │
+│         5. Nytt kort utstedes innen 3 virkedager                        │
+│                                                                          │
+│         📚 Les mer: /docs/hms-cards                                      │
+│         💬 Trenger du hjelp? Kontakt support@hmsreg.no                  │
+│                                                                          │
+│         📎 Sources: docs.hmsreg.com/hms-cards/validity                  │
+│                                                                          │
+│  [👍 Helpful] [👎 Not Helpful]                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                         ┌─────────┴─────────┐
+                         ↓                   ↓
+              [Worker clicks 👍]    [Worker clicks 👎]
+                         ↓                   ↓
+              [Positive Feedback]  [Negative Feedback]
+                         ↓                   ↓
+              POST /api/feedback    POST /api/feedback
+              - helpful: true       - helpful: false
+              - conversation_id     - conversation_id
+                         ↓                   ↓
+              [Stored in Supabase]  [Flagged for review]
+                         ↓                   ↓
+              [Analytics updated]   [Alert: Low satisfaction]
+                         │                   │
+                         └─────────┬─────────┘
+                                   ↓
+                    [Worker clicks link: /docs/hms-cards]
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    STATIC DOCUMENTATION PAGE                             │
+│                  (Next.js SSG - Pre-rendered)                            │
+│                                                                          │
+│  # HMS Cards - Validity and Renewal                                     │
+│                                                                          │
+│  ## What is an HMS Card?                                                │
+│  [Detailed article content from /public/articles/hms-cards.md]          │
+│                                                                          │
+│  ## Validity Period                                                     │
+│  - Valid for 5 years from issue date                                    │
+│  - Must be renewed before expiration                                    │
+│                                                                          │
+│  ## Renewal Process                                                     │
+│  [Step-by-step guide with images]                                       │
+│                                                                          │
+│  [Back to Chatbot] [Related: Check-in Procedures] [Contact Support]     │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                    [Worker follows renewal process]
+                                   ↓
+                    [HMS card renewed successfully]
+                                   ↓
+                    [Worker checks in successfully next day]
+                                   ↓
+                              ✅ [END]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         FALLBACK SCENARIO                                │
+│              (If confidence score < 0.7)                                 │
+└─────────────────────────────────────────────────────────────────────────┘
+
+                    [User asks vague question: "hjelp"]
+                                   ↓
+                    [RAG search - low similarity: 0.45]
+                                   ↓
+                         [FALLBACK TRIGGERED]
+                                   ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│  🤖 Bot: Jeg fant ikke et klart svar. Kan du utdype spørsmålet?         │
+│                                                                          │
+│         **Vanlige emner:**                                              │
+│         • HMS-kort (gyldighet, fornyelse)                               │
+│         • Innsjekking på byggeplass                                     │
+│         • Mannskapsregistrering                                         │
+│         • Dokumentasjonskrav                                            │
+│                                                                          │
+│         📚 Dokumentasjon: docs.hmsreg.com                               │
+│         💬 Support: support@hmsreg.no | Tlf: [nummer]                   │
+│                                                                          │
+│  [Select topic] or [Contact Support]                                    │
+└─────────────────────────────────────────────────────────────────────────┘
+                                   ↓
+                         ┌─────────┴─────────┐
+                         ↓                   ↓
+              [User selects topic]  [User contacts support]
+              "HMS-kort"                     ↓
+                         ↓           [Escalated to human agent]
+              [New search]                   ↓
+              Similarity: 0.89 ✓            [END]
+                         ↓
+              [Relevant answer provided]
+                         ↓
+                       [END]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     SYSTEM MONITORING & ANALYTICS                        │
+│                     (Tracked in Supabase)                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+• Conversation logged with metadata
+• Response time tracked (<5 seconds target)
+• Feedback sentiment analyzed (thumbs up/down ratio)
+• Common questions identified for documentation improvement
+• Failed queries (low confidence) flagged for review
+• Rate limit violations monitored for abuse detection
+• Cost tracking: GPT-5-mini token usage per conversation
+```
+
+**Key User Types Covered:**
+- Construction workers (primary): Check-in troubleshooting
+- Suppliers: Workforce registration queries
+- Project managers: Compliance verification
+- Support agents: Reference tool for common questions
+- Subcontractors: Documentation and HMS card management
+
+**System Features Demonstrated:**
+- Multi-turn conversation with context
+- RAG-based retrieval with confidence scoring
+- Fallback handling for ambiguous queries
+- Integration with static documentation pages
+- Feedback collection and analytics
+- Rate limiting for abuse prevention
+- Supabase for data persistence
 
 ## Technical Constraints
 
