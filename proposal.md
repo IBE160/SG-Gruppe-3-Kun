@@ -76,8 +76,9 @@ This section defines the complete technology stack and system architecture for t
          │ HTTPS
          ▼
 ┌─────────────────────────────────────┐
-│       Frontend (React + Vite)       │
+│      Frontend (Next.js 14)          │
 │  - Chat UI (shadcn/ui components)   │
+│  - Static docs pages (SSG)          │
 │  - State management (Context API)   │
 │  - Tailwind CSS styling             │
 └────────┬────────────────────────────┘
@@ -89,20 +90,22 @@ This section defines the complete technology stack and system architecture for t
 │  - LangChain RAG pipeline           │
 │  - Document retrieval logic         │
 │  - Prompt engineering layer         │
+│  - Rate limiting (slowapi)          │
 └────┬────────────────────┬───────────┘
      │                    │
      ▼                    ▼
 ┌──────────────┐   ┌──────────────────┐
 │  Vector DB   │   │  PostgreSQL DB   │
-│  (ChromaDB)  │   │ - Conversations  │
-│ - Embeddings │   │ - Feedback       │
-│ - Doc chunks │   │ - Analytics      │
-└──────────────┘   └──────────────────┘
-     │
+│  (ChromaDB)  │   │   (Supabase)     │
+│ - Embeddings │   │ - Conversations  │
+│ - Doc chunks │   │ - Feedback       │
+└──────────────┘   │ - Analytics      │
+     │             │ - Rate limits    │
+     │             └──────────────────┘
      ▼
 ┌─────────────────────────────────────┐
 │      OpenAI API (Production)        │
-│  - GPT-4o-mini (chat responses)     │
+│  - GPT-5-mini (chat responses)      │
 │  - text-embedding-3-small (search)  │
 └─────────────────────────────────────┘
 ```
