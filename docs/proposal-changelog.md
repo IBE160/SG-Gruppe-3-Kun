@@ -10,7 +10,7 @@
 | # | Change | Reason |
 |---|--------|--------|
 | 1 | React + Vite → Next.js 14 | Need static documentation pages alongside chat interface |
-| 2 | GPT-4o-mini → GPT-5-mini | 45% fewer errors, better Norwegian support (released Aug 2025) |
+| 2 | GPT-4o-mini → GPT-5-mini → Gemini 2.5 Pro | Cost-effective, generous free tier, excellent Norwegian support |
 | 3 | PostgreSQL → Supabase | Selected from options, better Next.js integration |
 | 4 | User Stories → User Flow | Visual diagram showing interaction patterns |
 | 5 | Added rate limiting | Abuse prevention (10/min, 50/hour per IP) |
@@ -38,22 +38,23 @@
 
 ---
 
-### 2. AI Model: GPT-4o-mini → GPT-5-mini
+### 2. AI Model: GPT-4o-mini → GPT-5-mini → Gemini 2.5 Pro
 
-**Before:** GPT-4o-mini ($0.150/$0.600 per 1M tokens)
-**After:** GPT-5-mini (est. $0.60-0.80/$2.50-3.50 per 1M tokens)
+**Before:** GPT-4o-mini ($0.150/$0.600 per 1M tokens), then GPT-5-mini
+**After:** Gemini 2.5 Pro (Free tier: 15 RPM, 1500 RPD; Paid pricing TBD)
 
 **Why:**
-- GPT-5 released August 7, 2025
-- 45% fewer factual errors than GPT-4o
-- Better reasoning (94.6% on AIME 2025)
-- Enhanced Norwegian language support
-- ~50% cheaper than GPT-5 standard
+- Google Gemini 2.5 Pro offers state-of-the-art capabilities
+- Generous free tier (1500 requests/day) - suitable for project scale
+- Excellent multilingual support including Norwegian (Bokmål and Nynorsk)
+- Large context window for comprehensive RAG
+- Cost-effective: Free for moderate usage, competitive paid pricing
+- LangChain has excellent Google AI integration
 
 **Cost Impact:**
-- Before: $5-15/month
-- After: $8-20/month
-- Increase justified by better accuracy and user experience
+- Before: $8-20/month (GPT-5-mini)
+- After: $0-15/month (likely free within tier limits)
+- Significant cost savings while maintaining quality
 
 ---
 
@@ -129,7 +130,8 @@
 | Component | Before | After |
 |-----------|--------|-------|
 | Frontend | React 18 + Vite | Next.js 14 (App Router) |
-| AI Model | GPT-4o-mini | GPT-5-mini |
+| AI Model | GPT-4o-mini | Gemini 2.5 Pro |
+| Embeddings | OpenAI text-embedding-3-small | Google text-embedding-004 |
 | Database | PostgreSQL (options) | Supabase (selected) |
 | Rate Limiting | Not specified | slowapi + Supabase |
 | Content Storage | Not specified | Static files in `/public/` |
@@ -146,7 +148,7 @@
 
 **Week 2:**
 - Implement rate limiting (slowapi)
-- Integrate GPT-5-mini
+- Integrate Gemini 2.5 Pro via LangChain
 - Supabase Python client for logging
 
 **Week 3:**
@@ -164,13 +166,13 @@
 **Development:** ~$20 (unchanged)
 
 **Production (Monthly):**
-- OpenAI API: $8-20/month (was $5-15)
+- Google AI API: $0-15/month (was $8-20 for GPT-5-mini)
 - Railway: Free/$5
 - Supabase: Free
 - Domain: ~$1
-- **Total: $8-25/month** (was $5-20)
+- **Total: $0-20/month** (was $8-25 with GPT-5-mini)
 
-Cost increase of $3-5/month justified by 45% fewer errors and better Norwegian support.
+Cost decrease of $8-5/month due to generous free tier while maintaining quality.
 
 ---
 
@@ -178,7 +180,7 @@ Cost increase of $3-5/month justified by 45% fewer errors and better Norwegian s
 
 **Next.js:** Required for static documentation pages + chat interface in single codebase
 
-**GPT-5-mini:** Released in 2025, significantly better accuracy, worth slight cost increase
+**Gemini 2.5 Pro:** State-of-the-art model with generous free tier, excellent Norwegian support, cost-effective
 
 **Supabase:** Best option for managed PostgreSQL with Next.js, excellent free tier
 
@@ -194,6 +196,28 @@ Cost increase of $3-5/month justified by 45% fewer errors and better Norwegian s
 
 - `proposal.md` - All sections updated
 - `proposal-changelog.md` - This file (new)
+
+---
+
+---
+
+## Update: 2025-10-22 (Later)
+
+**Change:** GPT-5-mini → Gemini 2.5 Pro
+
+**Reason:**
+- Better cost structure with generous free tier (1500 requests/day)
+- Potentially free for entire project within API limits
+- Excellent multilingual support for Norwegian
+- Strong LangChain integration
+- Large context window
+- State-of-the-art reasoning capabilities
+
+**Impact:**
+- Monthly cost: $8-20 → $0-15 (potentially free)
+- Embedding cost: $0.50 one-time → Free
+- Better budget fit for course project
+- No compromise on quality
 
 ---
 

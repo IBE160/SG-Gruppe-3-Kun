@@ -99,8 +99,8 @@ This diagram illustrates the complete interaction flow for the primary use case:
 │     ├─ Context window: ~2000 tokens                                     │
 │     └─ Prompt: "Du er HMSREG assistent... [context]... [question]"     │
 │                                                                          │
-│  4. GPT-5-mini Generation                                               │
-│     ├─ Model: gpt-5-mini                                                │
+│  4. Gemini 2.5 Pro Generation                                           │
+│     ├─ Model: gemini-2.5-pro                                            │
 │     ├─ Temperature: 0.3 (factual responses)                             │
 │     ├─ Max tokens: 500                                                  │
 │     └─ Language: Norwegian (detected from query)                        │
@@ -242,7 +242,7 @@ This diagram illustrates the complete interaction flow for the primary use case:
 • Common questions identified for documentation improvement
 • Failed queries (low confidence) flagged for review
 • Rate limit violations monitored for abuse detection
-• Cost tracking: GPT-5-mini token usage per conversation
+• Cost tracking: Gemini 2.5 Pro token usage per conversation
 ```
 
 **Key User Types Covered:**
@@ -312,9 +312,9 @@ This section defines the complete technology stack and system architecture for t
      │             └──────────────────┘
      ▼
 ┌─────────────────────────────────────┐
-│      OpenAI API (Production)        │
-│  - GPT-5-mini (chat responses)      │
-│  - text-embedding-3-small (search)  │
+│    Google AI API (Production)       │
+│  - Gemini 2.5 Pro (chat responses)  │
+│  - text-embedding-004 (search)      │
 └─────────────────────────────────────┘
 ```
 
@@ -499,7 +499,7 @@ This outlines the detailed approach for collecting, processing, and maintaining 
    - **Chunks**: 500-2000 chunks after splitting
    - **Embeddings**: 500-2000 vectors (1536 dimensions each)
    - **Storage**: ~50-200 MB for ChromaDB (including metadata)
-   - **One-time embedding cost**: $0.50 - $2.00 (OpenAI text-embedding-3-small)
+   - **One-time embedding cost**: Free (Google text-embedding-004)
 
 8. **Documentation Coverage Validation**
 
@@ -580,20 +580,20 @@ This outlines the detailed approach for collecting, processing, and maintaining 
 - **Claude Pro** - Subscription-based access for AI-assisted coding
 
 **Production (API-based):**
-- **OpenAI API** - Pay-per-use for deployed chatbot
-  - **LLM**: GPT-5-mini (pricing estimated ~$0.60-0.80 per 1M input tokens, ~$2.50-3.50 per 1M output tokens based on GPT-5 being ~50% cheaper than GPT-4o)
-  - **Embeddings**: text-embedding-3-small ($0.020 per 1M tokens)
-  - **Estimated cost**: ~$8-20/month for moderate usage (100-500 conversations/month)
-  - **Benefits**: 45% fewer factual errors than GPT-4o, improved reasoning (94.6% on AIME 2025), better Norwegian language support
+- **Google AI API** - Pay-per-use for deployed chatbot
+  - **LLM**: Gemini 2.5 Pro (Free tier: 15 requests/minute, 1500 requests/day; Paid pricing TBD)
+  - **Embeddings**: text-embedding-004 (Free tier available)
+  - **Estimated cost**: Free for development and moderate usage within limits; ~$5-15/month if exceeding free tier (100-500 conversations/month)
+  - **Benefits**: State-of-the-art multilingual support including Norwegian, advanced reasoning capabilities, large context window, cost-effective with generous free tier
 
 **RAG Architecture:**
-- **Embedding Model**: text-embedding-3-small (1536 dimensions)
+- **Embedding Model**: text-embedding-004 (768 dimensions)
   - Excellent Norwegian language support
-  - Cost-effective for production
+  - Free tier available for production
 - **Retrieval Strategy**:
   - Top-k similarity search (k=3-5 most relevant chunks)
   - Minimum similarity threshold: 0.7 (configurable)
-  - Context window: ~8000 tokens for GPT-5-mini (improved from previous models)
+  - Context window: Large context capacity for Gemini 2.5 Pro
 - **Prompt Engineering**:
   ```
   System: Du er en hjelpsom assistent for HMSREG-dokumentasjon...
@@ -635,8 +635,8 @@ The chatbot implements a multi-level fallback mechanism to handle cases where it
    - Use semantic similarity to find 3 most related topics
 
 4. **Error States and Handling**
-   - **OpenAI API timeout (>30s)**: "Systemet tar lengre tid enn vanlig. Vennligst prøv igjen."
-   - **OpenAI API failure (500 error)**: "Chatboten er midlertidig utilgjengelig. Kontakt support@hmsreg.no for hjelp."
+   - **Google AI API timeout (>30s)**: "Systemet tar lengre tid enn vanlig. Vennligst prøv igjen."
+   - **Google AI API failure (500 error)**: "Chatboten er midlertidig utilgjengelig. Kontakt support@hmsreg.no for hjelp."
    - **Rate limit exceeded**: "For mange forespørsler. Vennligst vent et øyeblikk og prøv igjen."
    - **ChromaDB connection error**: Serve cached responses or gracefully inform user of technical issue
    - **Network timeout**: Retry once, then show error message with offline fallback instructions
@@ -653,7 +653,7 @@ The chatbot implements a multi-level fallback mechanism to handle cases where it
      - Show common topic categories: "Mannskapsregistrering", "HMS-kort", "Dokumentasjon", "Inn-/utsjekking"
 
 **Norwegian Language Handling:**
-- **Model selection**: GPT-5-mini has enhanced Norwegian support with improved multilingual capabilities (Bokmål and Nynorsk)
+- **Model selection**: Gemini 2.5 Pro has excellent Norwegian support with strong multilingual capabilities (Bokmål and Nynorsk)
 - **Prompt language**: System prompts and instructions in Norwegian
 - **Terminology**: Custom glossary for HMSREG-specific terms (HMS-kort, seriøsitetskontroll, etc.)
 
@@ -679,8 +679,8 @@ The chatbot implements a multi-level fallback mechanism to handle cases where it
 
 **Environment Variables:**
 ```
-# OpenAI
-OPENAI_API_KEY=sk-...
+# Google AI
+GOOGLE_API_KEY=AIza...
 
 # Supabase
 SUPABASE_URL=https://xxx.supabase.co
@@ -715,32 +715,32 @@ MAX_REQUESTS_PER_HOUR=50
 - **Total development cost**: ~$20
 
 **Production Phase (Monthly):**
-- **OpenAI API**: $8-20/month (estimated 100-500 conversations)
-  - GPT-5-mini usage: Avg 500 input tokens × 300 queries × $0.70/1M = ~$0.10
-  - GPT-5-mini output: Avg 750 output tokens × 300 queries × $3.00/1M = ~$0.70
-  - Total LLM: ~$0.80-2.50/month base, with buffer for variations = $8-20/month
-  - Embeddings for documentation: One-time ~$0.50 for 50,000 tokens
-  - **Cost increase justified**: 45% fewer errors, better Norwegian support, improved user experience
+- **Google AI API**: $0-15/month (estimated 100-500 conversations)
+  - Free tier: 15 RPM, 1500 RPD - likely sufficient for moderate usage
+  - If exceeding free tier: Costs depend on Gemini 2.5 Pro pricing (expected to be competitive)
+  - Embeddings: Free tier available
+  - **Benefits**: Cost-effective with generous free tier, excellent Norwegian support, large context window
 - **Railway hosting**: Free tier initially, $5/month if usage exceeds free limits
 - **Supabase**: Free tier (500MB database, sufficient for MVP and moderate production use)
 - **Domain (optional)**: $12/year (~$1/month)
-- **Total monthly cost**: $8-25/month
+- **Total monthly cost**: $0-20/month (potentially free with generous API limits)
 
 ### Technology Justification
 
 **Why These Choices:**
 1. **Next.js 14 + TypeScript**: Modern full-stack framework ideal for mixed static/dynamic content, excellent for documentation pages + chat interface, industry standard with strong AI coding assistant support
 2. **FastAPI**: Best Python framework for AI/ML integration, async support, automatic API docs
-3. **LangChain**: De facto standard for RAG applications, extensive documentation, active community
+3. **LangChain**: De facto standard for RAG applications, extensive documentation, active community, supports Google AI integration
 4. **ChromaDB**: Free, easy to set up, perfect for course project scale (<10k documents)
-5. **OpenAI GPT-5-mini**: Enhanced Norwegian language support, 45% fewer factual errors than GPT-4o, reliable API, cost-effective for production
+5. **Google Gemini 2.5 Pro**: State-of-the-art multilingual Norwegian support, large context window, generous free tier (1500 requests/day), cost-effective for production, advanced reasoning capabilities
 6. **Supabase (PostgreSQL)**: Managed PostgreSQL with generous free tier, excellent Next.js integration, built-in features (auth, real-time, storage)
 
 **Alternatives Considered:**
 - ~~React + Vite~~ - Would require separate solution for static documentation pages, lacks built-in SSG
 - ~~LlamaIndex~~ - Similar to LangChain but less mature documentation
 - ~~Pinecone~~ - Paid vector DB, unnecessary cost for project scale
-- ~~Anthropic Claude API~~ - More expensive than GPT-5-mini, similar Norwegian support
+- ~~OpenAI GPT-4/GPT-3.5~~ - More expensive than Gemini Pro, no free tier for production use
+- ~~Anthropic Claude API~~ - More expensive than Gemini Pro, limited free tier
 - ~~Railway/Neon for PostgreSQL~~ - Supabase offers better integration and more features in free tier
 
 ## Development Timeline and Milestones
@@ -767,7 +767,7 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
   - Parse HTML to clean text format and save as Markdown
 - [ ] Create initial document collection (save as Markdown files in `/public/articles/`)
 - [ ] Set up ChromaDB locally with test data
-- [ ] Configure environment variables (.env files - OpenAI, Supabase, ChromaDB)
+- [ ] Configure environment variables (.env files - Google AI, Supabase, ChromaDB)
 
 **Deliverables:**
 - Working development environment (Next.js frontend + FastAPI backend)
@@ -792,7 +792,7 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 
 **Tasks:**
 - [ ] Implement document chunking strategy (RecursiveCharacterTextSplitter, 500-1000 chars)
-- [ ] Generate embeddings for all documentation chunks using OpenAI text-embedding-3-small
+- [ ] Generate embeddings for all documentation chunks using Google text-embedding-004
 - [ ] Store embeddings in ChromaDB with metadata (source page, topic category)
 - [ ] Create FastAPI application structure
   - `POST /api/chat` endpoint (accept user message, return bot response)
@@ -801,7 +801,7 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 - [ ] Implement LangChain RAG chain
   - Vector similarity search (top-k=3-5 chunks)
   - Prompt template with Norwegian instructions
-  - Integration with OpenAI GPT-5-mini (or Gemini for testing)
+  - Integration with Google Gemini 2.5 Pro
 - [ ] Implement IP-based rate limiting with slowapi
   - 10 requests per minute per IP
   - 50 requests per hour per IP
@@ -818,7 +818,7 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 
 **Risks & Contingencies:**
 - **Risk**: Embedding costs may be higher than expected
-  - **Mitigation**: Use Gemini free tier for development, only switch to OpenAI for final testing
+  - **Mitigation**: Use Gemini free tier for development and production
 - **Risk**: Retrieval quality may be poor initially
   - **Mitigation**: Iterate on chunk size, overlap, and similarity threshold
 
@@ -938,7 +938,7 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
   - Identify most common unresolved queries
 - [ ] Error handling improvements:
   - API timeout handling
-  - Graceful degradation if OpenAI API fails
+  - Graceful degradation if Google AI API fails
   - Rate limiting protection
 
 **Deliverables:**
@@ -1019,8 +1019,8 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 **Top Risks:**
 1. **Documentation scraping complexity** - May require manual collection or alternative tools (Playwright)
 2. **RAG accuracy below 80%** - May need iterative prompt engineering and chunking refinement
-3. **Norwegian language quality** - GPT-4o-mini performance may vary; test thoroughly
-4. **API cost overruns** - Use free tiers (Gemini) during development, monitor OpenAI usage closely
+3. **Norwegian language quality** - Gemini 2.5 Pro performance may vary; test thoroughly
+4. **API cost overruns** - Use free tiers (Gemini) during development and production, monitor API usage closely
 5. **Deployment challenges** - Test early, use well-documented platforms (Vercel, Railway)
 
 **Mitigation Strategy:**
