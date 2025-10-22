@@ -113,9 +113,20 @@ This section defines the complete technology stack and system architecture for t
 ### Frontend Specification
 
 **Framework & Build Tools:**
-- **React 18** with **TypeScript** - Modern component-based UI with type safety
-- **Vite** - Fast development server and optimized production builds
-- **React Router** - Client-side routing (if multi-page needed)
+- **Next.js 14 (App Router)** with **TypeScript** - Modern full-stack React framework with built-in SSG/SSR capabilities and type safety
+- **File-based routing** - Automatic routing based on file structure in `/app` directory
+- **Static Site Generation (SSG)** - Pre-render documentation pages at build time for optimal performance
+- **Server and Client Components** - Separate static content (Server Components) from dynamic chat UI (Client Components)
+
+**Application Structure:**
+- `/app/page.tsx` - Landing page with chatbot introduction and navigation
+- `/app/chat/page.tsx` - Main chat interface (Client Component with dynamic interaction)
+- `/app/docs/` - Static documentation pages (Server Components, pre-rendered at build time)
+  - `/app/docs/workforce/page.tsx` - Workforce registration guide
+  - `/app/docs/hms-cards/page.tsx` - HMS card information and renewal
+  - `/app/docs/check-in/page.tsx` - Check-in procedures and troubleshooting
+  - `/app/docs/compliance/page.tsx` - Compliance and regulations
+- `/public/articles/` - Markdown files and images for documentation content
 
 **UI & Styling:**
 - **Tailwind CSS** - Utility-first CSS framework for rapid styling
@@ -127,6 +138,7 @@ This section defines the complete technology stack and system architecture for t
 - **Message history** - Local state management with React Context API or Zustand
 - **Mobile-first design** - Responsive breakpoints (sm: 640px, md: 768px, lg: 1024px)
 - **Accessibility** - WCAG 2.1 AA compliance for form inputs and navigation
+- **Session tracking** - Unique session IDs for rate limiting and analytics
 
 **State Management:**
 - **React Context API** - Lightweight solution for conversation state
