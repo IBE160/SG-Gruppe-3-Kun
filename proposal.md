@@ -321,8 +321,10 @@ This outlines the detailed approach for collecting, processing, and maintaining 
   - **Collections** - `hmsreg_docs` collection for all documentation chunks
 
 **Relational Database (Structured Data):**
-- **PostgreSQL** - Robust relational database
-  - **Free tier** - Railway, Supabase, or Neon (1GB storage)
+- **PostgreSQL on Supabase** - Managed PostgreSQL database with built-in features
+  - **Free tier** - 500MB database storage, 1GB file storage, 50,000 monthly active users
+  - **Features**: Auto-generated REST API, Row Level Security, real-time subscriptions, built-in auth (optional)
+  - **SDK Support**: JavaScript/TypeScript (Next.js frontend), Python (FastAPI backend)
   - **Schema design:**
     ```
     conversations
@@ -341,6 +343,14 @@ This outlines the detailed approach for collecting, processing, and maintaining 
     ├── helpful (BOOLEAN)
     ├── comment (TEXT, optional)
     └── timestamp (TIMESTAMP)
+
+    rate_limits
+    ├── id (UUID, primary key)
+    ├── ip_address (VARCHAR, indexed)
+    ├── session_id (VARCHAR, indexed)
+    ├── request_count (INTEGER)
+    ├── window_start (TIMESTAMP)
+    └── last_request (TIMESTAMP)
 
     analytics
     ├── id (UUID, primary key)
