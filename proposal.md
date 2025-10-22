@@ -467,14 +467,27 @@ The chatbot implements a multi-level fallback mechanism to handle cases where it
 
 **Database Hosting:**
 - **ChromaDB**: Deployed with backend (Docker container or local persistence)
-- **PostgreSQL**: Railway built-in database or Supabase free tier
+- **PostgreSQL**: Supabase free tier (500MB database, managed service)
 
 **Environment Variables:**
 ```
+# OpenAI
 OPENAI_API_KEY=sk-...
-DATABASE_URL=postgresql://...
+
+# Supabase
+SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_KEY=eyJhbG...
+SUPABASE_SERVICE_KEY=eyJhbG... (backend only)
+
+# ChromaDB
 CHROMA_PERSIST_DIRECTORY=/data/chroma
+
+# CORS
 CORS_ORIGINS=https://chatbot.example.com
+
+# Rate Limiting
+MAX_REQUESTS_PER_MINUTE=10
+MAX_REQUESTS_PER_HOUR=50
 ```
 
 **CI/CD:**
@@ -494,28 +507,33 @@ CORS_ORIGINS=https://chatbot.example.com
 - **Total development cost**: ~$20
 
 **Production Phase (Monthly):**
-- **OpenAI API**: $5-15/month (estimated 100-500 conversations)
-  - Assuming avg 500 tokens/query × 300 queries = ~$2-5/month
+- **OpenAI API**: $8-20/month (estimated 100-500 conversations)
+  - GPT-5-mini usage: Avg 500 input tokens × 300 queries × $0.70/1M = ~$0.10
+  - GPT-5-mini output: Avg 750 output tokens × 300 queries × $3.00/1M = ~$0.70
+  - Total LLM: ~$0.80-2.50/month base, with buffer for variations = $8-20/month
   - Embeddings for documentation: One-time ~$0.50 for 50,000 tokens
+  - **Cost increase justified**: 45% fewer errors, better Norwegian support, improved user experience
 - **Railway hosting**: Free tier initially, $5/month if usage exceeds free limits
+- **Supabase**: Free tier (500MB database, sufficient for MVP and moderate production use)
 - **Domain (optional)**: $12/year (~$1/month)
-- **Total monthly cost**: $5-20/month
+- **Total monthly cost**: $8-25/month
 
 ### Technology Justification
 
 **Why These Choices:**
-1. **React + TypeScript**: Industry standard, excellent AI coding assistant support, strong ecosystem
+1. **Next.js 14 + TypeScript**: Modern full-stack framework ideal for mixed static/dynamic content, excellent for documentation pages + chat interface, industry standard with strong AI coding assistant support
 2. **FastAPI**: Best Python framework for AI/ML integration, async support, automatic API docs
 3. **LangChain**: De facto standard for RAG applications, extensive documentation, active community
 4. **ChromaDB**: Free, easy to set up, perfect for course project scale (<10k documents)
-5. **OpenAI GPT-4o-mini**: Best Norwegian language support, reliable API, cost-effective for production
-6. **PostgreSQL**: Industry standard, free tiers available, easy migration from SQLite
+5. **OpenAI GPT-5-mini**: Enhanced Norwegian language support, 45% fewer factual errors than GPT-4o, reliable API, cost-effective for production
+6. **Supabase (PostgreSQL)**: Managed PostgreSQL with generous free tier, excellent Next.js integration, built-in features (auth, real-time, storage)
 
 **Alternatives Considered:**
-- ~~Next.js~~ - Adds SSR complexity not needed for chat UI
+- ~~React + Vite~~ - Would require separate solution for static documentation pages, lacks built-in SSG
 - ~~LlamaIndex~~ - Similar to LangChain but less mature documentation
 - ~~Pinecone~~ - Paid vector DB, unnecessary cost for project scale
-- ~~Anthropic Claude API~~ - More expensive than GPT-4o-mini, similar Norwegian support
+- ~~Anthropic Claude API~~ - More expensive than GPT-5-mini, similar Norwegian support
+- ~~Railway/Neon for PostgreSQL~~ - Supabase offers better integration and more features in free tier
 
 ## Development Timeline and Milestones
 
