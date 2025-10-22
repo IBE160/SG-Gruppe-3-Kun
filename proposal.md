@@ -363,9 +363,10 @@ This outlines the detailed approach for collecting, processing, and maintaining 
 
 **Production (API-based):**
 - **OpenAI API** - Pay-per-use for deployed chatbot
-  - **LLM**: GPT-4o-mini ($0.150 per 1M input tokens, $0.600 per 1M output tokens)
+  - **LLM**: GPT-5-mini (pricing estimated ~$0.60-0.80 per 1M input tokens, ~$2.50-3.50 per 1M output tokens based on GPT-5 being ~50% cheaper than GPT-4o)
   - **Embeddings**: text-embedding-3-small ($0.020 per 1M tokens)
-  - **Estimated cost**: ~$5-15/month for moderate usage (100-500 conversations/month)
+  - **Estimated cost**: ~$8-20/month for moderate usage (100-500 conversations/month)
+  - **Benefits**: 45% fewer factual errors than GPT-4o, improved reasoning (94.6% on AIME 2025), better Norwegian language support
 
 **RAG Architecture:**
 - **Embedding Model**: text-embedding-3-small (1536 dimensions)
@@ -374,7 +375,7 @@ This outlines the detailed approach for collecting, processing, and maintaining 
 - **Retrieval Strategy**:
   - Top-k similarity search (k=3-5 most relevant chunks)
   - Minimum similarity threshold: 0.7 (configurable)
-  - Context window: ~4000 tokens for GPT-4o-mini
+  - Context window: ~8000 tokens for GPT-5-mini (improved from previous models)
 - **Prompt Engineering**:
   ```
   System: Du er en hjelpsom assistent for HMSREG-dokumentasjon...
@@ -434,7 +435,7 @@ The chatbot implements a multi-level fallback mechanism to handle cases where it
      - Show common topic categories: "Mannskapsregistrering", "HMS-kort", "Dokumentasjon", "Inn-/utsjekking"
 
 **Norwegian Language Handling:**
-- **Model selection**: GPT-4o-mini has strong Norwegian support (tested with bokmål)
+- **Model selection**: GPT-5-mini has enhanced Norwegian support with improved multilingual capabilities (Bokmål and Nynorsk)
 - **Prompt language**: System prompts and instructions in Norwegian
 - **Terminology**: Custom glossary for HMSREG-specific terms (HMS-kort, seriøsitetskontroll, etc.)
 
