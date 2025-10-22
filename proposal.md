@@ -549,20 +549,24 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 **Tasks:**
 - [ ] Create GitHub repository with initial project structure
 - [ ] Set up Python virtual environment (Python 3.11+)
-- [ ] Initialize React + Vite frontend project with TypeScript
-- [ ] Install core dependencies (FastAPI, LangChain, React, Tailwind CSS)
+- [ ] Initialize Next.js 14 frontend project with TypeScript and App Router
+- [ ] Create application structure (`/app/page.tsx`, `/app/chat/`, `/app/docs/`, `/public/articles/`)
+- [ ] Install core dependencies (FastAPI, LangChain, Next.js, Tailwind CSS, shadcn/ui)
+- [ ] Set up Supabase project and create database schema (conversations, feedback, rate_limits, analytics tables)
 - [ ] Scrape/download documentation from docs.hmsreg.com
   - Identify key documentation sections (Getting Started, HMS Cards, Check-in Procedures, etc.)
   - Use Beautiful Soup + requests to extract content
-  - Parse HTML to clean text format
-- [ ] Create initial document collection (save as JSON/markdown files)
+  - Parse HTML to clean text format and save as Markdown
+- [ ] Create initial document collection (save as Markdown files in `/public/articles/`)
 - [ ] Set up ChromaDB locally with test data
-- [ ] Configure environment variables (.env files)
+- [ ] Configure environment variables (.env files - OpenAI, Supabase, ChromaDB)
 
 **Deliverables:**
-- Working development environment (frontend + backend)
-- Complete HMSREG documentation dataset (50-200 pages)
+- Working development environment (Next.js frontend + FastAPI backend)
+- Supabase project configured with database schema
+- Complete HMSREG documentation dataset (50-200 pages) saved as Markdown in `/public/articles/`
 - Initial ChromaDB collection with sample embeddings
+- Static documentation pages skeleton created in `/app/docs/`
 - Project README with setup instructions
 
 **Risks & Contingencies:**
@@ -584,13 +588,19 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 - [ ] Store embeddings in ChromaDB with metadata (source page, topic category)
 - [ ] Create FastAPI application structure
   - `POST /api/chat` endpoint (accept user message, return bot response)
+  - `POST /api/feedback` endpoint
   - `GET /api/health` endpoint
 - [ ] Implement LangChain RAG chain
   - Vector similarity search (top-k=3-5 chunks)
   - Prompt template with Norwegian instructions
-  - Integration with OpenAI GPT-4o-mini (or Gemini for testing)
+  - Integration with OpenAI GPT-5-mini (or Gemini for testing)
+- [ ] Implement IP-based rate limiting with slowapi
+  - 10 requests per minute per IP
+  - 50 requests per hour per IP
+  - Store rate limit data in Supabase
 - [ ] Test retrieval accuracy with sample questions
 - [ ] Implement basic error handling and logging
+- [ ] Integrate Supabase Python client for conversation logging
 
 **Deliverables:**
 - Working FastAPI backend with `/api/chat` endpoint
@@ -612,15 +622,22 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 - Implement streaming responses and conversation state
 
 **Tasks:**
-- [ ] Create React components:
-  - ChatWindow (main container)
+- [ ] Create Next.js pages and components:
+  - `/app/chat/page.tsx` - Main chat page (Client Component)
+  - ChatWindow component (main container)
   - MessageList (displays conversation history)
   - MessageInput (user input field with send button)
   - MessageBubble (individual message component)
+- [ ] Create static documentation pages in `/app/docs/`:
+  - Workforce registration page
+  - HMS cards page
+  - Check-in procedures page
+  - Compliance page
+- [ ] Integrate Supabase client in Next.js for session tracking and feedback
 - [ ] Style with Tailwind CSS and shadcn/ui components
 - [ ] Implement React Context API for conversation state
 - [ ] Connect frontend to backend `/api/chat` endpoint
-  - Use fetch or axios for API calls
+  - Use fetch for API calls
   - Implement Server-Sent Events (SSE) for streaming (optional for MVP)
 - [ ] Add loading states and error messages
 - [ ] Implement localStorage for session persistence (optional)
@@ -699,10 +716,10 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
   - Add thumbs up/down buttons to each response
   - Create `POST /api/feedback` endpoint
   - Store feedback in database
-- [ ] Set up PostgreSQL database:
-  - Deploy on Railway or Supabase free tier
-  - Create schema (conversations, feedback, analytics tables)
-  - Implement database models with SQLAlchemy/Pydantic
+- [ ] Verify Supabase database is production-ready:
+  - Confirm schema is properly set up (conversations, feedback, rate_limits, analytics tables)
+  - Test database connection from backend
+  - Implement database models with Supabase Python client and Pydantic
 - [ ] Log all conversations:
   - Store user messages, bot responses, timestamps
   - Record similarity scores and sources cited
