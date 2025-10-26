@@ -12,8 +12,8 @@ WORKFLOW_PATH: greenfield-level-3.yaml
 ## Current State
 
 CURRENT_PHASE: 1
-CURRENT_WORKFLOW: document-project
-CURRENT_AGENT: analyst
+CURRENT_WORKFLOW: product-brief
+CURRENT_AGENT: pm
 PHASE_1_COMPLETE: false
 PHASE_2_COMPLETE: false
 PHASE_3_COMPLETE: false
@@ -30,9 +30,9 @@ STORIES_DONE: "[]"
 
 ## Next Action
 
-NEXT_ACTION: Formalize the project requirements based on the proposal and brainstorming session.
-NEXT_COMMAND: *document-project*
-NEXT_AGENT: analyst
+NEXT_ACTION: Create a product brief based on the formalized requirements.
+NEXT_COMMAND: *product-brief*
+NEXT_AGENT: pm
 
 ## Story Backlog
 
