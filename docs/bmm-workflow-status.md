@@ -12,7 +12,7 @@ WORKFLOW_PATH: greenfield-level-3.yaml
 ## Current State
 
 CURRENT_PHASE: 1
-CURRENT_WORKFLOW: brainstorm-project
+CURRENT_WORKFLOW: document-project
 CURRENT_AGENT: analyst
 PHASE_1_COMPLETE: false
 PHASE_2_COMPLETE: false
@@ -30,8 +30,8 @@ STORIES_DONE: "[]"
 
 ## Next Action
 
-NEXT_ACTION: Guide me through Brainstorming
-NEXT_COMMAND: *brainstorm-project*
+NEXT_ACTION: Formalize the project requirements based on the proposal and brainstorming session.
+NEXT_COMMAND: *document-project*
 NEXT_AGENT: analyst
 
 ## Story Backlog
