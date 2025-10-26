@@ -11,10 +11,10 @@ WORKFLOW_PATH: greenfield-level-3.yaml
 
 ## Current State
 
-CURRENT_PHASE: 1
-CURRENT_WORKFLOW: product-brief
+CURRENT_PHASE: 2
+CURRENT_WORKFLOW: prd
 CURRENT_AGENT: pm
-PHASE_1_COMPLETE: false
+PHASE_1_COMPLETE: true
 PHASE_2_COMPLETE: false
 PHASE_3_COMPLETE: false
 PHASE_4_COMPLETE: false
@@ -30,8 +30,8 @@ STORIES_DONE: "[]"
 
 ## Next Action
 
-NEXT_ACTION: Create a product brief based on the formalized requirements.
-NEXT_COMMAND: *product-brief*
+NEXT_ACTION: Create Product Requirements Document (PRD) for Level 2-4 projects
+NEXT_COMMAND: *prd*
 NEXT_AGENT: pm
 
 ## Story Backlog
