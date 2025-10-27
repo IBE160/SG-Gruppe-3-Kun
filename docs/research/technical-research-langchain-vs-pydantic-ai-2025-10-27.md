@@ -18,9 +18,9 @@ This report evaluates two primary Python frameworks, LangChain and Pydantic AI, 
 
 **Key Benefits:**
 
-- **Reduced Development Time:** Comprehensive tooling and a massive library of integrations minimize the need for boilerplate code.
-- **Abundant Learning Resources:** A large community provides extensive tutorials, documentation, and solutions to common problems.
-- **Proven Track Record:** LangChain is the de facto industry standard for building LLM applications, making it a reliable and valuable tool to use.
+-   **Reduced Development Time:** Comprehensive tooling and a massive library of integrations minimize the need for boilerplate code.
+-   **Abundant Learning Resources:** A large community provides extensive tutorials, documentation, and solutions to common problems.
+-   **Proven Track Record:** LangChain is the de facto industry standard for building LLM applications, making it a reliable and valuable tool to use.
 
 ---
 
@@ -38,20 +38,20 @@ The project is a student-led initiative to build a documentation chatbot over a 
 
 #### Functional Requirements
 
-- Ingest documentation from a web source.
-- Implement a RAG pipeline (split, embed, store, retrieve).
-- Integrate with FastAPI, ChromaDB, and Google Gemini models.
+-   Ingest documentation from a web source.
+-   Implement a RAG pipeline (split, embed, store, retrieve).
+-   Integrate with FastAPI, ChromaDB, and Google Gemini models.
 
 #### Non-Functional Requirements
 
-- Rapid development is a priority.
-- The framework should be well-documented and have strong community support.
+-   Rapid development is a priority.
+-   The framework should be well-documented and have strong community support.
 
 #### Technical Constraints
 
-- **Timeline:** 6 weeks.
-- **Team Expertise:** Students, assumed to be learning these frameworks for the first time.
-- **Tech Stack:** Python, FastAPI, ChromaDB.
+-   **Timeline:** 6 weeks.
+-   **Team Expertise:** Students, assumed to be learning these frameworks for the first time.
+-   **Tech Stack:** Python, FastAPI, ChromaDB.
 
 ---
 
@@ -70,15 +70,17 @@ The project is a student-led initiative to build a documentation chatbot over a 
 LangChain is a mature and widely adopted framework designed to simplify the creation of applications using LLMs. It provides a modular architecture based on "chains" and a vast ecosystem of integrations.
 
 **Pros:**
-- **Massive Ecosystem:** Unmatched number of pre-built integrations for LLMs, vector databases (including ChromaDB), document loaders, and more.
-- **Large Community:** Extensive tutorials, articles, and community support make it easy to find help and examples.
-- **Comprehensive Tooling:** Covers the entire RAG lifecycle, from data ingestion to final output generation.
-- **Flexible Composition:** The LangChain Expression Language (LCEL) offers a powerful way to compose and customize chains.
+
+-   **Massive Ecosystem:** Unmatched number of pre-built integrations for LLMs, vector databases (including ChromaDB), document loaders, and more.
+-   **Large Community:** Extensive tutorials, articles, and community support make it easy to find help and examples.
+-   **Comprehensive Tooling:** Covers the entire RAG lifecycle, from data ingestion to final output generation.
+-   **Flexible Composition:** The LangChain Expression Language (LCEL) offers a powerful way to compose and customize chains.
 
 **Cons:**
-- **High Abstraction & Complexity:** The framework's concepts (Chains, Agents, LCEL) can have a steep learning curve and add cognitive overhead.
-- **API Instability:** The API evolves rapidly, which can lead to breaking changes between versions.
-- **Verbosity:** Can sometimes require more code for simple tasks compared to more direct approaches.
+
+-   **High Abstraction & Complexity:** The framework's concepts (Chains, Agents, LCEL) can have a steep learning curve and add cognitive overhead.
+-   **API Instability:** The API evolves rapidly, which can lead to breaking changes between versions.
+-   **Verbosity:** Can sometimes require more code for simple tasks compared to more direct approaches.
 
 ### Option 2: Pydantic AI
 
@@ -86,28 +88,30 @@ LangChain is a mature and widely adopted framework designed to simplify the crea
 Pydantic AI is a newer framework focused on bringing modern software engineering best practices (type safety, validation, testing) to LLM application development. It is built by the team behind Pydantic and has ergonomics inspired by FastAPI.
 
 **Pros:**
-- **Type-Safe and Validated:** Enforces structured, validated data for LLM inputs and outputs, leading to more robust and predictable code.
-- **Intuitive Ergonomics:** Uses FastAPI-style dependency injection, making it feel natural for Python web developers.
-- **Excellent for Structured Output:** Its core strength is ensuring LLM outputs conform to a specific Pydantic model, eliminating messy parsing.
-- **Good Observability:** Built with tracing and debugging in mind.
+
+-   **Type-Safe and Validated:** Enforces structured, validated data for LLM inputs and outputs, leading to more robust and predictable code.
+-   **Intuitive Ergonomics:** Uses FastAPI-style dependency injection, making it feel natural for Python web developers.
+-   **Excellent for Structured Output:** Its core strength is ensuring LLM outputs conform to a specific Pydantic model, eliminating messy parsing.
+-   **Good Observability:** Built with tracing and debugging in mind.
 
 **Cons:**
-- **Smaller Ecosystem:** Does not have the sheer breadth of integrations that LangChain offers. More custom code may be required.
-- **Less Mature:** As a younger project, it has a smaller community and fewer learning resources compared to LangChain.
-- **Agent-Focused:** While capable of RAG, its primary focus is on agentic workflows, and its RAG-specific tooling is less extensive than LangChain's.
+
+-   **Smaller Ecosystem:** Does not have the sheer breadth of integrations that LangChain offers. More custom code may be required.
+-   **Less Mature:** As a younger project, it has a smaller community and fewer learning resources compared to LangChain.
+-   **Agent-Focused:** While capable of RAG, its primary focus is on agentic workflows, and its RAG-specific tooling is less extensive than LangChain's.
 
 ---
 
 ## 4. Comparative Analysis
 
-| Dimension | LangChain | Pydantic AI |
-| :--- | :--- | :--- |
-| **Ecosystem & Integrations** | 🟢 **Excellent** | 🟡 **Good** |
-| **Community & Resources** | 🟢 **Excellent** | 🟡 **Good** |
-| **Ease of Use (Beginner)** | 🟡 **Good** (many examples) | 🟡 **Good** (if familiar with FastAPI) |
-| **Code Robustness** | 🟡 **Good** | 🟢 **Excellent** (due to Pydantic) |
-| **Development Speed** | 🟢 **Excellent** (due to integrations) | 🟡 **Good** (may need more custom code) |
-| **Maturity & Stability** | 🟡 **Good** (Mature but API changes) | 🟡 **Good** (Newer but more stable philosophy) |
+| Dimension                    | LangChain                              | Pydantic AI                                    |
+| :--------------------------- | :------------------------------------- | :--------------------------------------------- |
+| **Ecosystem & Integrations** | 🟢 **Excellent**                       | 🟡 **Good**                                    |
+| **Community & Resources**    | 🟢 **Excellent**                       | 🟡 **Good**                                    |
+| **Ease of Use (Beginner)**   | 🟡 **Good** (many examples)            | 🟡 **Good** (if familiar with FastAPI)         |
+| **Code Robustness**          | 🟡 **Good**                            | 🟢 **Excellent** (due to Pydantic)             |
+| **Development Speed**        | 🟢 **Excellent** (due to integrations) | 🟡 **Good** (may need more custom code)        |
+| **Maturity & Stability**     | 🟡 **Good** (Mature but API changes)   | 🟡 **Good** (Newer but more stable philosophy) |
 
 ---
 
@@ -137,9 +141,9 @@ The IBE160 chatbot project requires a backend Python framework to orchestrate a 
 
 ## Decision Drivers
 
-- **Speed of Development:** The primary driver is the ability to deliver an MVP within the 6-week timeframe.
-- **Availability of Learning Resources:** The framework must be accessible to students who may be learning it for the first time.
-- **Integration with Existing Stack:** Must seamlessly integrate with FastAPI, ChromaDB, and Gemini.
+-   **Speed of Development:** The primary driver is the ability to deliver an MVP within the 6-week timeframe.
+-   **Availability of Learning Resources:** The framework must be accessible to students who may be learning it for the first time.
+-   **Integration with Existing Stack:** Must seamlessly integrate with FastAPI, ChromaDB, and Gemini.
 
 ## Considered Options
 
@@ -156,12 +160,12 @@ We will use **LangChain** for the initial development and MVP of the project.
 
 **Positive:**
 
-- Reduced time to build the core RAG pipeline.
-- Easy access to community support and tutorials for troubleshooting.
-- The team will gain experience with the current industry-standard tool.
+-   Reduced time to build the core RAG pipeline.
+-   Easy access to community support and tutorials for troubleshooting.
+-   The team will gain experience with the current industry-standard tool.
 
 **Negative:**
 
-- The codebase may become coupled to LangChain's abstractions, which can be complex.
-- The project may be subject to breaking changes if LangChain's API evolves.
-- May miss the benefits of Pydantic AI's compile-time validation and structured data enforcement.
+-   The codebase may become coupled to LangChain's abstractions, which can be complex.
+-   The project may be subject to breaking changes if LangChain's API evolves.
+-   May miss the benefits of Pydantic AI's compile-time validation and structured data enforcement.
