@@ -21,6 +21,7 @@ The chatbot provides HMSREG users (suppliers, subcontractors, construction worke
 
 ### Must Have (MVP)
 
+-   **Role-based personalization**: Asks user for their role (e.g., Worker, Supplier, Project Manager) at the start of a session to provide tailored answers.
 -   Chat interface where users can ask questions related to HMSREG documentation
 -   Knowledge base with HMSREG topics: workforce registration, documentation requirements, certificates, HMS cards, check-in/out procedures
 -   Answer questions based on official HMSREG documentation from docs.hmsreg.com
@@ -29,6 +30,7 @@ The chatbot provides HMSREG users (suppliers, subcontractors, construction worke
 
 ### Nice to Have (Optional Extensions)
 
+-   **Proactive Assistance**: Intelligently offer help when the system detects a user might be struggling on a documentation page (e.g., based on time spent on page or erratic scrolling).
 -   Example scenarios / "What do I do if..." guides
 -   Interactive troubleshooting based on user's specific situation
 -   Clarifying questions to understand user's role and provide context-aware responses
@@ -47,7 +49,19 @@ The chatbot provides HMSREG users (suppliers, subcontractors, construction worke
 
 ## User Flow
 
-This diagram illustrates the complete interaction flow for the primary use case: a construction worker troubleshooting a failed check-in using the HMSREG chatbot.
+The user flow begins with a role selection step to personalize the experience.
+
+**Initial Step: Role Selection**
+1.  **User opens the chatbot.**
+2.  **Chatbot's first message:** "Welcome to the HMSREG Assistant! To provide the most relevant information, please select your role:"
+    -   `[Construction Worker]`
+    -   `[Supplier / Subcontractor]`
+    -   `[Project Manager / Admin]`
+3.  **User clicks a role.** The chatbot confirms the role and sets the expectation about the data source:
+    > "Great! I'm ready to help from a [user's role] perspective. Just so you know, all my answers are based *only* on the official documentation found at `docs.hmsreg.com` to ensure accuracy. How can I assist you today?"
+    The role is stored in the session context for the duration of the conversation.
+
+Following the role selection, the interaction proceeds based on the user's query. The diagram below illustrates the subsequent flow for the primary use case: a construction worker troubleshooting a failed check-in.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -349,7 +363,7 @@ This section defines the complete technology stack and system architecture for t
 - **Session tracking** - Unique session IDs for rate limiting and analytics
 
 **State Management:**
-- **React Context API** - Lightweight solution for conversation state
+- **React Context API** - Lightweight solution for conversation state, including storing the selected user role.
 - **localStorage** - Optional session persistence for conversation history
 
 ### Backend Specification
@@ -596,10 +610,10 @@ This outlines the detailed approach for collecting, processing, and maintaining 
   - Context window: Large context capacity for Gemini 2.5 Pro
 - **Prompt Engineering**:
   ```
-  System: Du er en hjelpsom assistent for HMSREG-dokumentasjon...
+  System: Du er en hjelpsom assistent for HMSREG-dokumentasjon. Din bruker er en [User Role]. Svar på norsk, bruk kun informasjon fra konteksten...
   Context: [Retrieved documentation chunks]
   User Question: [User's question]
-  Instructions: Svar på norsk, bruk kun informasjon fra konteksten...
+  Instructions: Gi et svar som er skreddersydd for brukerens rolle.
   ```
 
 **Fallback Strategy:**
@@ -833,10 +847,10 @@ This section outlines the 6-week development plan (approximately 1.5 months) wit
 - [ ] Create Next.js pages and components:
   - `/app/chat/page.tsx` - Main chat page (Client Component)
   - ChatWindow component (main container)
+  - RoleSelection component (initial prompt with buttons for user to select their role)
   - MessageList (displays conversation history)
   - MessageInput (user input field with send button)
-  - MessageBubble (individual message component)
-- [ ] Create static documentation pages in `/app/docs/`:
+  - MessageBubble (individual message component)- [ ] Create static documentation pages in `/app/docs/`:
   - Workforce registration page
   - HMS cards page
   - Check-in procedures page
@@ -1042,7 +1056,13 @@ Create 50-100 representative test questions covering all user stories and docume
 
 **Question Categories:**
 
-1. **Workforce Registration (15-20 questions)**
+
+
+Test questions will be designed for specific user roles to validate the tailored responses.
+
+
+
+1.  **Workforce Registration (15-20 questions)**
    - "Hvordan registrerer jeg mannskap i HMSREG?"
    - "Hvilke opplysninger trengs for å registrere en ansatt?"
    - "Hva gjør jeg hvis registreringen feiler?"
