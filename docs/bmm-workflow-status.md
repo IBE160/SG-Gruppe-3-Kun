@@ -11,10 +11,10 @@ WORKFLOW_PATH: greenfield-level-3.yaml
 
 ## Current State
 
-CURRENT_PHASE: 1
-CURRENT_WORKFLOW: brainstorm-project
-CURRENT_AGENT: analyst
-PHASE_1_COMPLETE: false
+CURRENT_PHASE: 2
+CURRENT_WORKFLOW: prd
+CURRENT_AGENT: pm
+PHASE_1_COMPLETE: true
 PHASE_2_COMPLETE: false
 PHASE_3_COMPLETE: false
 PHASE_4_COMPLETE: false
@@ -30,9 +30,9 @@ STORIES_DONE: "[]"
 
 ## Next Action
 
-NEXT_ACTION: Guide me through Brainstorming
-NEXT_COMMAND: *brainstorm-project*
-NEXT_AGENT: analyst
+NEXT_ACTION: Create Product Requirements Document (PRD) for Level 2-4 projects
+NEXT_COMMAND: *prd*
+NEXT_AGENT: pm
 
 ## Story Backlog
 
