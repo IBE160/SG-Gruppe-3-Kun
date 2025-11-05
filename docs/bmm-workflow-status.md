@@ -11,10 +11,10 @@ WORKFLOW_PATH: greenfield-level-3.yaml
 
 ## Current State
 
-CURRENT_PHASE: 2
-CURRENT_WORKFLOW: prd
-CURRENT_AGENT: pm
-PHASE_1_COMPLETE: true
+CURRENT_PHASE: 1
+CURRENT_WORKFLOW: research
+CURRENT_AGENT: analyst
+PHASE_1_COMPLETE: false
 PHASE_2_COMPLETE: false
 PHASE_3_COMPLETE: false
 PHASE_4_COMPLETE: false
@@ -22,25 +22,21 @@ PHASE_4_COMPLETE: false
 ## Development Queue
 
 STORIES_SEQUENCE: "[]"
-TODO_STORY: 
-TODO_TITLE: 
-IN_PROGRESS_STORY: 
-IN_PROGRESS_TITLE: 
+TODO_STORY:
+TODO_TITLE:
+IN_PROGRESS_STORY:
+IN_PROGRESS_TITLE:
 STORIES_DONE: "[]"
 
 ## Next Action
 
-NEXT_ACTION: Create Product Requirements Document (PRD) for Level 2-4 projects
-NEXT_COMMAND: *prd*
-NEXT_AGENT: pm
+NEXT_ACTION: Guide me through Research
+NEXT_COMMAND: _research_
+NEXT_AGENT: analyst
 
 ## Story Backlog
 
-
-
 ## Completed Stories
-
-
 
 ---
 
