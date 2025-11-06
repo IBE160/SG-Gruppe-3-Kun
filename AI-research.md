@@ -15,6 +15,44 @@ This document provides an overview of different AI models to help us select the 
 *   **Cost considerations:** Can be expensive due to the large number of parameters and computational resources required.
 *   **When to avoid it:** When a simpler, more specialized model can achieve the same result with lower cost and complexity.
 
+### Alternative LLMs
+
+Here are some alternative LLM models to consider:
+
+#### Claude 3 (Opus, Sonnet, Haiku) by Anthropic
+*   **Fordeler:**
+    *   Sterk ytelse, spesielt i komplekse resonnementer og kreativ skriving.
+    *   Fokus på sikkerhet og reduksjon av skadelige output.
+    *   Ulike modellstørrelser for ulike behov og budsjetter.
+*   **Ulemper:**
+    *   Kan være dyrere enn noen konkurrenter.
+    *   Nyere modell, så mindre langtidsdata om ytelse.
+
+#### Llama 3 (8B, 70B) by Meta
+*   **Fordeler:**
+    *   Åpen kildekode, svært kapabel og kan finjusteres for spesifikke oppgaver.
+    *   Sterk ytelse for sin størrelse.
+    *   Bra for forskning og utvikling.
+*   **Ulemper:**
+    *   Krever mer teknisk ekspertise for å distribuere og administrere.
+    *   Mindre modeller er kanskje ikke like kraftige som større proprietære modeller.
+
+#### Gemini (Pro, Flash) by Google
+*   **Fordeler:**
+    *   Multimodale evner (tekst, bilder, lyd, video).
+    *   Integrert med Googles økosystem.
+    *   Konkurransedyktig ytelse.
+*   **Ulemper:**
+    *   Kan være kompleks å bruke.
+    *   Noen funksjoner er fortsatt under utvikling.
+
+#### Mistral (7B, 8x7B) by Mistral AI
+*   **Fordeler:**
+    *   Åpen kildekode, veldig ytelsesdyktig for sin størrelse og kostnadseffektiv.
+    *   Bra for utviklere og forskere.
+*   **Ulemper:**
+    *   Mindre samfunn og mindre dokumentasjon sammenlignet med Llama.
+
 ## 2. Vision Models
 
 *   **What it does:** Analyzes and interprets visual information from images and videos.
