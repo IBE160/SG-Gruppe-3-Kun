@@ -40,7 +40,7 @@ workflow_status:
 
     # Phase 2: Solutioning
     create-architecture: required
-    validate-architecture: optionalthis
+    validate-architecture: optional
     solutioning-gate-check: required
 
     # Phase 3: Implementation
