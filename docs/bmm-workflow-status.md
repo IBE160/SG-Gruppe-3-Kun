@@ -22,10 +22,10 @@ PHASE_4_COMPLETE: false
 ## Development Queue
 
 STORIES_SEQUENCE: "[]"
-TODO_STORY: 
-TODO_TITLE: 
-IN_PROGRESS_STORY: 
-IN_PROGRESS_TITLE: 
+TODO_STORY:
+TODO_TITLE:
+IN_PROGRESS_STORY:
+IN_PROGRESS_TITLE:
 STORIES_DONE: "[]"
 
 ## Next Action
@@ -36,11 +36,7 @@ NEXT_AGENT: analyst
 
 ## Story Backlog
 
-
-
 ## Completed Stories
-
-
 
 ---
 
