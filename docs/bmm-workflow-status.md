@@ -31,7 +31,7 @@ STORIES_DONE: "[]"
 ## Next Action
 
 NEXT_ACTION: Guide me through Research
-NEXT_COMMAND: _research_
+NEXT_COMMAND: *research*
 NEXT_AGENT: analyst
 
 ## Story Backlog
