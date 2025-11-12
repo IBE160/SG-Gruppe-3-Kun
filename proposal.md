@@ -370,7 +370,7 @@ This section defines the complete technology stack and system architecture for t
 
 **Framework:**
 - **Python 3.11+** - Modern Python with improved performance
-- **FastAPI** - High-performance async web framework with automatic OpenAPI docs
+- **FastAPI** - High-performance async web framework with automatic OpenAPI docs. See research document: @docs/research-technical-Wednesday, 12 November 2025.md
 
 **API Design:**
 - **REST API** with the following endpoints:
@@ -743,7 +743,7 @@ MAX_REQUESTS_PER_HOUR=50
 
 **Why These Choices:**
 1. **Next.js 14 + TypeScript**: Modern full-stack framework ideal for mixed static/dynamic content, excellent for documentation pages + chat interface, industry standard with strong AI coding assistant support
-2. **FastAPI**: Best Python framework for AI/ML integration, async support, automatic API docs
+2. **FastAPI**: Best Python framework for AI/ML integration, async support, automatic API docs. See research document: @docs/research-technical-Wednesday, 12 November 2025.md
 3. **LangChain**: De facto standard for RAG applications, extensive documentation, active community, supports Google AI integration
 4. **ChromaDB**: Free, easy to set up, perfect for course project scale (<10k documents)
 5. **Google Gemini 2.5 Pro**: State-of-the-art multilingual Norwegian support, large context window, generous free tier (1500 requests/day), cost-effective for production, advanced reasoning capabilities

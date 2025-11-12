@@ -29,19 +29,19 @@ field_type: "greenfield"
 workflow_path: "method-greenfield.yaml"
 
 workflow_status:
-  # Phase 0: Discovery (Optional)
-  brainstorm-project: docs/brainstorming-session-results-Wednesday, 12 November 2025.md
-  product-brief: optional
+    # Phase 0: Discovery (Optional)
+    brainstorm-project: docs/brainstorming-session-results-Wednesday, 12 November 2025.md
+    product-brief: optional
 
-  # Phase 1: Planning
-  prd: required
-  validate-prd: optional
-  create-design: conditional
+    # Phase 1: Planning
+    prd: required
+    validate-prd: optional
+    create-design: conditional
 
-  # Phase 2: Solutioning
-  create-architecture: required
-  validate-architecture: optional
-  solutioning-gate-check: required
+    # Phase 2: Solutioning
+    create-architecture: required
+    validate-architecture: optionalthis
+    solutioning-gate-check: required
 
-  # Phase 3: Implementation
-  sprint-planning: required
+    # Phase 3: Implementation
+    sprint-planning: required
