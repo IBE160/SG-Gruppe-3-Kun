@@ -30,7 +30,7 @@ workflow_path: "method-greenfield.yaml"
 
 workflow_status:
   # Phase 0: Discovery (Optional)
-  brainstorm-project: optional
+  brainstorm-project: docs/brainstorming-session-results-Wednesday, 12 November 2025.md
   product-brief: optional
 
   # Phase 1: Planning
