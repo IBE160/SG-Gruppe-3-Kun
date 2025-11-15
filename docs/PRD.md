@@ -189,11 +189,25 @@ The magic of this product is empowering users to learn the HMSREG system indepen
 
 ## Implementation Planning
 
-### Epic Breakdown Required
+### Epic Breakdown
 
-Requirements must be decomposed into epics and bite-sized stories (200k context limit).
+Requirements have been decomposed into the following epics:
 
-**Next Step:** Run `workflow epics-stories` to create the implementation breakdown.
+### Epic 1: Core Conversational Experience
+*   **Description:** This epic covers the fundamental user-facing functionality of the chatbot, including the chat interface, asking questions, and receiving answers based on the HMSREG documentation.
+*   **Related Functional Requirements:** FR1.1, FR1.2, FR1.3, FR1.4
+
+### Epic 2: User Context & Personalization
+*   **Description:** This epic focuses on personalizing the chatbot's responses by understanding and using the user's role (e.g., Worker, Supplier) to provide more relevant information.
+*   **Related Functional Requirements:** FR2.1, FR2.2
+
+### Epic 3: Robustness & Reliability
+*   **Description:** This epic ensures the chatbot is reliable and helpful even when it cannot find a direct answer. It includes implementing the fallback and escalation mechanisms.
+*   **Related Functional Requirements:** FR3.1, FR3.2
+
+### Epic 4: Accessibility & User Feedback
+*   **Description:** This epic focuses on making the chatbot accessible to all users by adhering to WCAG standards and implementing a feedback loop for continuous improvement.
+*   **Related Functional Requirements:** FR4.1, FR5.1
 
 ---
 

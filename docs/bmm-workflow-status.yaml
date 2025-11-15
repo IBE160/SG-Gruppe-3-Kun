@@ -36,7 +36,7 @@ workflow_status:
     product-brief: docs/product-brief-HMSREG-Documentation-Chatbot-Saturday, 15 November 2025.md
 
     # Phase 1: Planning
-    prd: required
+    prd: docs/PRD.md
     validate-prd: optional
     create-design: conditional
 
