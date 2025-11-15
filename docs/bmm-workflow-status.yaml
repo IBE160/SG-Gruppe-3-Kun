@@ -26,13 +26,14 @@ project: "ibe160"
 project_type: "software"
 selected_track: "method"
 field_type: "greenfield"
+project_level: 3
 workflow_path: "method-greenfield.yaml"
 
 workflow_status:
     # Phase 0: Discovery (Optional)
     brainstorm-project: docs/brainstorming-session-results-Wednesday, 12 November 2025.md
     research: docs/research/research-technical-Wednesday, 12 November 2025.md
-    product-brief: optional
+    product-brief: docs/product-brief-HMSREG-Documentation-Chatbot-Saturday, 15 November 2025.md
 
     # Phase 1: Planning
     prd: required
