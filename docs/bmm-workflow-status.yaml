@@ -37,7 +37,7 @@ workflow_status:
 
     # Phase 1: Planning
     prd: docs/PRD.md
-    validate-prd: optional
+    validate-prd: docs/validation-report-20251115T120000Z.md
     create-design: conditional
 
     # Phase 2: Solutioning

@@ -13,18 +13,22 @@ Here is a summary of the proposed epics to build the HMSREG Documentation Chatbo
 
 ### Epic 2: Core Conversational Experience & RAG Pipeline
 *   **Value:** Implements the fundamental ability for a user to ask a question and receive an answer from the documentation. This is the core "magic" of the product.
+*   **Related Functional Requirements:** FR1.1, FR1.2, FR1.3, FR1.4
 *   **Scope:** Build the data ingestion pipeline to process `docs.hmsreg.com`, set up the ChromaDB vector store, implement the LangChain RAG pipeline in the FastAPI backend, and create the basic chat UI in the frontend.
 
 ### Epic 3: User Context & Personalization
 *   **Value:** Makes the chatbot's answers more relevant and useful by tailoring them to the user's specific role.
+*   **Related Functional Requirements:** FR2.1, FR2.2
 *   **Scope:** Implement the role selection UI at the start of a session, pass the role context to the backend, and modify the RAG prompt to incorporate the user's role.
 
 ### Epic 4: Robustness, Reliability & Feedback
 *   **Value:** Ensures the chatbot is helpful even when it doesn't know the answer and provides a mechanism for continuous improvement.
+*   **Related Functional Requirements:** FR3.1, FR3.2, FR4.1
 *   **Scope:** Implement the fallback mechanism for unknown questions, add source citation links to answers, and build the user feedback (thumbs up/down) system.
 
 ### Epic 5: Production Readiness & Accessibility
 *   **Value:** Prepares the application for public launch by implementing essential non-functional requirements.
+*   **Related Functional Requirements:** FR5.1
 *   **Scope:** Implement API rate limiting, ensure WCAG 2.1 AA accessibility standards are met, and conduct final testing.
 ---
 
@@ -131,12 +135,28 @@ And a simple test endpoint in FastAPI can successfully write and read data from 
 **Prerequisites:** Story 1.3
 **Technical Notes:** Use Supabase free tier, configure `DATABASE_URL` environment variable in Railway.
 
+### Story 1.7: Set up ChromaDB Vector Store
+
+**As a** backend developer,
+**I want to** set up and configure the ChromaDB vector store,
+**So that** I can efficiently store and retrieve document embeddings for the RAG pipeline.
+
+**Acceptance Criteria:**
+Given the backend environment,
+When ChromaDB is initialized,
+Then it is configured for persistent storage (if applicable).
+And a basic test can successfully add and retrieve a vector embedding.
+
+**Prerequisites:** Story 1.3
+**Technical Notes:** Integrate ChromaDB client library into the backend project.
+
 ## Epic 2: Core Conversational Experience & RAG Pipeline
 
 **Epic Title:** Core Conversational Experience & RAG Pipeline
 **Epic Goal:** Implement the fundamental ability for a user to ask a question and receive an answer from the documentation, forming the core "magic" of the product.
 
 ### Story 2.1: Implement Documentation Ingestion Pipeline
+**Covers:** FR1.2
 
 **As a** backend developer,
 **I want to** create a pipeline to scrape and process official HMSREG documentation from `docs.hmsreg.com`,
@@ -150,10 +170,11 @@ And each chunk is embedded using `text-embedding-004`.
 And the embeddings are stored in ChromaDB.
 And the original text content associated with each embedding is also stored.
 
-**Prerequisites:** Story 1.3, Story 1.6 (ChromaDB setup)
+**Prerequisites:** Story 1.3, Story 1.7
 **Technical Notes:** Use a web scraping library (e.g., BeautifulSoup, Playwright) and LangChain for chunking and embedding.
 
 ### Story 2.2: Develop Basic Chat UI in Frontend
+**Covers:** FR1.1, FR1.3
 
 **As a** frontend developer,
 **I want to** create a basic, functional chat interface,
@@ -171,6 +192,7 @@ And the UI is responsive across common device sizes.
 **Technical Notes:** Utilize shadcn/ui components for chat input and message display.
 
 ### Story 2.3: Implement RAG Pipeline in Backend
+**Covers:** FR1.2, FR1.3
 
 **As a** backend developer,
 **I want to** integrate the LangChain RAG pipeline with Gemini 2.5 Pro,
@@ -188,6 +210,7 @@ And the generated answer is returned to the frontend.
 **Technical Notes:** Use LangChain's RAG capabilities, configure Google AI API key.
 
 ### Story 2.4: Connect Frontend Chat to Backend API
+**Covers:** FR1.1, FR1.3
 
 **As a** full-stack developer,
 **I want to** establish communication between the frontend chat interface and the backend RAG API,
@@ -204,6 +227,7 @@ And the frontend displays the chatbot's answer in the chat window.
 **Technical Notes:** Use `fetch` or `axios` in Next.js to call the FastAPI endpoint.
 
 ### Story 2.5: Display Source Citations in Chat UI
+**Covers:** FR1.4
 
 **As a** frontend developer,
 **I want to** display the source documentation links alongside the chatbot's answers,
@@ -224,6 +248,7 @@ And these sources are displayed clearly (e.g., as clickable links) below the cha
 **Epic Goal:** Make the chatbot's answers more relevant and useful by tailoring them to the user's specific role.
 
 ### Story 3.1: Implement Role Selection UI
+**Covers:** FR2.1
 
 **As a** frontend developer,
 **I want to** provide a clear and intuitive interface for users to select their role at the beginning of a session,
@@ -240,6 +265,7 @@ And upon selection, the chosen role is clearly displayed to the user.
 **Technical Notes:** Use shadcn/ui components for selection (e.g., radio buttons, dropdown).
 
 ### Story 3.2: Pass User Role to Backend
+**Covers:** FR2.2
 
 **As a** full-stack developer,
 **I want to** securely transmit the selected user role from the frontend to the backend,
@@ -255,6 +281,7 @@ And the backend successfully receives and parses the user's role.
 **Technical Notes:** Include the role in the `/api/chat` payload.
 
 ### Story 3.3: Incorporate User Role into RAG Prompt
+**Covers:** FR2.2
 
 **As a** backend developer,
 **I want to** modify the RAG pipeline to include the user's selected role in the prompt sent to Gemini 2.5 Pro,
@@ -275,6 +302,7 @@ And the generated response demonstrates an understanding and application of the 
 **Epic Goal:** Ensure the chatbot is helpful even when it doesn't know the answer and provide a mechanism for continuous improvement.
 
 ### Story 4.1: Implement Automatic Fallback Mechanism
+**Covers:** FR3.1
 
 **As a** backend developer,
 **I want to** implement a mechanism to detect when the chatbot cannot confidently answer a question,
@@ -290,6 +318,7 @@ And the response includes links to general HMSREG documentation or support conta
 **Technical Notes:** Define a confidence threshold for RAG responses.
 
 ### Story 4.2: Develop User Feedback Mechanism (Thumbs Up/Down)
+**Covers:** FR4.1
 
 **As a** full-stack developer,
 **I want to** provide a simple way for users to give feedback on each chatbot response,
@@ -306,6 +335,7 @@ And the feedback is stored in the Supabase database.
 **Technical Notes:** Create a new API endpoint (`/api/feedback`) and a table in Supabase for feedback.
 
 ### Story 4.3: Implement Ambiguous Query Suggestion
+**Covers:** FR3.2
 
 **As a** backend developer,
 **I want to** enable the chatbot to suggest alternative or related topics when a user's query is ambiguous,
@@ -341,6 +371,7 @@ And the rate limits are configurable via environment variables.
 **Technical Notes:** Use a FastAPI middleware or a dedicated rate-limiting library.
 
 ### Story 5.2: Ensure WCAG 2.1 AA Compliance for Frontend
+**Covers:** FR5.1
 
 **As a** frontend developer,
 **I want to** ensure the web interface adheres to WCAG 2.1 AA accessibility standards,
