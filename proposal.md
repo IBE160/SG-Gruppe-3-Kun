@@ -363,7 +363,7 @@ This section defines the complete technology stack and system architecture for t
 - **Session tracking** - Unique session IDs for rate limiting and analytics
 
 **State Management:**
-- **React Context API** - Lightweight solution for conversation state, including storing the selected user role.
+- **React Context API** - Lightweight solution for conversation state, including storing the selected user role. For a detailed analysis of state management options, including a recommendation for a hybrid approach with Zustand, see research: @docs/research/frontend-technology-research.md
 - **localStorage** - Optional session persistence for conversation history
 
 ### Backend Specification
@@ -380,7 +380,7 @@ This section defines the complete technology stack and system architecture for t
   - `GET /api/stats` - (Optional) Analytics dashboard data
 
 **RAG Implementation:**
-- **LangChain** - RAG framework for document retrieval and question-answering
+- **LangChain** - RAG framework for document retrieval and question-answering. Initial research supports this choice for rapid development. See research: @docs/research/technical-research-langchain-vs-pydantic-ai-2025-10-27.md. More recent research suggests Pydantic AI as a strong alternative for ensuring structured output. See research: @docs/research/research-technical-pydantic-vs-langchain-2025-11-15.md
   - Document loading and chunking (RecursiveCharacterTextSplitter)
   - Vector store integration (ChromaDB)
   - Retrieval chain with similarity search
@@ -535,6 +535,8 @@ This outlines the detailed approach for collecting, processing, and maintaining 
 
 ### Database Architecture
 
+For a detailed evaluation of database technologies for RAG applications, see the research prompt at @docs/research/database-research.md.
+
 **Vector Database (Document Embeddings):**
 - **ChromaDB** (Development & Production)
   - **Free and open-source** - No API costs, runs locally or in Docker
@@ -594,7 +596,7 @@ This outlines the detailed approach for collecting, processing, and maintaining 
 - **Claude Pro** - Subscription-based access for AI-assisted coding
 
 **Production (API-based):**
-- **Google AI API** - Pay-per-use for deployed chatbot
+- **Google AI API** - Pay-per-use for deployed chatbot. For an overview of AI model choices, see @docs/research/AI-research.md.
   - **LLM**: Gemini 2.5 Pro (Free tier: 15 requests/minute, 1500 requests/day; Paid pricing TBD)
   - **Embeddings**: text-embedding-004 (Free tier available)
   - **Estimated cost**: Free for development and moderate usage within limits; ~$5-15/month if exceeding free tier (100-500 conversations/month)
