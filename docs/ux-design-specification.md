@@ -138,6 +138,71 @@ Leveraging Tailwind CSS, a consistent spacing system will be implemented, based 
 *   **User clicks source link:** The relevant documentation page opens (either in a new tab or within the chatbot interface, depending on implementation).
 *   **User provides feedback:** The feedback is recorded.
 
+---
+
+**User Journey: Negative Feedback (Clarify & Retry)**
+**User Goal:** Get a helpful answer after an initial unhelpful response, or find an alternative path to support.
+**Approach:** Conversational recovery, offering a second chance to the chatbot.
+
+**Flow Steps:**
+
+1.  **Trigger:** The user clicks the `[👎 Not Helpful]` button under a chatbot response.
+
+2.  **Immediate UI Change:**
+    *   Both the `[👍]` and `[👎]` buttons disappear.
+    *   A new message immediately appears from the chatbot.
+
+3.  **New Chatbot Message (The "Retry" Prompt):**
+    *   Chatbot: "I apologize that my last answer wasn't quite right. To help me find the correct information, could you please try rephrasing your question or adding more details? For example, you could mention a specific error message or piece of equipment. If you'd prefer, you can always contact our support team directly."
+
+4.  **User's Next Action:**
+    *   The user's attention is guided back to the **main chat input field**, where they can type their more detailed question. The conversation continues from there.
+
+---
+
+**User Journey: Ambiguous Question (Combined Funnel)**
+**User Goal:** Clarify an ambiguous query to receive a more relevant answer.
+**Approach:** Guided selection, offering options at different levels of detail.
+
+**Flow Steps:**
+
+1.  **Trigger:** The user asks a broad or ambiguous question (e.g., "Tell me about site regulations").
+
+2.  **System Response:** The chatbot detects the ambiguity and sends a special "clarification" message.
+
+3.  **The Clarification Message:**
+    *   Chatbot: "That's a big topic! To help me narrow it down, you can select a general category below, or click on one of the specific questions."
+    *   **Suggested Categories (as buttons):** `[Access & Security]`, `[Waste Management]`, `[Work Hours]`
+    *   **Or did you mean... (as clickable text):**
+        *   "What are the rules for vehicle access on site?"
+        *   "How do I properly dispose of chemical waste?"
+
+4.  **User's Options:**
+    *   **Click a Category Button:** The chatbot then provides a general overview of that topic, effectively starting a new, more focused query.
+    *   **Click a Specific Question:** The chatbot treats this as the user's new question and provides a direct answer.
+    *   **Type a Different Question:** The user can ignore the suggestions and simply type a more refined question into the main chat input.
+
+---
+
+**User Journey: Export Current Conversation**
+**User Goal:** Save the current chat transcript for local reference.
+**Approach:** Direct download of active conversation.
+
+**Flow Steps:**
+
+1.  **Trigger:** The user is in an active chat session and wishes to save the conversation.
+    *   **UI Element:** A new button or icon (e.g., a "Download" icon, or a "..." menu with an "Export Conversation" option) is added to the chatbot's header or within the chat interface, visible during an active conversation.
+
+2.  **Action:** The user clicks the "Export Conversation" button.
+
+3.  **System Response (Export):**
+    *   A brief, non-intrusive confirmation message might appear (e.g., "Conversation exported!").
+    *   The entire transcript of the *current, active conversation* (from the very first message to the last) is immediately downloaded to the user's device.
+    *   **Format:** A simple, human-readable text file (`.txt`) or Markdown file (`.md`).
+    *   **Filename:** `HMSREG_Chat_Conversation_[YYYYMMDD_HHMMSS].txt` (or `.md`).
+
+---
+
 **Error States (Fallback Mechanism):**
 
 *   **Chatbot cannot confidently answer:** If the chatbot's confidence score is low, it triggers the fallback.
