@@ -173,23 +173,56 @@ And the original text content associated with each embedding is also stored.
 **Prerequisites:** Story 1.3, Story 1.7
 **Technical Notes:** Use a web scraping library (e.g., BeautifulSoup, Playwright) and LangChain for chunking and embedding.
 
-### Story 2.2: Develop Basic Chat UI in Frontend
+### Story 2.2.a: Implement Core Chat Interface
 **Covers:** FR1.1, FR1.3
 
 **As a** frontend developer,
-**I want to** create a basic, functional chat interface,
-**So that** users can input questions and view chatbot responses.
+**I want to** create the foundational chat interface components,
+**So that** users have the basic tools to interact with the chatbot.
 
 **Acceptance Criteria:**
 Given the frontend application,
 When a user navigates to the chat page,
-Then a text input field for questions is displayed.
-And a display area for chat messages (user questions and bot responses) is present.
-And a "Send" button or equivalent action is available.
-And the UI is responsive across common device sizes.
+Then a chat history panel is displayed for showing messages.
+And user and bot message bubbles are styled distinctly.
+And a text input field and "Send" button are present and functional.
 
 **Prerequisites:** Story 1.2
-**Technical Notes:** Utilize shadcn/ui components for chat input and message display.
+**Technical Notes:** Utilize shadcn/ui components. This story focuses on the core components, not the overall page layout.
+
+### Story 2.2.b: Implement Desktop Three-Column Responsive Layout
+**Covers:** FR1.1, FR1.3
+
+**As a** frontend developer,
+**I want to** implement the three-column responsive layout for large screens,
+**So that** desktop users can efficiently see documentation, articles, and the chatbot simultaneously.
+
+**Acceptance Criteria:**
+Given the frontend application on a screen wider than 1024px,
+When a user views a page with the chatbot,
+Then a three-column grid is displayed: "Documentation Links" (left), "Article Content" (middle), and "Chatbot Interface" (right).
+And the layout matches the structure in `ux-showcase.html`.
+
+**Prerequisites:** Story 2.2.a
+**Technical Notes:** Use CSS grid and media queries.
+
+### Story 2.2.c: Implement Mobile Tabbed-Interface Layout
+**Covers:** FR1.1, FR1.3
+
+**As a** frontend developer,
+**I want to** implement the single-column, tabbed interface for mobile screens,
+**So that** mobile users can easily navigate between different content views on a small screen.
+
+**Acceptance Criteria:**
+Given the frontend application on a screen narrower than 1024px,
+When a user views a page with the chatbot,
+Then a single-column layout is displayed.
+And a tab bar is present at the bottom of the screen with "Links," "Article," and "Chatbot" options.
+And clicking a tab switches the main content view to the corresponding panel.
+And the functionality matches the `ux-showcase.html` mockup.
+
+**Prerequisites:** Story 2.2.a
+**Technical Notes:** This will require state management to handle the active tab.
 
 ### Story 2.3: Implement RAG Pipeline in Backend
 **Covers:** FR1.2, FR1.3
@@ -240,7 +273,7 @@ Then the frontend receives the source URLs or titles from the backend.
 And these sources are displayed clearly (e.g., as clickable links) below the chatbot's answer.
 
 **Prerequisites:** Story 2.3, Story 2.4
-**Technical Notes:** The RAG pipeline should be configured to return source metadata along with the generated answer.
+**Technical Notes:** The RAG pipeline should be configured to return source metadata along with the generated answer. The links should be displayed at the bottom of the chat bubble with a "Source:" label, as shown in `ux-showcase.html`.
 
 ## Epic 3: User Context & Personalization
 
@@ -261,8 +294,8 @@ Then a prompt appears asking the user to select their role (e.g., Worker, Suppli
 And a list of predefined roles is presented as clickable options.
 And upon selection, the chosen role is clearly displayed to the user.
 
-**Prerequisites:** Story 2.2
-**Technical Notes:** Use shadcn/ui components for selection (e.g., radio buttons, dropdown).
+**Prerequisites:** Story 2.2.a
+**Technical Notes:** Use shadcn/ui components for selection (e.g., radio buttons, dropdown). The UI should be a set of buttons presented within the chatbot's initial greeting message, as shown in `ux-showcase.html`.
 
 ### Story 3.2: Pass User Role to Backend
 **Covers:** FR2.2
@@ -332,7 +365,7 @@ And clicking either button sends feedback (response ID, feedback type) to the ba
 And the feedback is stored in the Supabase database.
 
 **Prerequisites:** Story 2.4, Story 1.6
-**Technical Notes:** Create a new API endpoint (`/api/feedback`) and a table in Supabase for feedback.
+**Technical Notes:** Create a new API endpoint (`/api/feedback`) and a table in Supabase for feedback. The feedback buttons should appear directly below each chatbot response that is eligible for feedback.
 
 ### Story 4.3: Implement Ambiguous Query Suggestion
 **Covers:** FR3.2
