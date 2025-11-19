@@ -1,1 +1,0 @@
-Which document should I validate?
