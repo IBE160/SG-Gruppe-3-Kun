@@ -91,9 +91,11 @@ Løsningen vår ble å dreie arbeidsmetodikken mot mer sanntids-samarbeid. Vi sa
 Vi opplevde ingen nevneverdige misforståelser eller kommunikasjonsproblemer, da vi hadde en åpen dialog og alle hadde tilgang til og brukte Teams aktivt for kommunikasjon.
 
 ### 3.3 KI-spesifikke utfordringer
-[Problemer spesifikt knyttet til bruk av KI]
-- [f.eks. Feil kode fra KI, misforståelser, inkonsistent kvalitet]
-- [Hvordan håndterte dere disse?]
+- **Problemer spesifikt knyttet til bruk av KI (f.eks. Feil kode fra KI, misforståelser, inkonsistent kvalitet):**
+Den største utfordringen vi møtte med KI var at den ikke alltid gjorde som vi ba om. Noen ganger kunne den generere kode som var feil, eller den misforsto oppgaven fullstendig, noe som førte til inkonsistent kvalitet.
+
+- **Hvordan håndterte dere disse?**
+Vi løste ofte dette ved å starte KI-økten på nytt. I tillegg gjorde vi det til en vane å "committe" koden vår ofte. Hvis KI-en genererte kode som skapte store problemer, kunne vi enkelt tilbakestille koden til en tidligere, fungerende versjon.
 
 ---
 
