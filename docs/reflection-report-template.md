@@ -82,6 +82,13 @@ Vi startet opprinnelig med Claude Code, men gikk raskt over til å bruke Gemini 
 ### 3.2 Samarbeidsutfordringer
 [Utfordringer knyttet til teamarbeid og kommunikasjon]
 - [Beskriv utfordringer og hvordan dere løste dem]
+  Vårt samarbeid har i hovedsak vært velfungerende og uten store konflikter. Vi var gjennomgående enige om retningen for prosjektet.
+
+Den primære utfordringen vi møtte, var knyttet til koordinering og fordeling av oppgaver. Dette skyldtes ikke manglende samarbeidsvilje – tvert imot var alle svært engasjerte. Utfordringen lå i oppgavenes natur; mange av utviklings- og designoppgavene var såpass sammenvevde at det var vanskelig å dele dem opp i helt uavhengige deler som kunne løses hver for seg.
+
+Løsningen vår ble å dreie arbeidsmetodikken mot mer sanntids-samarbeid. Vi satte av faste, dedikerte tider til gruppemøter på Teams hvor alle deltok aktivt. På disse møtene jobbet vi ofte med par- eller mob-programmering, der én delte skjerm og de andre bidro med innspill. Dette sikret at alle hadde lik forståelse av koden og fremdriften, og det reduserte behovet for å slå sammen store, komplekse kodeendringer.
+
+Vi opplevde ingen nevneverdige misforståelser eller kommunikasjonsproblemer, da vi hadde en åpen dialog og alle hadde tilgang til og brukte Teams aktivt for kommunikasjon.
 
 ### 3.3 KI-spesifikke utfordringer
 [Problemer spesifikt knyttet til bruk av KI]
