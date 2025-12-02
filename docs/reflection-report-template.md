@@ -16,13 +16,32 @@
 ## 2. Utviklingsprosessen
 
 ### 2.1 Oversikt over prosjektet
-[Kort beskrivelse av hva dere har utviklet. Hva var hovedmålet med applikasjonen?]
+Prosjektet vårt er en chatbot utviklet for HMSREGs dokumentasjon. Hovedmålet med applikasjonen er å gi brukere av HMSREG – som leverandører, underleverandører, bygningsarbeidere, prosjektledere og administratorer – raske og presise svar på spørsmål om systembruk, krav, prosedyrer og feilsøking. Målet er å redusere belastningen på support, sikre konsistente svar, øke brukernes effektivitet og gjøre HMSREG-dokumentasjonen mer tilgjengelig.
 
 ### 2.2 Arbeidsmetodikk
-[Beskriv hvordan dere organiserte arbeidet]
-- Hvordan fordelte dere oppgaver?
-- Hvilke verktøy brukte dere for samarbeid og hvordan det fungerte? (f.eks. Git, og Teams)
-- Hvordan brukte dere KI-verktøy i prosessen?
+
+Vi organiserte arbeidet gjennom jevnlige møter på Teams, i gjennomsnitt en gang i uken. Vi fulgte progresjonen i forelesningene og tok valg bassert på valgene som ble tatt og anbefalt i forelesningene. Under disse gruppemøtene var det vanlig at én person delte skjerm i VS Code, mens alle bidro med innspill og kodet sammen i sanntid.
+
+- **Hvordan fordelte dere oppgaver?**
+Oppgaver ble fordelt der det var fornuftig. I startfasen var det vanskelig å fordele oppgaver, men research og brainstorming for eksempel, ble gjort individuelt, før resultatene ble diskutert i fellesskap. Hver enkelt jobbet i sin egen Git-branch for å unngå konflikter. Når en oppgave var fullført, ble koden slått sammen i `main`-branchen etter en gjennomgang.
+
+- **Hvilke verktøy brukte dere for samarbeid og hvordan det fungerte? (f.eks. Git, og Teams)**
+  - **Git:** Vi brukte Git for versjonskontroll, med en branch-basert arbeidsflyt. Dette fungerte svært bra og ga oss god kontroll på endringer og samarbeid om kode.
+  - **Teams:** Brukt for alle våre gruppemøter, skjermdeling og diskusjoner.
+  - **VS Code:** Skjermdeling i VS Code ble brukt for  mob-programmering.
+
+- **Hvordan brukte dere KI-verktøy i prosessen?**
+KI-verktøy var en integrert og aktiv del av hele prosessen vår, og vi fulgte BMAD-metoden for å strukturere og gjennomføre prosjektet.
+
+I praksis brukte vi Gemini CLI som vårt primære verktøy. Inne i CLI-et benyttet vi oss av de spesialiserte agentene fra BMAD-rammeverket som Product Manager, UX Designer og Architect for å drive prosjektet fremover i de ulike fasene.
+
+Mer konkret brukte vi KI til å:
+- **Generere dokumentasjon:** Utforme alt fra tekniske spesifikasjoner til brukerhistorier og denne refleksjonsrapporten.
+- **Skrive kode:** Generere boilerplate, implementere funksjoner og foreslå løsninger på tekniske problemer.
+- **Analysere problemer:** KI hjalp oss med å identifisere risikoer og foreslå mottiltak.
+- **Fasilitere brainstorming:** Vi brukte KI-styrte teknikker som "Five Whys" for å komme til roten av brukerproblemer og "Question Storming" for å utforske ulike løsningsretninger.
+
+Vi startet opprinnelig med Claude Code, men gikk raskt over til å bruke Gemini CLI ettersom alle gruppemedlemmene hadde tilgang til en sjenerøs gratisversjon (free tier), noe som gjorde det enkelt for alle å delta aktivt.
 
 ### 2.3 Teknologi og verktøy
 [Liste over de viktigste teknologiene og verktøyene dere brukte]
