@@ -173,14 +173,71 @@ KI har vært en netto positiv faktor. Den har fungert som en "seniorutvikler" og
 
 ---
 
+
+### **Tillegg – Etiske implikasjoner (Sebastian)**
+
+#### Ansvar og eierskap
+Selv om KI har generert deler av koden, ligger det endelige ansvaret alltid hos oss som utviklere. KI foreslår – vi vurderer, tester og godkjenner. Ansvar kan ikke outsources.
+
+#### Transparens
+Transparens handler om metode og etterprøvbarhet, ikke om juks. Å være åpen om KI-bruk er viktig både akademisk og praktisk.
+
+#### Påvirkning på læring og kompetanse
+KI gjør utvikling mer tilgjengelig for flere og gir et “learning by going”-miljø, men krever bevisst kritisk bruk for ikke å svekke dyp læring.
+
+#### Arbeidsmarkedet
+KI endrer utviklerrollen: mindre manuell kode, mer arkitektur, systemforståelse og vurdering av kvalitet.
+
+#### Datasikkerhet og personvern
+KI må behandles som en tredjepart. Man må unngå å dele sensitiv informasjon og forstå hvor data behandles og lagres.
+
+
 ## 6. Teknologiske implikasjoner
 
-### 6.1 Kodekvalitet og vedlikehold
+#
+### **Tillegg – Etiske implikasjoner (Sebastian)**
+
+#### Ansvar og eierskap
+Selv om KI har generert deler av koden, ligger det endelige ansvaret alltid hos oss som utviklere. KI foreslår – vi vurderer, tester og godkjenner. Ansvar kan ikke outsources.
+
+#### Transparens
+Transparens handler om metode og etterprøvbarhet, ikke om juks. Å være åpen om KI-bruk er viktig både akademisk og praktisk.
+
+#### Påvirkning på læring og kompetanse
+KI gjør utvikling mer tilgjengelig for flere og gir et “learning by going”-miljø, men krever bevisst kritisk bruk for ikke å svekke dyp læring.
+
+#### Arbeidsmarkedet
+KI endrer utviklerrollen: mindre manuell kode, mer arkitektur, systemforståelse og vurdering av kvalitet.
+
+#### Datasikkerhet og personvern
+KI må behandles som en tredjepart. Man må unngå å dele sensitiv informasjon og forstå hvor data behandles og lagres.
+
+
+## 6.1 Kodekvalitet og vedlikehold
 
 -   KI-generert kode er ofte godt dokumentert og følger standarder, men den kan bli kompleks.
 -   En utfordring er at hvis vi ikke forstår koden 100% selv, blir det vanskelig å debugge den senere.
 
-### 6.2 Fremtidig utvikling
+#
+### **Tillegg – Etiske implikasjoner (Sebastian)**
+
+#### Ansvar og eierskap
+Selv om KI har generert deler av koden, ligger det endelige ansvaret alltid hos oss som utviklere. KI foreslår – vi vurderer, tester og godkjenner. Ansvar kan ikke outsources.
+
+#### Transparens
+Transparens handler om metode og etterprøvbarhet, ikke om juks. Å være åpen om KI-bruk er viktig både akademisk og praktisk.
+
+#### Påvirkning på læring og kompetanse
+KI gjør utvikling mer tilgjengelig for flere og gir et “learning by going”-miljø, men krever bevisst kritisk bruk for ikke å svekke dyp læring.
+
+#### Arbeidsmarkedet
+KI endrer utviklerrollen: mindre manuell kode, mer arkitektur, systemforståelse og vurdering av kvalitet.
+
+#### Datasikkerhet og personvern
+KI må behandles som en tredjepart. Man må unngå å dele sensitiv informasjon og forstå hvor data behandles og lagres.
+
+
+## 6.2 Fremtidig utvikling
 
 -   Vi tror utviklere fremover vil bruke mer tid på å være "arkitekter" og "reviewers" enn å skrive hver enkelt linje med kode.
 -   Evnen til å formulere presise instruksjoner (prompts) til KI blir en nøkkelkompetanse.
@@ -217,6 +274,28 @@ KI har vært en netto positiv faktor. Den har fungert som en "seniorutvikler" og
 [Fyll inn personlig refleksjon her...]
 
 ---
+
+
+### **Tillegg – Konklusjon og læring (Sebastian)**
+
+#### Viktigste lærdommer
+1. KI gjør læring tilgjengelig på nye måter.
+2. Kritisk sans og kvalitetssikring er helt avgjørende.
+3. Etikk og ansvar må være integrert i hele utviklingsprosessen.
+
+#### Hva vi ville gjort annerledes
+- Mer modulær arkitektur fra start.
+- Bedre plan for KI-bruk.
+- Systematisk lagring av alle prompts.
+
+#### Anbefalinger
+- Bruk KI som sparringspartner, ikke generator.
+- Forstå alt KI produserer før bruk.
+- Start smått – bygg forståelse underveis.
+
+#### Personlig refleksjon
+[Fylles inn individuelt av hvert gruppemedlem.]
+
 
 ## 8. Vedlegg (valgfritt)
 
