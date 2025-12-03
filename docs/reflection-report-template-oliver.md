@@ -36,10 +36,12 @@
 **Backend:**
 - Python 3.11+
 - FastAPI (web framework)
-- LangChain (RAG framework)
+- Pydantic AI (RAG framework med type-sikkerhet)
 - Beautiful Soup 4 (web scraping)
+- langchain_text_splitters (document chunking)
 - uvicorn (ASGI server)
 - slowapi (rate limiting)
+- instructor (for strukturert LLM output)
 
 **Database:**
 - Supabase (PostgreSQL - for samtaler, feedback, analytics)
