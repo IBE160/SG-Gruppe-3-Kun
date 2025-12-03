@@ -125,16 +125,23 @@ Vi har organisert arbeidet ved hjelp av en strukturert, AI-assistert metodikk.
 
 **Effektivitet og produktivitet:**
 
+- KI hadde stor påvirkning på hvor raskt vi gjennomfører oppgaver. I stedet for å bruke mye tid på å lete etter løsninger, kunne vi spørre Gemini direkte og få raske forslag. Dette gjorde at vi kom fortere i gang og KI kunne være til hjelp når vi stod fast. For eksempel hjalp KI med hva chatboten skal si når den ikke finner et sikkert svar i dokumentasjonen.
+
 -   KI har vært ekstremt effektivt for å produsere dokumentasjon. I arbeidet med "Case Description" økte vi dokumentet fra 73 linjer til 1040 linjer på bare 2-3 timer. Dette er en økning på over 1300%, noe som ville tatt dager å skrive manuelt.
 -   Oppsett av prosjektstruktur og boilerplate-kode gikk mye raskere enn ved tradisjonell koding.
+  
 
 **Kvalitet på koden og planlegging:**
+
+- Med KI kan kodekvaliteten bli bedre ved at vi fikk forslag til ryddigere struktur, og oppdage feil tidligere.
 
 -   KI hjalp oss å tenke på ting vi kanskje ville glemt, som en detaljert "Risk Management"-plan og en spesifikk teststrategi med 8 evalueringsmetrikker. Dette hevet kvaliteten på prosjektplanen fra et "C-nivå" til et estimert "A/B-nivå".
 
 ### 4.2 Begrensninger og ulemper
 
 **Kvalitet og pålitelighet:**
+
+- Vi erfarte flere begrensninger. KI kan gi forslag som høres veldig profesjonellt ut, men som likevel er feil. Eller andre feil som da med Tailwind der Gemini gikk i en loop. Noen ganger kunne KI foreslå unødvendig komplekse løsninger og dette kunne skape mer arbeid og mer feilsøking i stedet for å hjelpe.
 
 -   Som nevnt i UX-sesjonen, kan KI gjøre feilvurderinger basert på manglende kontekst. Den kan være "skråsikker" selv når den tar feil.
 -   Vi må hele tiden verifisere at koden som genereres faktisk fungerer og følger "beste praksis", og ikke bare ser riktig ut.
@@ -143,16 +150,21 @@ Vi har organisert arbeidet ved hjelp av en strukturert, AI-assistert metodikk.
 
 -   Det er en risiko for at vi lener oss for mye på KI for å strukturere tankene våre. Når KI genererer 1000 linjer med tekst, kan det være fristende å bare "godkjenne" det uten å lese nøye gjennom alt.
 
+-  I perioder med tidspress er det lett å spørre KI gjøre all jobben uten å prøve først. Det kan påvirke læring negativt, fordi man kan få en fungerende løsning uten å forstå hvorfor den virker. Du lærer mindre av prosessen og kan bli dårligere til å feilsøking senere.
+
 ### 4.3 Sammenligning: Med og uten KI
 
 -   **Uten KI:** Vi ville brukt mesteparten av tiden på å skrive dokumentasjon og sette opp grunnleggende kode. Vi ville sannsynligvis hatt en mindre detaljert risikoanalyse og testplan.
+-   
 -   **Med KI:** Vi har kunnet fokusere mer på _hva_ vi skal lage (produktverdi, brukerreiser) og _hvordan_ det skal henge sammen (arkitektur), mens KI har tatt seg av "grovarbeidet" med å skrive teksten og koden. Sluttresultatet er mer profesjonelt og gjennomtenkt.
 
 ### 4.4 Samlet vurdering
 
-KI har vært en netto positiv faktor. Den har fungert som en "seniorutvikler" og "prosjektleder" som har guidet oss gjennom prosessen, men vi har måttet være aktive "reviewers" for å sikre kvaliteten.
+- KI har vært en netto positiv faktor. Den gjorde at vi kunne jobbe raskere og mer strukurert. Den har fungert som en "seniorutvikler" og "prosjektleder" som har guidet oss gjennom prosessen, men vi har måttet være aktive "reviewers" for å sikre kvaliteten.
+
 
 ---
+
 
 ## 5. Etiske implikasjoner
 
