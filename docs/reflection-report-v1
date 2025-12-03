@@ -2,13 +2,14 @@
 
 ## 1. Gruppeinformasjon
 
-**Gruppenavn:** [Navn på gruppen]
+**Gruppenavn:** [SG-Gruppe-3-Kun]
 
 **Gruppemedlemmer:**
 
--   [Navn 1] - [Student-ID/E-post]
--   [Navn 2] - [Student-ID/E-post]
--   [Navn 3] - [Student-ID/E-post]
+-   [Frida Berge-Robertson] - [231156 / frida.b.berge@himolde.no]
+-   [Sebastian Vambheim Thunestvedt] - [242083 / sethu0051@himolde.no]
+-   [Stina Isabella Sakariassen Rabben] - [220959 / stina.i.s.rabben@himolde.no]
+-   [Oliver Matre Hille] - [240971 / oliver.m.hille@himolde.no]
 
 **Dato:** [DD.MM.ÅÅÅÅ]
 
@@ -46,30 +47,6 @@ Mer konkret brukte vi KI til å:
 -   **Fasilitere brainstorming:** Vi brukte KI-styrte teknikker som "Five Whys" for å komme til roten av brukerproblemer og "Question Storming" for å utforske ulike løsningsretninger.
 
 Vi startet opprinnelig med Claude Code, men gikk raskt over til å bruke Gemini CLI ettersom alle gruppemedlemmene hadde tilgang til en sjenerøs gratisversjon (free tier), noe som gjorde det enkelt for alle å delta aktivt.
-
-### 2.3 Teknologi og verktøy
-
-[Liste over de viktigste teknologiene og verktøyene dere brukte]
-
--   Frontend: [f.eks. NextJS, HTML/CSS]
--   Backend: [f.eks. Python/FastAPI]
--   Database: [f.eks. Supabase, MongoDB, PostgreSQL]
--   KI-verktøy: [f.eks. Claude Code, Gemini CLI, GPT-5 Codex]
--   Andre verktøy: [f.eks. VS Code, BMAD etc]
-
-### 2.4 Utviklingsfaser
-
-[Beskriv de ulike fasene i utviklingen]
-
-**Fase 1: Planlegging**
-
--   [Hva gjorde dere i denne fasen?]
--   [Hvordan brukte dere KI her? Husk å lagre promptene deres! Inkluder ALLE stegene dere gjorde.]
-
-**Fase 2: Utvikling**
-
--   [Hva gjorde dere i denne fasen?]
--   [Hvordan brukte dere KI her? Husk å lagre promptene deres! Inkluder ALLE stegene dere gjorde.]
 
 ---
 
@@ -187,10 +164,7 @@ Selv om vi ikke har nådd full implementering enda, har vi identifisert flere te
 
 ### 3.2 Samarbeidsutfordringer
 
-[Utfordringer knyttet til teamarbeid og kommunikasjon]
-
--   [Beskriv utfordringer og hvordan dere løste dem]
-    Vårt samarbeid har i hovedsak vært velfungerende og uten store konflikter. Vi var gjennomgående enige om retningen for prosjektet.
+Vårt samarbeid har i hovedsak vært velfungerende og uten store konflikter. Vi var gjennomgående enige om retningen for prosjektet.
 
 Den primære utfordringen vi møtte, var knyttet til koordinering og fordeling av oppgaver. Dette skyldtes ikke manglende samarbeidsvilje – tvert imot var alle svært engasjerte. Utfordringen lå i oppgavenes natur; mange av utviklings- og designoppgavene var såpass sammenvevde at det var vanskelig å dele dem opp i helt uavhengige deler som kunne løses hver for seg.
 
@@ -249,21 +223,6 @@ Vi opplevde ingen nevneverdige misforståelser eller kommunikasjonsproblemer, da
 ### 4.4 Samlet vurdering
 
 -   KI har vært en netto positiv faktor. Den gjorde at vi kunne jobbe raskere og mer strukurert. Den har fungert som en "seniorutvikler" og "prosjektleder" som har guidet oss gjennom prosessen, men vi har måttet være aktive "reviewers" for å sikre kvaliteten.
-
-### 4.3 Sammenligning: Med og uten KI
-
-[Reflekter over hvordan prosjektet ville vært uten KI]
-
--   Hva ville vært annerledes?
--   Hvilke deler av prosjektet ville vært vanskeligere/lettere?
--   Ville sluttresultatet vært bedre eller dårligere?
-
-### 4.4 Samlet vurdering
-
-[Konklusjon: Hvordan påvirket KI sluttresultatet totalt sett?]
-
--   Var KI en netto positiv eller negativ faktor?
--   Hva var den viktigste lærdommen om å bruke KI i utviklingsprosessen?
 
 ---
 
@@ -392,13 +351,16 @@ Den viktigste lærdommen er at KI er et kraftig verktøy for å **akselerere** a
 
 ### 7.4 Personlig refleksjon (individuelt)
 
-**[Navn på gruppemedlem 1]:**
+**[Frida Berge-Robertson]:**
 [Personlig refleksjon over egen læring og utvikling]
 
-**[Navn på gruppemedlem 2]:**
+**[Sebastian Vambheim Thunestvedt]:**
 [Personlig refleksjon over egen læring og utvikling]
 
-**[Navn på gruppemedlem 3]:**
+**[Stina Isabella Sakariassen Rabben]:**
+[Personlig refleksjon over egen læring og utvikling]
+
+**[Oliver Matre Hille]:**
 [Personlig refleksjon over egen læring og utvikling]
 
 ---
@@ -406,11 +368,12 @@ Den viktigste lærdommen er at KI er et kraftig verktøy for å **akselerere** a
 ## 8. Vedlegg (valgfritt)
 
 -   Skjermbilder av applikasjonen
--   Lenke til GitHub repository
--   Annen relevant dokumentasjon
+-   Lenke til GitHub repository [https://github.com/IBE160/SG-Gruppe-3-Kun/tree/main]
+-   Annen relevant dokumentasjon [https://docs.hmsreg.com]
 
 ---
 
-**Ordantall:** 4,135 ord
+**Ordantall:**
 
-**Forventet lengde:** 3000-5000 ord (avhengig av gruppestørrelse og prosjektets kompleksitet)
+-   Totalt: 4,100 ord
+-   Brødtekst (uten overskrifter): 3,930 ord
