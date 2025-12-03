@@ -174,7 +174,7 @@ KI har vært en netto positiv faktor. Den har fungert som en "seniorutvikler" og
 ---
 
 
-### **Tillegg – Etiske implikasjoner (Sebastian)**
+### **Tillegg – Etiske implikasjoner**
 
 #### Ansvar og eierskap
 Selv om KI har generert deler av koden, ligger det endelige ansvaret alltid hos oss som utviklere. KI foreslår – vi vurderer, tester og godkjenner. Ansvar kan ikke outsources.
@@ -195,7 +195,7 @@ KI må behandles som en tredjepart. Man må unngå å dele sensitiv informasjon 
 ## 6. Teknologiske implikasjoner
 
 #
-### **Tillegg – Etiske implikasjoner (Sebastian)**
+### **Tillegg – Etiske implikasjoner**
 
 #### Ansvar og eierskap
 Selv om KI har generert deler av koden, ligger det endelige ansvaret alltid hos oss som utviklere. KI foreslår – vi vurderer, tester og godkjenner. Ansvar kan ikke outsources.
@@ -219,7 +219,7 @@ KI må behandles som en tredjepart. Man må unngå å dele sensitiv informasjon 
 -   En utfordring er at hvis vi ikke forstår koden 100% selv, blir det vanskelig å debugge den senere.
 
 #
-### **Tillegg – Etiske implikasjoner (Sebastian)**
+### **Tillegg – Etiske implikasjoner**
 
 #### Ansvar og eierskap
 Selv om KI har generert deler av koden, ligger det endelige ansvaret alltid hos oss som utviklere. KI foreslår – vi vurderer, tester og godkjenner. Ansvar kan ikke outsources.
