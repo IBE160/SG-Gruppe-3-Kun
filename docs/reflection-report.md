@@ -413,4 +413,4 @@ Prosjektstyring var også nytt for meg, og BMAD-rammeverket ga verdifull innsikt
 
 **Ordantall:**
 
--   Totalt: 4,138 ord
+-   Totalt: 4,746 ord
