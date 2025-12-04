@@ -126,6 +126,12 @@ Prosjektet har fulgt BMAD (Business-driven Modular Agile Development) metodikken
 -   Planlagt implementering av frontend og backend basert på spesifikasjonene
 -   **Status:** Ikke startet for fullt enda
 -   **KI-bruk:** Planlagt bruk til generering av boilerplate-kode, oppsett av database-skjemaer, og implementering av RAG-pipeline
+ 
+**Fase 4: Implementering (Ikke påbegynt)**
+
+-   
+-   **Status:** Ikke startet
+-   **KI-bruk:** 
 
 **Viktige erfaringer fra prosessen:**
 
@@ -178,7 +184,7 @@ Vi opplevde ingen nevneverdige misforståelser eller kommunikasjonsproblemer, da
     Den største utfordringen vi møtte med KI var at den ikke alltid gjorde som vi ba om. Noen ganger kunne den generere kode som var feil, eller den misforsto oppgaven fullstendig, noe som førte til inkonsistent kvalitet.
 
 -   **Hvordan håndterte dere disse?**
-    Vi løste ofte dette ved å starte KI-økten på nytt. I tillegg gjorde vi det til en vane å "committe" koden vår ofte. Hvis KI-en genererte kode som skapte store problemer, kunne vi enkelt tilbakestille koden til en tidligere, fungerende versjon.
+    Vi løste ofte dette ved å starte KI-økten på nytt, begrense kontekstvindu, og lage bedre prompts. I tillegg gjorde vi det til en vane å "committe" koden vår ofte. Hvis KI-en genererte kode som skapte store problemer, kunne vi enkelt tilbakestille koden til en tidligere, fungerende versjon.
 
 ---
 
@@ -197,7 +203,7 @@ Vi opplevde ingen nevneverdige misforståelser eller kommunikasjonsproblemer, da
 
 -   Med KI kan kodekvaliteten bli bedre ved at vi fikk forslag til ryddigere struktur, og oppdage feil tidligere.
 
--   KI hjalp oss å tenke på ting vi kanskje ville glemt, som en detaljert "Risk Management"-plan og en spesifikk teststrategi med 8 evalueringsmetrikker. Dette hevet kvaliteten på prosjektplanen fra et "C-nivå" til et estimert "A/B-nivå".
+-   KI hjalp oss å tenke på ting vi kanskje ville glemt, som en detaljert "Risk Management"-plan og en spesifikk teststrategi med 8 evalueringsmetrikker. Dette hevet kvaliteten på prosjektplanen.
 
 ### 4.2 Begrensninger og ulemper
 
