@@ -317,17 +317,14 @@ Den viktigste lærdommen er at KI er et kraftig verktøy for å **akselerere** a
 
 -   Hvordan tror dere KI vil påvirke programvareutvikling fremover?
     KI vil endre programvareutvikling ved å automatisere repeterende oppgaver som kodeskriving, testing og feilsøking. Dette vil føre til raskere utviklingssykluser og la utviklere fokusere mer på strategiske oppgaver som systemdesign, arkitektur og kreativ problemløsning. Vi tror KI vil bli en verdifull partner i et utviklingsteam, der den fungerer som en intelligent assistent som kan generere kode, optimalisere ytelse og til og med forutsi potensielle feil og mangler før de oppstår. I tillegg vil KI gjøre det lettere å lage programvare, slik at personer med mindre eller lite teknisk bakgrunn kan realisere ideene sine gjennom et naturlig, men detaljert språk.
-    
-- Hvilke ferdigheter blir viktigere for utviklere?
+-   Hvilke ferdigheter blir viktigere for utviklere?
     Ferdigheter knyttet til kritisk tenkning, problemløsning og evnen til å formulere presise beskrivelser/krav blir avgjørende. Utviklere må bli eksperter på å "prompte" og veilede KI-systemer for å få resultatet en ønsker. En bør ha en dypere forståelse av designprinsipper og systemarkitektur for å gjøre disse vurderingene for å bruke KI-generert kode på en fornuftig måte. Evnen til å validere, teste og kvalitetssikre KI-genererte løsninger blir også nødvendig. "Menneskelige" ferdigheter som kreativitet, kommunikasjon og etisk bevissthet vil trolig bli viktigere enn før fordi utviklerens rolle i større grad blir å styre og forme teknologien, ikke bare å produsere den.
-    
-- Anbefalinger for hvordan man bør bruke KI i utviklingsprosesser
+-   Anbefalinger for hvordan man bør bruke KI i utviklingsprosesser
     1.  **Bruk KI som en partner, ikke en erstatter:** Se på KI som et verktøy for å forsterke egne ferdigheter. Bruk den til å automatisere kjedelige oppgaver og utforske alternative løsninger, men behold alltid selv den endelige kontrollen og ansvaret for koden.
-    2.  **Start med små, veldefinerte oppgaver:** Ikke forvent at KI skal lage hele prosjektet/applikasjonen for deg i én «session». Dette kan fort lede til problemer. Begynn med å bruke den til å løse mindre, isolerte problemer, og deretter bygge på disse. 
-    3.  **Valider og test all KI-generert kode:** Aldri stol 100% på koden KI produserer. Gjennomgå den nøye og forstå hva den gjør. Verifiser deretter at den fungerer som du forventet og at den nye koden ikke introduserer nye feil. 
+    2.  **Start med små, veldefinerte oppgaver:** Ikke forvent at KI skal lage hele prosjektet/applikasjonen for deg i én «session». Dette kan fort lede til problemer. Begynn med å bruke den til å løse mindre, isolerte problemer, og deretter bygge på disse.
+    3.  **Valider og test all KI-generert kode:** Aldri stol 100% på koden KI produserer. Gjennomgå den nøye og forstå hva den gjør. Verifiser deretter at den fungerer som du forventet og at den nye koden ikke introduserer nye feil.
     4.  **Invester i "prompt engineering":** Lær deg å skrive klare, konsise og kontekst-rike prompts. Jo bedre du er til å kommunisere intensjonene dine til KI-en, desto bedre og mer relevant blir resultatet.
     5.  **Inkluder KI i hele arbeidsflyten:** Bruk KI ikke bare til koding, men også til planlegging, design, dokumentasjon og testing. BMAD-rammeverket viser hvordan KI kan være en god ressurs i alle faser av et prosjekt.
-    
 
 ## 7. Konklusjon og læring
 
@@ -362,7 +359,14 @@ Den viktigste lærdommen er at KI er et kraftig verktøy for å **akselerere** a
 [Personlig refleksjon over egen læring og utvikling]
 
 **[Oliver Matre Hille]:**
-[Personlig refleksjon over egen læring og utvikling]
+
+Jeg hadde noe programmeringserfaring fra tidligere fag og litt hobbyutvikling, men dette prosjektet har endret hvordan jeg ser på programmering i fremtiden. Det viktigste jeg har lært er hvordan man kan bruke KI effektivt gjennom systemer som BMAD – hvor man "simulerer" ulike roller og jobber med mange små, fokuserte oppgaver i stedet for én gigantisk prompt.
+
+Det som overrasket meg mest var hvor omfattende et prosjekt man kan gjennomføre selv når KI simulerer de ulike rollene i et team. KI føles nå mindre som juks og mer som et kraftig verktøy jeg vil fortsette å bruke strukturert fremover.
+
+Jeg har lært mye om context-styring – hvordan man kontrollerer hvilken informasjon KI har tilgang til for å unngå forvirring og dårlige resultater. Der det før var mystisk hvordan KI fungerte, har jeg nå en praktisk forståelse av hvordan jeg kan styre den effektivt.
+
+Prosjektstyring var også nytt for meg, og BMAD-rammeverket ga verdifull innsikt i hvordan strukturert planlegging fungerer. Fremover tror jeg evnen til å styre context og skrive gode prompts blir viktigere, men man må fortsatt kunne programmere selv for å feilsøke og oppdage logiske feil i KI-generert kode.
 
 ---
 
