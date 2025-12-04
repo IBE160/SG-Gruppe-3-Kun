@@ -11,7 +11,7 @@
 -   [Stina Isabella Sakariassen Rabben] - [220959 / stina.i.s.rabben@himolde.no]
 -   [Oliver Matre Hille] - [240971 / oliver.m.hille@himolde.no]
 
-**Dato:** [DD.MM.ÅÅÅÅ]
+**Dato:** [04.12.2025]
 
 ---
 
