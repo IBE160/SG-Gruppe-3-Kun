@@ -1,6 +1,6 @@
 # Epics & Stories for ibe160
 
-This document breaks down the requirements from the PRD into actionable epics and user stories.
+This document breaks down the requirements from the PRD into actionable epics and user stories, incorporating specific design patterns from the UX Specification and technical decisions from the Architecture.
 
 ---
 
@@ -17,7 +17,7 @@ Here is a summary of the proposed epics to build the HMSREG Documentation Chatbo
 
 -   **Value:** Implements the fundamental ability for a user to ask a question and receive an answer from the documentation. This is the core "magic" of the product.
 -   **Related Functional Requirements:** FR1.1, FR1.2, FR1.3, FR1.4
--   **Scope:** Build the data ingestion pipeline to process `docs.hmsreg.com`, set up the ChromaDB vector store, implement the LangChain RAG pipeline in the FastAPI backend, and create the basic chat UI in the frontend.
+-   **Scope:** Build the data ingestion pipeline to process `docs.hmsreg.com`, set up the ChromaDB vector store, implement the Pydantic AI-centric RAG pipeline in the FastAPI backend, and create the basic chat UI in the frontend.
 
 ### Epic 3: User Context & Personalization
 
@@ -54,11 +54,17 @@ Here is a summary of the proposed epics to build the HMSREG Documentation Chatbo
 Given a new project,
 When I initialize the project,
 Then a monorepo structure is created with separate `frontend` (Next.js) and `backend` (FastAPI) directories.
+And the backend directory structure includes `app/api`, `app/core`, `app/services`, `app/db`, `app/rag`, and `app/schemas`.
+And the frontend directory structure includes `app/api`, `components`, `hooks`, `lib`, and `types`.
 And a `.gitignore` file is configured for each project to exclude unnecessary files.
 And a `README.md` is present at the root with basic project setup instructions.
 
 **Prerequisites:** None
-**Technical Notes:** Use `create-next-app` for frontend, `poetry new` for backend.
+**Technical Notes:**
+- Follow `Project Structure` in Architecture.
+- Use `create-next-app` for frontend.
+- Use `poetry new` for backend.
+- Ensure `pyproject.toml` and `package.json` are created.
 
 ### Story 1.2: Configure Frontend Development Environment
 
@@ -70,12 +76,16 @@ And a `README.md` is present at the root with basic project setup instructions.
 Given the frontend directory,
 When I set up the development environment,
 Then Next.js 14 (App Router) is configured with TypeScript.
-And Tailwind CSS is integrated for styling.
-And shadcn/ui components are installed and configured.
+And Tailwind CSS is integrated with the project's color palette (Deep Blue/Teal primary).
+And shadcn/ui is initialized.
+And essential dependencies are installed: `lucide-react`, `clsx`, `tailwind-merge`.
 And a basic "Hello World" page is rendered successfully.
 
 **Prerequisites:** Story 1.1
-**Technical Notes:** Follow official Next.js, Tailwind, and shadcn/ui installation guides.
+**Technical Notes:**
+- Follow Architecture `Frontend (Next.js)` initialization command.
+- Configure `tailwind.config.ts` with colors from UX Spec Section 3.1.
+- Ensure `app/layout.tsx` applies global styles.
 
 ### Story 1.3: Configure Backend Development Environment
 
@@ -86,13 +96,17 @@ And a basic "Hello World" page is rendered successfully.
 **Acceptance Criteria:**
 Given the backend directory,
 When I set up the development environment,
-Then Python 3.11+ is configured with a virtual environment.
+Then Python 3.11+ is configured with a virtual environment managed by Poetry.
 And FastAPI is installed with Uvicorn.
+And essential dependencies are installed: `sqlalchemy`, `asyncpg`, `python-multipart`, `pydantic-ai`.
 And a basic "Hello World" endpoint (`/health`) is accessible.
-And a `requirements.txt` or `pyproject.toml` is created to manage dependencies.
+And `app/main.py` is configured as the entry point.
 
 **Prerequisites:** Story 1.1
-**Technical Notes:** Use `poetry` for dependency management.
+**Technical Notes:**
+- Follow Architecture `Backend (FastAPI)` initialization commands.
+- Verify `poetry.lock` is generated.
+- Configure `app/core/config.py` for environment variables.
 
 ### Story 1.4: Implement Basic CI/CD for Frontend (Vercel)
 
@@ -124,7 +138,7 @@ And a unique URL is provided for the staging deployment.
 And the `/health` endpoint is accessible via the deployed URL.
 
 **Prerequisites:** Story 1.3
-**Technical Notes:** Connect Railway to the Git repository, configure build and start commands.
+**Technical Notes:** Connect Railway to the Git repository, configure build and start commands (`poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT`).
 
 ### Story 1.6: Set up Supabase Project and Connect to Backend
 
@@ -136,11 +150,12 @@ And the `/health` endpoint is accessible via the deployed URL.
 Given a Supabase account,
 When I create a new project,
 Then a PostgreSQL database is provisioned.
-And the FastAPI backend is configured with the necessary environment variables to connect to the Supabase database.
-And a simple test endpoint in FastAPI can successfully write and read data from a test table in Supabase.
+And the FastAPI backend is configured with `DATABASE_URL` in `app/core/config.py`.
+And `app/db/session.py` is implemented using `SQLAlchemy`'s async engine.
+And a simple test endpoint can successfully read/write to the DB.
 
 **Prerequisites:** Story 1.3
-**Technical Notes:** Use Supabase free tier, configure `DATABASE_URL` environment variable in Railway.
+**Technical Notes:** Use `asyncpg` driver.
 
 ### Story 1.7: Set up ChromaDB Vector Store
 
@@ -151,11 +166,12 @@ And a simple test endpoint in FastAPI can successfully write and read data from 
 **Acceptance Criteria:**
 Given the backend environment,
 When ChromaDB is initialized,
-Then it is configured for persistent storage (if applicable).
+Then it is configured for persistent storage.
+And the `app/rag/vector_store.py` module is created to manage the client.
 And a basic test can successfully add and retrieve a vector embedding.
 
 **Prerequisites:** Story 1.3
-**Technical Notes:** Integrate ChromaDB client library into the backend project.
+**Technical Notes:** Integrate `chromadb` client library.
 
 ## Epic 2: Core Conversational Experience & RAG Pipeline
 
@@ -172,14 +188,14 @@ And a basic test can successfully add and retrieve a vector embedding.
 
 **Acceptance Criteria:**
 Given the `docs.hmsreg.com` URL,
-When the ingestion pipeline is executed,
-Then documentation content is scraped and chunked into manageable segments.
+When the ingestion pipeline (`app/rag/ingestion.py`) is executed,
+Then documentation content is scraped using `BeautifulSoup` or `Playwright`.
+And content is chunked into manageable segments using `LangChain`.
 And each chunk is embedded using `text-embedding-004`.
-And the embeddings are stored in ChromaDB.
-And the original text content associated with each embedding is also stored.
+And the embeddings and metadata are stored in ChromaDB.
 
 **Prerequisites:** Story 1.3, Story 1.7
-**Technical Notes:** Use a web scraping library (e.g., BeautifulSoup, Playwright) and LangChain for chunking and embedding.
+**Technical Notes:** Use `LangChain` for text splitting and embedding generation.
 
 ### Story 2.2.a: Implement Core Chat Interface
 
@@ -187,17 +203,21 @@ And the original text content associated with each embedding is also stored.
 
 **As a** frontend developer,
 **I want to** create the foundational chat interface components,
-**So that** users have the basic tools to interact with the chatbot.
+**So that** users have the basic tools to interact with the chatbot in a clean, professional environment.
 
 **Acceptance Criteria:**
 Given the frontend application,
 When a user navigates to the chat page,
-Then a chat history panel is displayed for showing messages.
-And user and bot message bubbles are styled distinctly.
+Then a chat history panel is displayed.
+And user and bot message bubbles are visually distinct (User: Primary Color, Bot: Neutral).
+And a "Loading..." indicator (subtle animation) appears while waiting for a response.
 And a text input field and "Send" button are present and functional.
 
 **Prerequisites:** Story 1.2
-**Technical Notes:** Utilize shadcn/ui components. This story focuses on the core components, not the overall page layout.
+**Technical Notes:**
+- Use shadcn/ui components (`Input`, `Button`).
+- Create `components/ChatWindow.tsx` and `components/ChatBubble.tsx`.
+- Follow UX "Novel UX Pattern" for simplicity.
 
 ### Story 2.2.b: Implement Desktop Three-Column Responsive Layout
 
@@ -211,10 +231,10 @@ And a text input field and "Send" button are present and functional.
 Given the frontend application on a screen wider than 1024px,
 When a user views a page with the chatbot,
 Then a three-column grid is displayed: "Documentation Links" (left), "Article Content" (middle), and "Chatbot Interface" (right).
-And the layout matches the structure in `ux-showcase.html`.
+And the layout matches the structure in `ux-showcase.html` concepts.
 
 **Prerequisites:** Story 2.2.a
-**Technical Notes:** Use CSS grid and media queries.
+**Technical Notes:** Use Tailwind CSS grid (`grid-cols-3`) and media queries.
 
 ### Story 2.2.c: Implement Mobile Tabbed-Interface Layout
 
@@ -228,49 +248,53 @@ And the layout matches the structure in `ux-showcase.html`.
 Given the frontend application on a screen narrower than 1024px,
 When a user views a page with the chatbot,
 Then a single-column layout is displayed.
-And a tab bar is present at the bottom of the screen with "Links," "Article," and "Chatbot" options.
-And clicking a tab switches the main content view to the corresponding panel.
-And the functionality matches the `ux-showcase.html` mockup.
+And a tab bar is present at the bottom (or top segmented control) with "Links," "Article," and "Chatbot".
+And clicking a tab switches the main view.
 
 **Prerequisites:** Story 2.2.a
-**Technical Notes:** This will require state management to handle the active tab.
+**Technical Notes:** Use React state to manage active tab visibility.
 
-### Story 2.3: Implement RAG Pipeline in Backend
+### Story 2.3: Implement Pydantic AI RAG Pipeline in Backend
 
 **Covers:** FR1.2, FR1.3
 
 **As a** backend developer,
-**I want to** integrate the LangChain RAG pipeline with Gemini 2.5 Pro,
+**I want to** integrate the Pydantic AI RAG pipeline with Gemini 2.5 Pro,
 **So that** user questions can be processed to retrieve relevant documentation and generate informed responses.
 
 **Acceptance Criteria:**
 Given a user question,
-When the question is sent to the backend,
-Then the question is embedded and used to query ChromaDB for relevant document chunks.
-And the retrieved chunks are passed to Gemini 2.5 Pro along with the user's question.
-And Gemini 2.5 Pro generates a coherent and relevant answer based on the provided context.
-And the generated answer is returned to the frontend.
+When the question is sent to `app/services/chat_service.py`,
+Then the question is embedded and used to query ChromaDB (`app/rag/vector_store.py`).
+And retrieved chunks are passed to Gemini 2.5 Pro via Pydantic AI agent in `app/services/chat_service.py`.
+And the response is validated against a Pydantic model structure (answer, citations, confidence).
+And Gemini generates a coherent answer based on context.
 
 **Prerequisites:** Story 2.1
-**Technical Notes:** Use LangChain's RAG capabilities, configure Google AI API key.
+**Technical Notes:**
+- Use `pydantic-ai` for the Agent and generation.
+- Use `LangChain` *only* for text splitting during ingestion.
+- Do NOT use LangChain chains for generation.
 
 ### Story 2.4: Connect Frontend Chat to Backend API
 
 **Covers:** FR1.1, FR1.3
 
 **As a** full-stack developer,
-**I want to** establish communication between the frontend chat interface and the backend RAG API,
-**So that** users can send questions and receive real-time answers from the chatbot.
+**I want to** establish communication between the frontend chat interface and the backend RAG API via SSE,
+**So that** users can send questions and receive real-time streaming answers.
 
 **Acceptance Criteria:**
-Given the chat UI and the RAG backend,
-When a user types a question and sends it,
-Then the frontend sends the question to the `/api/chat` endpoint.
-And the backend processes the question via the RAG pipeline and returns an answer.
-And the frontend displays the chatbot's answer in the chat window.
+Given the chat UI,
+When a user sends a question,
+Then the frontend calls the Next.js API route `app/api/chat/route.ts`.
+And this route proxies to the backend endpoint `/api/v1/chat/stream`.
+And the response is streamed back to the UI token by token using Server-Sent Events (SSE).
 
 **Prerequisites:** Story 2.2, Story 2.3
-**Technical Notes:** Use `fetch` or `axios` in Next.js to call the FastAPI endpoint.
+**Technical Notes:**
+- Create `hooks/useChat.ts` to handle SSE connection and state.
+- Backend uses `StreamingResponse` from FastAPI.
 
 ### Story 2.5: Display Source Citations in Chat UI
 
@@ -282,12 +306,13 @@ And the frontend displays the chatbot's answer in the chat window.
 
 **Acceptance Criteria:**
 Given a chatbot response,
-When the response is generated from specific documentation chunks,
-Then the frontend receives the source URLs or titles from the backend.
-And these sources are displayed clearly (e.g., as clickable links) below the chatbot's answer.
+When the response is generated,
+Then the backend returns source URLs in the metadata.
+And the frontend displays these as clickable links at the bottom of the bot's chat bubble.
+And links are clearly labeled "Source:".
 
 **Prerequisites:** Story 2.3, Story 2.4
-**Technical Notes:** The RAG pipeline should be configured to return source metadata along with the generated answer. The links should be displayed at the bottom of the chat bubble with a "Source:" label, as shown in `ux-showcase.html`.
+**Technical Notes:** Modify `ChatBubble` component to render source links.
 
 ## Epic 3: User Context & Personalization
 
@@ -304,13 +329,15 @@ And these sources are displayed clearly (e.g., as clickable links) below the cha
 
 **Acceptance Criteria:**
 Given a new chat session,
-When the user starts the chat,
-Then a prompt appears asking the user to select their role (e.g., Worker, Supplier, Project Manager).
-And a list of predefined roles is presented as clickable options.
-And upon selection, the chosen role is clearly displayed to the user.
+When the chatbot greets the user (UX Journey 1),
+Then it displays a message: "To provide the most relevant information, please select your role:".
+And interactive buttons are shown: `[Construction Worker]`, `[Supplier]`, `[Project Manager]`.
+And clicking a button sets the user context.
 
 **Prerequisites:** Story 2.2.a
-**Technical Notes:** Use shadcn/ui components for selection (e.g., radio buttons, dropdown). The UI should be a set of buttons presented within the chatbot's initial greeting message, as shown in `ux-showcase.html`.
+**Technical Notes:**
+- Create `components/RoleSelector.tsx`.
+- Use `Button` component from shadcn/ui.
 
 ### Story 3.2: Pass User Role to Backend
 
@@ -321,13 +348,13 @@ And upon selection, the chosen role is clearly displayed to the user.
 **So that** the backend can use this context for personalized RAG responses.
 
 **Acceptance Criteria:**
-Given a user has selected a role in the frontend,
-When a user sends a question,
-Then the selected role is included in the API request to the backend.
-And the backend successfully receives and parses the user's role.
+Given a selected role,
+When a chat request is made,
+Then the role is included in the request payload (defined in `backend/app/schemas/chat.py`).
+And the backend `ChatRequest` model validates the role.
 
 **Prerequisites:** Story 3.1, Story 2.4
-**Technical Notes:** Include the role in the `/api/chat` payload.
+**Technical Notes:** Update `useChat` hook to include role state in API calls.
 
 ### Story 3.3: Incorporate User Role into RAG Prompt
 
@@ -338,13 +365,13 @@ And the backend successfully receives and parses the user's role.
 **So that** the generated answers are tailored to the user's specific context.
 
 **Acceptance Criteria:**
-Given a user's question and their selected role,
-When the RAG pipeline constructs the prompt for Gemini 2.5 Pro,
-Then the prompt explicitly includes the user's role (e.g., "As a [Role], answer the following question...").
-And the generated response demonstrates an understanding and application of the specified role.
+Given a user's role and question,
+When `app/services/chat_service.py` constructs the prompt,
+Then it injects the role: "You are an expert assistant helping a [Role]. Answer based on the context...".
+And the response reflects the appropriate tone and detail for that role.
 
 **Prerequisites:** Story 3.2, Story 2.3
-**Technical Notes:** Update the LangChain prompt template to dynamically insert the `user_role` variable.
+**Technical Notes:** Update Pydantic AI Agent system prompt dependencies.
 
 ## Epic 4: Robustness, Reliability & Feedback
 
@@ -360,13 +387,13 @@ And the generated response demonstrates an understanding and application of the 
 **So that** it can gracefully inform the user and provide alternative resources.
 
 **Acceptance Criteria:**
-Given a user question,
-When the RAG pipeline's confidence score for an answer falls below a predefined threshold,
-Then the chatbot responds with a message indicating it cannot confidently answer.
-And the response includes links to general HMSREG documentation or support contact information.
+Given a low confidence score from RAG,
+When the chatbot generates a response,
+Then it returns the fallback message: "Jeg fant ikke et klart svar i dokumentasjonen for dette spørsmålet. Kan du utdype spørsmålet? ...".
+And it provides a link to general support/docs.
 
 **Prerequisites:** Story 2.3
-**Technical Notes:** Define a confidence threshold for RAG responses.
+**Technical Notes:** Use Pydantic AI validation or `fallback` method in Agent logic.
 
 ### Story 4.2: Develop User Feedback Mechanism (Thumbs Up/Down)
 
@@ -377,14 +404,16 @@ And the response includes links to general HMSREG documentation or support conta
 **So that** we can continuously monitor and improve the chatbot's performance.
 
 **Acceptance Criteria:**
-Given a chatbot response is displayed,
-When the user views the response,
-Then "Thumbs Up" and "Thumbs Down" buttons are displayed next to the response.
-And clicking either button sends feedback (response ID, feedback type) to the backend.
-And the feedback is stored in the Supabase database.
+Given a chatbot response,
+When the user clicks "Thumbs Up" or "Thumbs Down",
+Then the frontend sends a request to `POST /api/v1/feedback`.
+And the feedback is stored in the `feedback` table (defined in `app/db/models.py`).
+And the UI updates to thank the user.
 
 **Prerequisites:** Story 2.4, Story 1.6
-**Technical Notes:** Create a new API endpoint (`/api/feedback`) and a table in Supabase for feedback. The feedback buttons should appear directly below each chatbot response that is eligible for feedback.
+**Technical Notes:**
+- Create `components/FeedbackButtons.tsx`.
+- Create `backend/app/api/v1/feedback.py`.
 
 ### Story 4.3: Implement Ambiguous Query Suggestion
 
@@ -395,10 +424,10 @@ And the feedback is stored in the Supabase database.
 **So that** users can refine their questions and find relevant information more easily.
 
 **Acceptance Criteria:**
-Given a user query that is deemed ambiguous by the RAG pipeline,
-When the chatbot processes the query,
-Then it suggests 2-3 related topics or rephrased questions.
-And these suggestions are displayed to the user in the chat interface.
+Given an ambiguous query,
+When the RAG pipeline processes it,
+Then it generates 2-3 clarification suggestions (UX Journey: Ambiguous Question).
+And these are displayed as clickable options in the chat UI.
 
 **Prerequisites:** Story 2.3
 **Technical Notes:** Leverage Gemini's capabilities to identify related topics or use a keyword extraction and suggestion mechanism.
@@ -415,13 +444,13 @@ And these suggestions are displayed to the user in the chat interface.
 **So that** the system is protected from abuse and denial-of-service attacks.
 
 **Acceptance Criteria:**
-Given an API endpoint (e.g., `/api/chat`, `/api/feedback`),
-When a user exceeds the defined rate limit (e.g., 10 requests/minute, 50 requests/hour),
-Then subsequent requests from that user are rejected with an appropriate HTTP status code (e.g., 429 Too Many Requests).
-And the rate limits are configurable via environment variables.
+Given an API endpoint,
+When requests exceed the limit (e.g., 60/min),
+Then a 429 Too Many Requests error is returned.
+And limits are configurable via `app/core/config.py`.
 
 **Prerequisites:** Story 1.3
-**Technical Notes:** Use a FastAPI middleware or a dedicated rate-limiting library.
+**Technical Notes:** Use `slowapi` or custom middleware in FastAPI.
 
 ### Story 5.2: Ensure WCAG 2.1 AA Compliance for Frontend
 
@@ -432,14 +461,15 @@ And the rate limits are configurable via environment variables.
 **So that** the chatbot is usable by individuals with disabilities.
 
 **Acceptance Criteria:**
-Given the frontend application,
-When tested with accessibility tools (e.g., Lighthouse, Axe DevTools),
-Then all critical accessibility issues (e.g., sufficient color contrast, proper focus management, semantic HTML) are resolved.
-And keyboard navigation is fully functional for all interactive elements.
-And screen reader users can effectively interact with the chat interface and understand content.
+Given the frontend,
+When audited with Axe DevTools,
+Then no critical violations are found.
+And all interactive elements (inputs, buttons) are navigable via keyboard (Tab/Enter).
+And screen readers correctly announce chat messages and role selections.
+And color contrast meets AA standards (checked against UX palette).
 
 **Prerequisites:** Story 2.2
-**Technical Notes:** Conduct regular accessibility audits throughout development.
+**Technical Notes:** Use `radix-ui` primitives (via shadcn) which handle many a11y primitives out of the box.
 
 ### Story 5.3: Implement Comprehensive Logging and Monitoring
 
@@ -448,14 +478,13 @@ And screen reader users can effectively interact with the chat interface and und
 **So that** operational issues can be quickly identified, diagnosed, and resolved.
 
 **Acceptance Criteria:**
-Given the deployed application,
-When errors or significant events occur in the frontend or backend,
-Then logs are generated with relevant information (e.g., timestamps, error messages, request details).
-And these logs are centralized and accessible for monitoring and analysis.
-And basic application health metrics (e.g., API response times, error rates) are collected and visualized.
+Given the application in production,
+When an error occurs,
+Then it is logged as structured JSON (Backend) or reported (Frontend).
+And `app/core/logging.py` configures the log format.
 
 **Prerequisites:** Story 1.4, Story 1.5
-**Technical Notes:** Use a logging library (e.g., `logging` in Python, `console` in JS) and integrate with a monitoring solution (e.g., Sentry, Prometheus/Grafana).
+**Technical Notes:** Use Python's `logging` module with a JSON formatter for backend.
 
 ### Story 5.4: Conduct Final End-to-End Testing
 
@@ -464,19 +493,24 @@ And basic application health metrics (e.g., API response times, error rates) are
 **So that** all features and integrations function correctly before launch.
 
 **Acceptance Criteria:**
-Given the fully integrated application,
-When a suite of end-to-end tests is executed,
-Then all critical user flows (e.g., role selection, asking questions, receiving answers, providing feedback) pass successfully.
-And integrations between frontend, backend, Supabase, and ChromaDB are verified.
-And performance and security non-functional requirements are validated.
+Given the deployed app,
+When I run the E2E test suite (Playwright),
+Then critical flows (Role Selection -> Chat -> Feedback) pass.
+And integration with Supabase and ChromaDB is verified.
 
 **Prerequisites:** All previous stories
-**Technical Notes:** Use a testing framework like Playwright or Cypress.
+**Technical Notes:** Set up `tests/e2e` folder with Playwright tests.
 
 ---
 
 ## Epic Breakdown Summary
 
-The proposed epic structure and the detailed stories for each epic appear to be comprehensive, logically sequenced, and actionable. All functional requirements from the PRD are covered, and Epic 1 correctly establishes the necessary foundation. The stories are vertically sliced, appropriately sized for single-session completion, and include clear, testable BDD acceptance criteria. Domain and compliance requirements are addressed, and the overall sequencing supports incremental value delivery.
+The epic breakdown has been enhanced with specific technical details from the Architecture document and user experience patterns from the UX Design Specification.
 
-This breakdown provides a solid plan for the architecture and implementation phases.
+**Key Enhancements:**
+- **Project Structure:** Specific file paths and module organizations (e.g., `app/services`, `components/ChatWindow`) are now explicit in the stories.
+- **Technology Stack:** Precise libraries and tools (SQLAlchemy, asyncpg, LangChain, shadcn/ui, Tailwind) are mandated in the Acceptance Criteria and Technical Notes.
+- **UX Patterns:** The specific user journeys (Role Selection buttons, Fallback messages, Feedback flow) are directly integrated into the stories.
+- **Accessibility:** Explicit requirements for keyboard navigation and screen reader support are added.
+
+This detailed plan provides a clear, technically robust, and user-centered roadmap for the implementation phase.
