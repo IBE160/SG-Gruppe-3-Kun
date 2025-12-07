@@ -38,6 +38,7 @@ This establishes the base architecture with these decisions:
 | -------- | -------- | ------- | ------------- | --------- |
 | **Data Persistence** | **SQLAlchemy** with **asyncpg** | SQLAlchemy 2.0.44, asyncpg 0.31.0 | Project Foundation, Core Conversational Experience | Robust, flexible, and well-established ORM for Python with strong async support, ideal for FastAPI and PostgreSQL. |
 | **API Backend** | **FastAPI** with **Uvicorn** | FastAPI 0.123.9, Uvicorn 0.38.0 | Project Foundation, Core Conversational Experience | High-performance, modern Python framework with excellent async support and automatic docs, served by a robust ASGI server. |
+| **Authentication** | **Supabase Auth** | v2.39.0 (JS), v2.3.0 (Py) | Project Foundation, User Context | Integrated seamlessly with the chosen database (Supabase). Provides robust JWT-based auth without managing a separate auth infrastructure. |
 | **Real-time Comms** | **Server-Sent Events (SSE)** | Standard (FastAPI StreamingResponse) | Core Conversational Experience, User Context | Lightweight, standard solution perfect for unidirectional text streaming (LLM responses), simpler than WebSockets. |
 | **Project Init (Backend)** | **Poetry** | Poetry 1.8.0 | Project Foundation | Modern dependency management and packaging tool ensuring consistent environments and simplified workflows. |
 | **Error Handling** | **Centralized Strategy** | N/A | Robustness & Reliability | Ensures consistent error messages for users and streamlined logging/debugging for developers. |
@@ -157,6 +158,24 @@ These patterns ensure consistent implementation across all AI agents:
     *   Components: PascalCase (`ChatWindow`, `RoleSelector`).
     *   Files: PascalCase with extension (`ChatWindow.tsx`, `useChat.ts`).
 
+### Role-Based Prompting Pattern
+
+*   **Mechanism:** The user's selected role (from frontend `RoleSelector`) is passed as a header or body parameter (`X-User-Role` or JSON payload) to the `/chat` endpoint.
+*   **Injection:** The backend `ChatService` injects this role into the System Prompt:
+    ```python
+    system_prompt = f"You are an expert assistant for a {user_role}. Tailor your language and technical depth accordingly."
+    ```
+*   **Fallback:** Default to "General User" if no role is specified.
+
+### Chat UI State Machine
+
+*   **States:**
+    *   `IDLE`: User has not sent a message. Input enabled.
+    *   `SENDING`: User pressed send. Input disabled. Optimistic UI update.
+    *   `STREAMING`: Receiving SSE tokens. Input disabled. Auto-scroll to bottom.
+    *   `COMPLETE`: Stream finished. Input enabled. Markdown rendered.
+    *   `ERROR`: Network or API error. Input enabled. Retry button visible.
+
 ### Code Organization
 
 *   **Frontend:** Feature-based routing (App Router). Reusable UI in `components/`. Logic hooks in `hooks/`.
@@ -193,6 +212,9 @@ These patterns ensure consistent implementation across all AI agents:
 
 ## Security Architecture
 
+*   **Authentication:** **Supabase Auth** manages user identities and issues JWTs.
+    *   **Frontend:** Uses `@supabase/auth-helpers-nextjs` for middleware protection and session management.
+    *   **Backend:** Validates the Supabase JWT in the `Authorization: Bearer` header for protected routes.
 *   **Input Validation:** Strict Pydantic validation on all incoming data.
 *   **Rate Limiting:** Implemented on API endpoints to prevent abuse.
 *   **Data Protection:** Use of parameterized queries (via ORM) to prevent SQL injection.
