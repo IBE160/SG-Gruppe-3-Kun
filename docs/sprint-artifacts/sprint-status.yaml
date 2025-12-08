@@ -64,7 +64,7 @@ development_status:
   epic-3-retrospective: optional
 
   # Epic 4: Robustness, Reliability & Feedback
-  epic-4: backlog
+  epic-4: contexted
   4-1-implement-automatic-fallback-mechanism: backlog
   4-2-develop-user-feedback-mechanism-thumbs-up-down: backlog
   4-3-implement-ambiguous-query-suggestion: backlog
