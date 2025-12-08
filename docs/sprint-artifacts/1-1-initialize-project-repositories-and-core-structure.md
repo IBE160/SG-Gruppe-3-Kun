@@ -10,59 +10,73 @@ so that all team members have a consistent and organized starting point for deve
 
 ## Acceptance Criteria
 
--   Given a new project,
--   When I initialize the project,
--   Then a monorepo structure is created with separate `frontend` (Next.js) and `backend` (FastAPI) directories.
--   And the backend directory structure includes `app/api`, `app/core`, `app/services`, `app/db`, `app/rag`, and `app/schemas`.
--   And the frontend directory structure includes `app/api`, `components`, `hooks`, `lib`, and `types`.
--   And a `.gitignore` file is configured for each project to exclude unnecessary files.
--   And a `README.md` is present at the root with basic project setup instructions.
+1. Monorepo structure exists with separate `frontend` (Next.js) and `backend` (FastAPI) directories.
+2. The backend directory structure includes `app/api`, `app/core`, `app/services`, `app/db`, `app/rag`, and `app/schemas`.
+3. The frontend directory structure includes `app/api`, `components`, `hooks`, `lib`, and `types`.
+4. A `.gitignore` file is configured for each project to exclude unnecessary files.
+5. A `README.md` is present at the root with basic project setup instructions.
 
 ## Tasks / Subtasks
 
--   [ ] **Create Monorepo Root Structure (AC: Monorepo created)**
+- [ ] Initialize Monorepo Root
+    - [ ] Create root directory (or verify current)
+    - [ ] Create global `.gitignore` (merging standard Node, Python, and system ignores)
+    - [ ] Create root `README.md`
+    - [ ] Initialize git repository (`git init`) if not already present
 
-    -   [ ] Create the top-level project directory.
-    -   [ ] Initialize a Git repository at the root.
-    -   [ ] Create a root `.gitignore` file.
-    -   [ ] Create a root `README.md` with basic setup instructions.
+- [ ] Initialize Backend (FastAPI)
+    - [ ] Install Poetry (`pip install poetry`)
+    - [ ] Run `poetry new backend`
+    - [ ] Configure `pyproject.toml` with dependencies: `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `asyncpg`, `python-multipart`, `pydantic-ai`
+    - [ ] Create directory structure:
+        - [ ] `app/api/v1`
+        - [ ] `app/core`
+        - [ ] `app/services`
+        - [ ] `app/db`
+        - [ ] `app/rag`
+        - [ ] `app/schemas`
+        - [ ] `app/utils`
+    - [ ] Create `app/main.py` (entry point)
+    - [ ] Create `app/core/config.py` (settings)
+    - [ ] Create `app/__init__.py` in all subdirectories
 
--   [ ] **Initialize Frontend Project (AC: `frontend` dir created, Next.js initialized, `package.json` created)**
+- [ ] Initialize Frontend (Next.js)
+    - [ ] Run `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`
+    - [ ] Verify `tsconfig.json`
+    - [ ] Verify `tailwind.config.ts`
+    - [ ] Create directory structure:
+        - [ ] `app/api`
+        - [ ] `components`
+        - [ ] `hooks`
+        - [ ] `lib`
+        - [ ] `types`
+        - [ ] `tests`
 
-    -   [ ] Navigate to the root directory.
-    -   [ ] Execute `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`
-    -   [ ] Verify `frontend/package.json` exists.
-    -   [ ] Create core `frontend` subdirectories: `app/api`, `components`, `hooks`, `lib`, `types`.
-
--   [ ] **Initialize Backend Project (AC: `backend` dir created, FastAPI initialized, `pyproject.toml` created)**
-
-    -   [ ] Navigate to the root directory.
-    -   [ ] Execute `poetry new backend`
-    -   [ ] Verify `backend/pyproject.toml` exists.
-    -   [ ] Create core `backend` subdirectories: `app/api`, `app/core`, `app/services`, `app/db`, `app/rag`, `app/schemas`.
-    -   [ ] Add `__init__.py` files to `backend/app/api`, `backend/app/core`, `backend/app/db`, `backend/app/rag`, `backend/app/schemas`, `backend/app/services` to ensure they are recognized as Python packages.
-
--   [ ] **Initial Verification (AC: Structure alignment)**
-    -   [ ] Confirm both `frontend` and `backend` directories exist at the root.
-    -   [ ] Confirm the presence of specified subdirectories within `frontend` and `backend`.
-    -   [ ] Confirm existence of `.gitignore` at root, `package.json` in `frontend`, and `pyproject.toml` in `backend`.
+- [ ] Verification
+    - [ ] Verify backend dependencies install (`poetry install`)
+    - [ ] Verify frontend dependencies install (`npm install`)
+    - [ ] Verify directory structure matches Architecture spec
 
 ## Dev Notes
 
--   **Relevant architecture patterns and constraints:** Monorepo structure, Next.js for frontend, FastAPI for backend. Follow project structure as defined in Architecture.
--   **Source tree components to touch:** Creation of `frontend/` and `backend/` directories and their initial subdirectories, root `.gitignore`, root `README.md`.
--   **Testing standards summary:** Not directly applicable to this story, as it's foundational setup. Subsequent stories will cover environment setup for testing.
+- **Architecture Compliance:** Strict adherence to "Project Structure" in `docs/architecture.md`.
+- **Backend Init:** Use `poetry new backend` to ensure standard layout.
+- **Frontend Init:** Use the specific `create-next-app` command from Architecture to ensure TypeScript and App Router are set up correctly.
+- **Version Control:** Ensure `.gitignore` is comprehensive (node_modules, __pycache__, .env, .venv, .DS_Store).
 
 ### Project Structure Notes
 
--   Alignment with `docs/architecture.md` Project Structure section.
--   No detected conflicts or variances at this foundational stage.
+- **Unified Structure:** The project uses a monorepo approach.
+- **Backend:** Python/FastAPI in `backend/`.
+- **Frontend:** TypeScript/Next.js in `frontend/`.
+- **Docs:** Documentation lives in `docs/`.
+- **Config:** Core config in `backend/app/core/config.py` (Backend) and `frontend/next.config.mjs` / `tailwind.config.ts` (Frontend).
 
 ### References
 
--   [Source: docs/architecture.md#Project-Initialization]
--   [Source: docs/architecture.md#Project-Structure]
--   [Source: docs/epics.md#Story-1.1:-Initialize-Project-Repositories-and-Core-Structure]
+- [Source: docs/epics.md#Story-1.1-Initialize-Project-Repositories-and-Core-Structure]
+- [Source: docs/architecture.md#Project-Initialization]
+- [Source: docs/sprint-artifacts/tech-spec-epic-1.md#Detailed-Design]
 
 ## Dev Agent Record
 
@@ -72,7 +86,7 @@ so that all team members have a consistent and organized starting point for deve
 
 ### Agent Model Used
 
-gemini-2.5-flash-latest
+Gemini 2.5 Flash
 
 ### Debug Log References
 
