@@ -71,7 +71,7 @@ development_status:
   epic-4-retrospective: optional
 
   # Epic 5: Production Readiness & Accessibility
-  epic-5: backlog
+  epic-5: contexted
   5-1-implement-api-rate-limiting: backlog
   5-2-ensure-wcag-2-1-aa-compliance-for-frontend: backlog
   5-3-implement-comprehensive-logging-and-monitoring: backlog
