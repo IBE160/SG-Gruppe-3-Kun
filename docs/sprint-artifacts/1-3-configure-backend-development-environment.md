@@ -1,6 +1,6 @@
 # Story 1.3: Configure Backend Development Environment
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -71,7 +71,7 @@ so that I can efficiently build the API endpoints and integrate the RAG pipeline
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/1-3-configure-backend-development-environment.context.xml
 
 ### Agent Model Used
 

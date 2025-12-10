@@ -1,0 +1,102 @@
+<story-context id="1-2" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>2</storyId>
+    <title>Configure Frontend Development Environment</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-2-configure-frontend-development-environment.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>frontend developer</asA>
+    <iWant>set up the Next.js development environment with TypeScript, Tailwind CSS, and shadcn/ui</iWant>
+    <soThat>I can efficiently build the user interface with a consistent and modern design system</soThat>
+    <tasks>
+*   [ ] **Initialize Next.js Project** (AC: 1)
+    *   [ ] Execute `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"` command.
+    *   [ ] Verify `frontend/` directory structure is created correctly.
+    *   [ ] Confirm `tsconfig.json` and `tailwind.config.ts` are generated.
+*   [ ] **Configure Tailwind CSS** (AC: 2)
+    *   [ ] Locate `tailwind.config.ts` in the `frontend/` directory.
+    *   [ ] Update `tailwind.config.ts` to include the Deep Blue/Teal primary color palette as defined in UX Specification Section 3.1 (`docs/ux-design-specification.md`).
+    *   [ ] Ensure `frontend/app/layout.tsx` correctly imports and applies global Tailwind styles.
+*   [ ] **Initialize shadcn/ui** (AC: 3)
+    *   [ ] Follow the manual `shadcn/ui` initialization process as per official documentation.
+    *   [ ] Install necessary `shadcn/ui` dependencies (e.g., `postcss`, `autoprefixer`).
+*   [ ] **Install Essential Frontend Dependencies** (AC: 4)
+    *   [ ] Install `lucide-react`, `clsx`, `tailwind-merge` within the `frontend/` project.
+*   [ ] **Create Basic "Hello World" Page** (AC: 5)
+    *   [ ] Implement a simple page (e.g., `frontend/app/page.tsx`) that displays "Hello World" or "HMSREG Chatbot".
+    *   [ ] Apply at least one Tailwind CSS class to the page to confirm Tailwind integration.
+    *   [ ] Verify the application runs successfully locally on `http://localhost:3000`.
+*   [ ] **Verification & Testing** (AC: 6, 7, 8)
+    *   [ ] Run `npm run dev` in `frontend/` and confirm the "Hello World" page is accessible via the browser.
+    *   [ ] Check the console for any TypeScript compilation errors.
+    *   [ ] Manually inspect the rendered page in the browser's developer tools to confirm Tailwind CSS classes are applied and styling is correct.
+    *   [ ] Add a basic shadcn/ui component (e.g., a `<Button>`) to the "Hello World" page and verify it renders as expected.
+    *   [ ] **Test (Unit/Integration):** Create initial component rendering tests for core UI elements (e.g., a placeholder for `ChatWindow`) using `Jest` / `React Testing Library` (as per `docs/sprint-artifacts/tech-spec-epic-1.md`).
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Next.js 14 (App Router) is configured with TypeScript.
+2.  Tailwind CSS is integrated with the project's color palette (Deep Blue/Teal primary).
+3.  shadcn/ui is initialized.
+4.  Essential dependencies are installed: `lucide-react`, `clsx`, `tailwind-merge`.
+5.  A basic "Hello World" page is rendered successfully, running locally on port 3000.
+6.  TypeScript compiles without errors.
+7.  Tailwind classes apply correctly.
+8.  shadcn/ui components can be added.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.1 Color System">
+        Defines the Primary (#004D40) and Secondary (#00796B) colors.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Initialization">
+         Specifies the use of Next.js 14+, TypeScript, and Tailwind CSS.
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Tech Spec Epic 1" section="Detailed Design">
+         Confirms frontend technology stack and responsibilities.
+      </doc>
+    </docs>
+    <code>
+      <!-- Greenfield -->
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="14+" />
+        <package name="react" />
+        <package name="typescript" />
+        <package name="tailwindcss" />
+        <package name="postcss" />
+        <package name="autoprefixer" />
+        <package name="shadcn/ui" />
+        <package name="lucide-react" />
+        <package name="clsx" />
+        <package name="tailwind-merge" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Use Next.js 14 App Router (not Pages router).
+- Use TypeScript for all components.
+- Use Tailwind CSS for all styling.
+- Manual shadcn/ui initialization.
+  </constraints>
+  <interfaces>
+    <!-- None -->
+  </interfaces>
+  <tests>
+    <standards>Jest / React Testing Library.</standards>
+    <locations>frontend/tests</locations>
+    <ideas>
+1. Verify "Hello World" page renders.
+2. Verify a shadcn Button renders.
+    </ideas>
+  </tests>
+</story-context>

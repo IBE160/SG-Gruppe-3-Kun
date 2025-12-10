@@ -1,6 +1,6 @@
 # Story 1.5: Implement Basic CI/CD for Backend (Railway)
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -49,7 +49,7 @@ so that changes are automatically built and deployed to a staging environment up
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/1-5-implement-basic-ci-cd-for-backend-railway.context.xml
 
 ### Agent Model Used
 

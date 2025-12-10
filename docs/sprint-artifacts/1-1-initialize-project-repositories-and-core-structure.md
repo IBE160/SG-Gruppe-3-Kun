@@ -1,6 +1,6 @@
 # Story 1.1: Initialize Project Repositories and Core Structure
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -82,7 +82,7 @@ so that all team members have a consistent and organized starting point for deve
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/1-1-initialize-project-repositories-and-core-structure.context.xml
 
 ### Agent Model Used
 
