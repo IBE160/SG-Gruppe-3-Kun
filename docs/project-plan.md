@@ -65,14 +65,14 @@
                 -   [ ] Epic 4: Sebastian
                 -   [ ] Epic 5: Sebastian
             -   [ ] /run-agent-task sm \*create-story-context {prompt / user-input-file}
-                -   [ ] File: sprint-artifacts/{{story_key}}.context.xml
+                -   [x] File: sprint-artifacts/{{story_key}}.context.xml
                 -   [ ] Epic 1: Oliver
                 -   [ ] Epic 2: Frida
                 -   [ ] Epic 3: Frida
                 -   [ ] Epic 4: Sebastian
                 -   [ ] Epic 5: Sebastian
             -   [ ] /run-agent-task sm \*validate-story-context {prompt / user-input-file}
-                -   [ ] Epic 1: Oliver
+                -   [x] Epic 1: Oliver
                 -   [ ] Epic 2: Frida
                 -   [ ] Epic 3: Frida
                 -   [ ] Epic 4: Sebastian
