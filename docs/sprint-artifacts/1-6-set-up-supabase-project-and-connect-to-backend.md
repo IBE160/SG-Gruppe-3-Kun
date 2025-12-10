@@ -48,6 +48,7 @@ so that I can store conversation logs, feedback, and analytics data.
 
 ### References
 
+- [Source: docs/epics.md#Story-1.6-Set-up-Supabase-Project-and-Connect-to-Backend]
 - [Source: docs/sprint-artifacts/tech-spec-epic-1.md#detailed-design]
 - [Source: docs/architecture.md#backend-stack]
 
@@ -66,3 +67,9 @@ Gemini-2.5-Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-10 | BIP | Added Epics citation, Dev Agent Record, and initialized Change Log. |

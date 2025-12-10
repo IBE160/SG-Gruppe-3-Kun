@@ -21,24 +21,24 @@ so that I can efficiently build the user interface with a consistent and modern 
 
 ## Tasks / Subtasks
 
-*   [ ] **Initialize Next.js Project**
+*   [ ] **Initialize Next.js Project** (AC: 1)
     *   [ ] Execute `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"` command.
     *   [ ] Verify `frontend/` directory structure is created correctly.
     *   [ ] Confirm `tsconfig.json` and `tailwind.config.ts` are generated.
-*   [ ] **Configure Tailwind CSS**
+*   [ ] **Configure Tailwind CSS** (AC: 2)
     *   [ ] Locate `tailwind.config.ts` in the `frontend/` directory.
     *   [ ] Update `tailwind.config.ts` to include the Deep Blue/Teal primary color palette as defined in UX Specification Section 3.1 (`docs/ux-design-specification.md`).
     *   [ ] Ensure `frontend/app/layout.tsx` correctly imports and applies global Tailwind styles.
-*   [ ] **Initialize shadcn/ui**
+*   [ ] **Initialize shadcn/ui** (AC: 3)
     *   [ ] Follow the manual `shadcn/ui` initialization process as per official documentation.
     *   [ ] Install necessary `shadcn/ui` dependencies (e.g., `postcss`, `autoprefixer`).
-*   [ ] **Install Essential Frontend Dependencies**
+*   [ ] **Install Essential Frontend Dependencies** (AC: 4)
     *   [ ] Install `lucide-react`, `clsx`, `tailwind-merge` within the `frontend/` project.
-*   [ ] **Create Basic "Hello World" Page**
+*   [ ] **Create Basic "Hello World" Page** (AC: 5)
     *   [ ] Implement a simple page (e.g., `frontend/app/page.tsx`) that displays "Hello World" or "HMSREG Chatbot".
     *   [ ] Apply at least one Tailwind CSS class to the page to confirm Tailwind integration.
     *   [ ] Verify the application runs successfully locally on `http://localhost:3000`.
-*   [ ] **Verification & Testing**
+*   [ ] **Verification & Testing** (AC: 6, 7, 8)
     *   [ ] Run `npm run dev` in `frontend/` and confirm the "Hello World" page is accessible via the browser.
     *   [ ] Check the console for any TypeScript compilation errors.
     *   [ ] Manually inspect the rendered page in the browser's developer tools to confirm Tailwind CSS classes are applied and styling is correct.
@@ -92,3 +92,9 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-10 | BIP | Added AC references to tasks and initialized Change Log. |

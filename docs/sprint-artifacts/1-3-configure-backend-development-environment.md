@@ -82,3 +82,9 @@ so that I can efficiently build the API endpoints and integrate the RAG pipeline
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-10 | BIP | Initialized Change Log. |

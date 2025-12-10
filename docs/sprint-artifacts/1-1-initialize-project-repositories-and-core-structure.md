@@ -18,13 +18,13 @@ so that all team members have a consistent and organized starting point for deve
 
 ## Tasks / Subtasks
 
-- [ ] Initialize Monorepo Root
+- [ ] Initialize Monorepo Root (AC: 1, 4, 5)
     - [ ] Create root directory (or verify current)
     - [ ] Create global `.gitignore` (merging standard Node, Python, and system ignores)
     - [ ] Create root `README.md`
     - [ ] Initialize git repository (`git init`) if not already present
 
-- [ ] Initialize Backend (FastAPI)
+- [ ] Initialize Backend (FastAPI) (AC: 2)
     - [ ] Install Poetry (`pip install poetry`)
     - [ ] Run `poetry new backend`
     - [ ] Configure `pyproject.toml` with dependencies: `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `asyncpg`, `python-multipart`, `pydantic-ai`
@@ -40,7 +40,7 @@ so that all team members have a consistent and organized starting point for deve
     - [ ] Create `app/core/config.py` (settings)
     - [ ] Create `app/__init__.py` in all subdirectories
 
-- [ ] Initialize Frontend (Next.js)
+- [ ] Initialize Frontend (Next.js) (AC: 3)
     - [ ] Run `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`
     - [ ] Verify `tsconfig.json`
     - [ ] Verify `tailwind.config.ts`
@@ -52,7 +52,7 @@ so that all team members have a consistent and organized starting point for deve
         - [ ] `types`
         - [ ] `tests`
 
-- [ ] Verification
+- [ ] Verification (AC: 1, 2, 3)
     - [ ] Verify backend dependencies install (`poetry install`)
     - [ ] Verify frontend dependencies install (`npm install`)
     - [ ] Verify directory structure matches Architecture spec
@@ -93,3 +93,9 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-10 | BIP | Added AC references to tasks and initialized Change Log. |

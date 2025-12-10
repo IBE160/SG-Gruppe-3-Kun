@@ -1,72 +1,33 @@
 # Story 1.5: Implement Basic CI/CD for Backend (Railway)
 
-**Epic:** 1 - Project Foundation & Deployment Pipeline
-**Story Key:** 1-5-implement-basic-ci-cd-for-backend-railway
-**Status:** Drafted
+Status: drafted
 
-## User Story
+## Story
 
-**As a** DevOps engineer,
-**I want to** configure a continuous integration and deployment pipeline for the backend,
-**So that** changes are automatically built and deployed to a staging environment upon commit.
-
-## Context & Scope
-
-- **Goal:** Establish an automated deployment pipeline for the FastAPI backend using Railway.
-- **Preceding Story:** Story 1.3 (Backend Setup) must be complete to have a deployable artifact.
-- **Target Environment:** Staging (Railway).
-- **Repository Structure:** Monorepo. Backend code is in `backend/` directory.
+As a DevOps engineer,
+I want to configure a continuous integration and deployment pipeline for the backend,
+so that changes are automatically built and deployed to a staging environment upon commit.
 
 ## Acceptance Criteria
 
-### AC 1: Automated Deployment Trigger
-- **Given** the FastAPI backend repository is connected to Railway,
-- **When** a commit is pushed to the `main` branch,
-- **Then** Railway automatically detects the change and triggers a new build.
+1.  **Automated Deployment Trigger:** Push to `main` triggers Railway deployment.
+2.  **Successful Build:** The build process completes without errors using `poetry`.
+3.  **Application Startup:** The application starts successfully using `uvicorn` on the host/port provided by Railway.
+4.  **Public Accessibility:** Staging API URL is reachable and the `/health` endpoint returns a `200 OK` JSON response.
 
-### AC 2: Successful Build and Start
-- **Given** a new build is triggered,
-- **When** the build process completes,
-- **Then** the application starts successfully using `poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
-- **And** no startup errors occur.
+## Tasks / Subtasks
 
-### AC 3: Public Accessibility
-- **Given** a successful deployment,
-- **When** I access the provided Railway staging URL,
-- **Then** the application is reachable.
-- **And** the `/health` endpoint returns a `200 OK` JSON response.
-
-## Technical Implementation
-
-### Deployment Configuration
-- **Platform:** Railway
-- **Root Directory:** `backend` (Critical for monorepo)
-- **Build System:** Railway Nixpacks (auto-detects `pyproject.toml`)
-- **Start Command:** `poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- **Environment Variables:**
-  - `PORT`: Provided by Railway
-  - `PYTHON_VERSION`: Ensure 3.11+ is selected if manual config required.
-
-### Configuration Files
-- Consider adding a `Procfile` in `backend/` to strictly define the start command:
-  ```text
-  web: poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT
-  ```
-  *Note: Railway works well without this if `pyproject.toml` is present, but `Procfile` is explicit.*
-
-## Tasks
-
-- [ ] **Configure Railway Project**
+- [ ] **Configure Railway Project** (AC: 1)
     - [ ] Create new project in Railway.
     - [ ] Connect to GitHub repository.
     - [ ] Set "Root Directory" to `/backend` in Service Settings.
-- [ ] **Define Start Command**
+- [ ] **Define Start Command** (AC: 2, 3)
     - [ ] Configure Start Command in Railway Settings OR add `backend/Procfile`.
     - [ ] Command: `poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- [ ] **Verify Build**
+- [ ] **Verify Build** (AC: 2)
     - [ ] Trigger a deployment.
     - [ ] Monitor build logs for Poetry installation and dependency resolution.
-- [ ] **Verify Deployment**
+- [ ] **Verify Deployment** (AC: 4)
     - [ ] Access the generated public URL.
     - [ ] Test `GET /health` endpoint.
 
@@ -76,9 +37,32 @@
 - **Port Binding:** FastAPI must listen on `0.0.0.0` and the port provided by the environment variable `$PORT`. Uvicorn handles this with the command flags.
 - **Secrets:** No secrets required for this basic setup yet, but be prepared to add `DATABASE_URL` in future stories (Story 1.6).
 
-## Definition of Done
+### Project Structure Notes
+- **Root Directory:** The backend code lives in `backend/`, so deployment configuration must specify this as the root.
 
-- [ ] Railway project created and linked.
-- [ ] Auto-deployment on push to `main` verified.
-- [ ] Application is running and accessible via public URL.
-- [ ] `/health` returns 200.
+### References
+- [Source: docs/epics.md#Story-1.5-Implement-Basic-CI/CD-for-Backend-(Railway)]
+- [Source: docs/architecture.md#Deployment-Architecture]
+- [Source: docs/sprint-artifacts/tech-spec-epic-1.md#Story-1.5:-Backend-CI/CD]
+
+## Dev Agent Record
+
+### Context Reference
+
+<!-- Path(s) to story context XML will be added here by context workflow -->
+
+### Agent Model Used
+
+Gemini 2.5 Flash
+
+### Debug Log References
+
+### Completion Notes List
+
+### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-10 | BIP | Added AC references to tasks, added References section with citations, added Dev Agent Record, and initialized Change Log. |

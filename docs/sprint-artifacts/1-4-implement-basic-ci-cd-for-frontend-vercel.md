@@ -17,12 +17,12 @@ so that changes are automatically built and deployed to a staging environment up
 ## Tasks / Subtasks
 
 - [ ] Sign up/Login to Vercel and link GitHub account (if not already done)
-- [ ] Create new Project in Vercel
+- [ ] Create new Project in Vercel (AC: 1)
   - [ ] Import `frontend` directory from the repository
   - [ ] Configure build settings (Framework Preset: Next.js)
   - [ ] Set Root Directory to `frontend`
-- [ ] Deploy the project
-- [ ] Verify deployment URL is active and accessible
+- [ ] Deploy the project (AC: 1)
+- [ ] Verify deployment URL is active and accessible (AC: 2, 3)
 - [ ] Add deployment URL to project documentation/README
 
 ## Dev Notes
@@ -62,3 +62,9 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-10 | BIP | Added AC references to tasks and initialized Change Log. |

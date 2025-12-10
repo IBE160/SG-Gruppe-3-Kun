@@ -47,6 +47,7 @@ so that I can efficiently store and retrieve document embeddings for the RAG pip
 
 ### References
 
+- [Source: docs/epics.md#Story-1.7-Set-up-ChromaDB-Vector-Store]
 - [Source: docs/sprint-artifacts/tech-spec-epic-1.md#detailed-design]
 - [Source: docs/architecture.md#backend-stack]
 
@@ -65,3 +66,9 @@ Gemini-2.5-Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-10 | BIP | Added Epics citation, Dev Agent Record, and initialized Change Log. |

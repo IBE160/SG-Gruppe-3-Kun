@@ -59,11 +59,31 @@
             -   [x] /run-agent-task sm \*create-story {prompt / user-input-file}
                 -   [x] File: sprint-artifacts/{{story_key}}.md
             -   [ ] /run-agent-task sm \*validate-create-story {prompt / user-input-file}
+                -   [x] Epic 1: Oliver
+                -   [ ] Epic 2: Frida
+                -   [ ] Epic 3: Frida
+                -   [ ] Epic 4: Sebastian
+                -   [ ] Epic 5: Sebastian
             -   [ ] /run-agent-task sm \*create-story-context {prompt / user-input-file}
                 -   [ ] File: sprint-artifacts/{{story_key}}.context.xml
+                -   [ ] Epic 1: Oliver
+                -   [ ] Epic 2: Frida
+                -   [ ] Epic 3: Frida
+                -   [ ] Epic 4: Sebastian
+                -   [ ] Epic 5: Sebastian
             -   [ ] /run-agent-task sm \*validate-story-context {prompt / user-input-file}
+                -   [ ] Epic 1: Oliver
+                -   [ ] Epic 2: Frida
+                -   [ ] Epic 3: Frida
+                -   [ ] Epic 4: Sebastian
+                -   [ ] Epic 5: Sebastian
             -   [ ] /run-agent-task sm \*story-ready-for-dev {prompt / user-input-file}
-                    while code-review != approved:
+                -   [ ] Epic 1: Oliver
+                -   [ ] Epic 2: Frida
+                -   [ ] Epic 3: Frida
+                -   [ ] Epic 4: Sebastian
+                -   [ ] Epic 5: Sebastian
+                        while code-review != approved:
                 -   [ ] /run-agent-task dev \*develop-story {prompt / user-input-file}
                 -   [ ] /run-agent-task dev \*code-review {prompt / user-input-file}
             -   [ ] /run-agent-task dev \*story-done {prompt / user-input-file}
