@@ -37,7 +37,7 @@ development_status:
     # Epic 1: Project Foundation & Deployment Pipeline
     epic-1: contexted
     1-1-initialize-project-repositories-and-core-structure: done
-    1-2-configure-frontend-development-environment: ready-for-dev
+    1-2-configure-frontend-development-environment: done
     1-3-configure-backend-development-environment: ready-for-dev
     1-4-implement-basic-ci-cd-for-frontend-vercel: ready-for-dev
     1-5-implement-basic-ci-cd-for-backend-railway: ready-for-dev
