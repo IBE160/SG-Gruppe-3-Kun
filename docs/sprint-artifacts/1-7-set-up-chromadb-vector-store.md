@@ -1,6 +1,6 @@
 # Story 1.7: Set up ChromaDB Vector Store
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -55,7 +55,7 @@ so that I can efficiently store and retrieve document embeddings for the RAG pip
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/1-7-set-up-chromadb-vector-store.context.xml
 
 ### Agent Model Used
 

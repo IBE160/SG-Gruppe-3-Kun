@@ -1,0 +1,119 @@
+<story-context id="1-1" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1</storyId>
+    <title>Initialize Project Repositories and Core Structure</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-1-initialize-project-repositories-and-core-structure.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>set up the foundational project repositories and core directory structure</iWant>
+    <soThat>all team members have a consistent and organized starting point for development</soThat>
+    <tasks>
+- [ ] Initialize Monorepo Root (AC: 1, 4, 5)
+    - [ ] Create root directory (or verify current)
+    - [ ] Create global `.gitignore` (merging standard Node, Python, and system ignores)
+    - [ ] Create root `README.md`
+    - [ ] Initialize git repository (`git init`) if not already present
+
+- [ ] Initialize Backend (FastAPI) (AC: 2)
+    - [ ] Install Poetry (`pip install poetry`)
+    - [ ] Run `poetry new backend`
+    - [ ] Configure `pyproject.toml` with dependencies: `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `asyncpg`, `python-multipart`, `pydantic-ai`
+    - [ ] Create directory structure:
+        - [ ] `app/api/v1`
+        - [ ] `app/core`
+        - [ ] `app/services`
+        - [ ] `app/db`
+        - [ ] `app/rag`
+        - [ ] `app/schemas`
+        - [ ] `app/utils`
+    - [ ] Create `app/main.py` (entry point)
+    - [ ] Create `app/core/config.py` (settings)
+    - [ ] Create `app/__init__.py` in all subdirectories
+
+- [ ] Initialize Frontend (Next.js) (AC: 3)
+    - [ ] Run `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`
+    - [ ] Verify `tsconfig.json`
+    - [ ] Verify `tailwind.config.ts`
+    - [ ] Create directory structure:
+        - [ ] `app/api`
+        - [ ] `components`
+        - [ ] `hooks`
+        - [ ] `lib`
+        - [ ] `types`
+        - [ ] `tests`
+
+- [ ] Verification (AC: 1, 2, 3)
+    - [ ] Verify backend dependencies install (`poetry install`)
+    - [ ] Verify frontend dependencies install (`npm install`)
+    - [ ] Verify directory structure matches Architecture spec
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. Monorepo structure exists with separate `frontend` (Next.js) and `backend` (FastAPI) directories.
+2. The backend directory structure includes `app/api`, `app/core`, `app/services`, `app/db`, `app/rag`, and `app/schemas`.
+3. The frontend directory structure includes `app/api`, `components`, `hooks`, `lib`, and `types`.
+4. A `.gitignore` file is configured for each project to exclude unnecessary files.
+5. A `README.md` is present at the root with basic project setup instructions.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Initialization">
+        Defines the specific commands for initializing backend (poetry new) and frontend (create-next-app).
+        Specifies the monorepo structure and technology decisions.
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Epic 1 Tech Spec" section="Detailed Design">
+        Provides detailed module responsibilities, folder structures, and alignment with architecture.
+        Confirming Vercel/Railway deployment targets.
+      </doc>
+    </docs>
+    <code>
+      <!-- Greenfield project, no existing code artifacts -->
+    </code>
+    <dependencies>
+      <ecosystem name="python">
+        <package name="fastapi" />
+        <package name="uvicorn[standard]" />
+        <package name="sqlalchemy" />
+        <package name="asyncpg" />
+        <package name="python-multipart" />
+        <package name="pydantic-ai" />
+        <package name="poetry" />
+      </ecosystem>
+      <ecosystem name="node">
+        <package name="next" version="14+" />
+        <package name="react" />
+        <package name="typescript" />
+        <package name="tailwindcss" />
+        <package name="eslint" />
+        <package name="shadcn/ui" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Monorepo structure with `frontend/` and `backend/` at root.
+- Strict `.gitignore` including node_modules, __pycache__, .env, .venv.
+- Backend must use `poetry` for dependency management.
+- Frontend must use `create-next-app` with App Router and TypeScript.
+  </constraints>
+  <interfaces>
+    <!-- No interfaces defined yet (Initialization story) -->
+  </interfaces>
+  <tests>
+    <standards>Backend: Pytest. Frontend: Jest/RTL.</standards>
+    <locations>backend/tests, frontend/tests</locations>
+    <ideas>
+1. Verify directory structure exists.
+2. Verify dependencies can be installed.
+3. Verify basic build commands pass.
+    </ideas>
+  </tests>
+</story-context>

@@ -1,6 +1,6 @@
 # Story 1.2: Configure Frontend Development Environment
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -81,7 +81,7 @@ so that I can efficiently build the user interface with a consistent and modern 
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/1-2-configure-frontend-development-environment.context.xml
 
 ### Agent Model Used
 
