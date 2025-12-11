@@ -1,6 +1,6 @@
 # Story 1.1: Initialize Project Repositories and Core Structure
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -18,44 +18,44 @@ so that all team members have a consistent and organized starting point for deve
 
 ## Tasks / Subtasks
 
-- [ ] Initialize Monorepo Root (AC: 1, 4, 5)
-    - [ ] Create root directory (or verify current)
-    - [ ] Create global `.gitignore` (merging standard Node, Python, and system ignores)
-    - [ ] Create root `README.md`
-    - [ ] Initialize git repository (`git init`) if not already present
+- [x] Initialize Monorepo Root (AC: 1, 4, 5)
+    - [x] Create root directory (or verify current)
+    - [x] Create global `.gitignore` (merging standard Node, Python, and system ignores)
+    - [x] Create root `README.md`
+    - [x] Initialize git repository (`git init`) if not already present
 
-- [ ] Initialize Backend (FastAPI) (AC: 2)
-    - [ ] Install Poetry (`pip install poetry`)
-    - [ ] Run `poetry new backend`
-    - [ ] Configure `pyproject.toml` with dependencies: `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `asyncpg`, `python-multipart`, `pydantic-ai`
-    - [ ] Create directory structure:
-        - [ ] `app/api/v1`
-        - [ ] `app/core`
-        - [ ] `app/services`
-        - [ ] `app/db`
-        - [ ] `app/rag`
-        - [ ] `app/schemas`
-        - [ ] `app/utils`
-    - [ ] Create `app/main.py` (entry point)
-    - [ ] Create `app/core/config.py` (settings)
-    - [ ] Create `app/__init__.py` in all subdirectories
+- [x] Initialize Backend (FastAPI) (AC: 2)
+    - [x] Install Poetry (`pip install poetry`)
+    - [x] Run `poetry new backend`
+    - [x] Configure `pyproject.toml` with dependencies: `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `asyncpg`, `python-multipart`, `pydantic-ai`
+    - [x] Create directory structure:
+        - [x] `app/api/v1`
+        - [x] `app/core`
+        - [x] `app/services`
+        - [x] `app/db`
+        - [x] `app/rag`
+        - [x] `app/schemas`
+        - [x] `app/utils`
+    - [x] Create `app/main.py` (entry point)
+    - [x] Create `app/core/config.py` (settings)
+    - [x] Create `app/__init__.py` in all subdirectories
 
-- [ ] Initialize Frontend (Next.js) (AC: 3)
-    - [ ] Run `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`
-    - [ ] Verify `tsconfig.json`
-    - [ ] Verify `tailwind.config.ts`
-    - [ ] Create directory structure:
-        - [ ] `app/api`
-        - [ ] `components`
-        - [ ] `hooks`
-        - [ ] `lib`
-        - [ ] `types`
-        - [ ] `tests`
+- [x] Initialize Frontend (Next.js) (AC: 3)
+    - [x] Run `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`
+    - [x] Verify `tsconfig.json`
+    - [x] Verify `tailwind.config.ts`
+    - [x] Create directory structure:
+        - [x] `app/api`
+        - [x] `components`
+        - [x] `hooks`
+        - [x] `lib`
+        - [x] `types`
+        - [x] `tests`
 
-- [ ] Verification (AC: 1, 2, 3)
-    - [ ] Verify backend dependencies install (`poetry install`)
-    - [ ] Verify frontend dependencies install (`npm install`)
-    - [ ] Verify directory structure matches Architecture spec
+- [x] Verification (AC: 1, 2, 3)
+    - [x] Verify backend dependencies install (`poetry install`)
+    - [x] Verify frontend dependencies install (`npm install`)
+    - [x] Verify directory structure matches Architecture spec
 
 ## Dev Notes
 
@@ -91,8 +91,44 @@ Gemini 2.5 Flash
 ### Debug Log References
 
 ### Completion Notes List
+- Initialized monorepo root: Verified project root, updated global .gitignore with Python-specific rules, and enhanced root README.md with basic project setup instructions. No new git repo initialization was needed as one was already present.
+- Initialized backend (FastAPI): Installed Poetry, created 'backend' project, configured 'pyproject.toml' with core dependencies, created application directory structure, and added '__init__.py' files where necessary, including a basic 'main.py' and 'core/config.py'.
+- Initialized frontend (Next.js): Created 'frontend' project using `create-next-app` with TypeScript, Tailwind CSS, ESLint, App Router. Verified `tsconfig.json`. Noted absence of `tailwind.config.ts` (expected to be handled during `shadcn/ui` setup). Created necessary application directory structure.
+- Verified project setup: Successfully installed backend (Poetry) and frontend (npm) dependencies. Refactored backend project structure from Poetry's default to match the specified 'backend/app' architecture. Verified overall directory structure for both frontend and backend against the Architecture Specification.
 
 ### File List
+- .gitignore
+- README.md
+- backend/pyproject.toml
+- backend/app/main.py
+- backend/app/core/config.py
+- backend/app/__init__.py
+- backend/app/api/__init__.py
+- backend/app/api/v1/__init__.py
+- backend/app/core/__init__.py
+- backend/app/services/__init__.py
+- backend/app/db/__init__.py
+- backend/app/rag/__init__.py
+- backend/app/schemas/__init__.py
+- backend/app/utils/__init__.py
+- frontend/.next
+- frontend/app
+- frontend/public
+- frontend/eslint.config.mjs
+- frontend/next.config.ts
+- frontend/package-lock.json
+- frontend/package.json
+- frontend/postcss.config.mjs
+- frontend/README.md
+- frontend/tsconfig.json
+- frontend/app/api
+- frontend/components
+- frontend/hooks
+- frontend/lib
+- frontend/types
+- frontend/tests
+- (deleted) backend/src
+- (deleted) backend/README.md
 
 ## Change Log
 
