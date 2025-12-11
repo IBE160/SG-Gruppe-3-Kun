@@ -1,6 +1,6 @@
 # Story 4.1: Implement Automatic Fallback Mechanism
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -34,6 +34,12 @@ so that it can gracefully inform the user and provide alternative resources.
 
 ## Dev Notes
 
+### Architecture patterns and constraints
+
+- **Service Layer Pattern:** Core logic for confidence detection and fallback must reside in `app/services/chat_service.py`, keeping the API layer (`app/api/v1/chat.py`) thin.
+- **Pydantic Models:** Use `ChatResponse` in `app/schemas/chat.py` to strictly define the API contract, ensuring the `fallback_message` field is correctly typed.
+- **Configuration:** Use `app/core/config.py` for the `RAG_CONFIDENCE_THRESHOLD` to allow easy environment-based tuning.
+
 - **Tech Spec Reference:** This implements the "Automatic Fallback Mechanism" sequence diagram in Tech Spec 4.
 - **Pydantic AI:** The confidence score might come from the model metadata or be a self-evaluated score requested in the output model. If the model doesn't natively provide it, prompt engineering ("Rate your confidence 0-1") is required.
 - **Message Content:**
@@ -44,16 +50,23 @@ so that it can gracefully inform the user and provide alternative resources.
 - `app/services/chat_service.py`: Core logic location.
 - `app/core/config.py`: Configuration.
 
+### Learnings from Previous Story
+
+- **N/A:** This is the first story in Epic 4.
+
 ### References
 
 - [Source: docs/sprint-artifacts/tech-spec-epic-4.md#detailed-design]
 - [Source: docs/sprint-artifacts/tech-spec-epic-4.md#acceptance-criteria-authoritative]
+- [Source: docs/architecture.md]
+- [Source: docs/epics.md]
+- [Source: docs/PRD.md]
 
 ## Dev Agent Record
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/4-1-implement-automatic-fallback-mechanism.context.xml
 
 ### Agent Model Used
 

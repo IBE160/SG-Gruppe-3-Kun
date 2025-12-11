@@ -1,0 +1,64 @@
+<story-context>
+  <story_id>4-3</story_id>
+  <story_title>Implement Ambiguous Query Suggestion</story_title>
+  <status>drafted</status>
+
+  <user_story>
+    <as_a>backend developer</as_a>
+    <i_want>to enable the chatbot to suggest alternative or related topics when a user's query is ambiguous</i_want>
+    <so_that>users can refine their questions and find relevant information more easily</so_that>
+  </user_story>
+
+  <acceptance_criteria>
+    <criterion id="1">Ambiguity Detection: The system must identify ambiguous queries (e.g., "Tell me about rules") where multiple distinct topics could apply.</criterion>
+    <criterion id="2">Suggestion Generation: The system must generate 2-3 specific, relevant follow-up questions or topics based on the ambiguous query.</criterion>
+    <criterion id="3">UI Presentation: Suggestions must be displayed as clickable buttons or links in the chat interface.</criterion>
+    <criterion id="4">Interaction: Clicking a suggestion must immediately trigger a new search/chat request with that specific query.</criterion>
+  </acceptance_criteria>
+
+  <tasks>
+    <task id="1">Backend: Suggestion Logic (AC: 1, 2)</task>
+    <task id="2">Backend: API Response Update (AC: 3)</task>
+    <task id="3">Frontend: Display Suggestions (AC: 3)</task>
+    <task id="4">Frontend: Interaction Handler (AC: 4)</task>
+    <task id="5">Testing</task>
+  </tasks>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-4.md</path>
+        <title>Epic 4 Technical Specification</title>
+        <section>Detailed Design / Workflows</section>
+        <snippet>Ambiguous Query Suggestion: User -> Frontend -> BackendAPI -> ChatService -> Detect ambiguity -> Generate suggested_queries -> Stream response.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>backend/app/services/chat_service.py: Service layer. components/ChatBubble.tsx: UI component.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code files found. -->
+    </code>
+    <dependencies>
+      <dependency>FastAPI</dependency>
+      <dependency>Pydantic AI</dependency>
+      <dependency>Gemini</dependency>
+      <dependency>Next.js</dependency>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Service Layer Logic: Implement ambiguity detection and suggestion generation within `app/services/chat_service.py`.</constraint>
+    <constraint>SSE Extension: Deliver suggested queries via the existing Server-Sent Events stream by extending the `ChatResponse` schema.</constraint>
+    <constraint>Prompt Engineering: Use the system prompt or a dedicated chain to generate suggestions.</constraint>
+  </constraints>
+
+  <tests>
+    <standard>Unit test backend logic. E2E test for UI interaction.</standard>
+    <idea>Unit test (Backend): Verify specific prompts produce suggestions.</idea>
+    <idea>E2E (Frontend): Click suggestion -> New message sent.</idea>
+  </tests>
+</story-context>

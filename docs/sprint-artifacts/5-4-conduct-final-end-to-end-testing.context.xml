@@ -1,0 +1,52 @@
+<story-context>
+  <story_id>5-4</story_id>
+  <story_title>Conduct Final End-to-End Testing</story_title>
+  <status>drafted</status>
+  <user_story>
+    <as_a>QA engineer</as_a>
+    <i_want>to perform comprehensive end-to-end testing</i_want>
+    <so_that>all features and integrations function correctly before launch</so_that>
+  </user_story>
+  <acceptance_criteria>
+    <criterion id="1">E2E test suite must cover critical user journey: Landing -> Role Selection -> Chat -> Feedback.</criterion>
+    <criterion id="2">Test suite must run successfully in CI/CD pipeline.</criterion>
+    <criterion id="3">All critical tests must pass (100% pass rate).</criterion>
+    <criterion id="4">Tests should not be flaky.</criterion>
+  </acceptance_criteria>
+  <tasks>
+    <task id="1">Review existing E2E tests</task>
+    <task id="2">Implement missing test scenarios</task>
+    <task id="3">Verify backend integration in test environment</task>
+    <task id="4">Configure CI/CD pipeline</task>
+    <task id="5">Run full suite and fix failures</task>
+    <task id="6">Confirm 100% pass rate</task>
+  </tasks>
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Tech Spec</title>
+        <section>Detailed Design / Workflows</section>
+        <snippet>Final End-to-End Testing: QA -> Playwright -> DeployedApp -> Test Report.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 5: CI/CD pipelines</snippet>
+      </doc>
+    </docs>
+    <dependencies>
+      <dependency>playwright</dependency>
+      <dependency>GitHub Actions/Vercel/Railway</dependency>
+    </dependencies>
+  </artifacts>
+  <constraints>
+    <constraint>E2E Testing Pattern: Use Playwright.</constraint>
+    <constraint>Environment Isolation: Tests must run against a consistent environment.</constraint>
+    <constraint>Data Cleanliness: Seed and clean data.</constraint>
+  </constraints>
+  <tests>
+    <standard>Full regression suite execution.</standard>
+  </tests>
+</story-context>

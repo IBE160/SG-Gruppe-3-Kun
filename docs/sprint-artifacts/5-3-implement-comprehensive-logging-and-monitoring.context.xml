@@ -1,0 +1,51 @@
+<story-context>
+  <story_id>5-3</story_id>
+  <story_title>Implement Comprehensive Logging and Monitoring</story_title>
+  <status>drafted</status>
+  <user_story>
+    <as_a>DevOps engineer</as_a>
+    <i_want>to set up comprehensive logging and monitoring</i_want>
+    <so_that>operational issues can be quickly identified, diagnosed, and resolved</so_that>
+  </user_story>
+  <acceptance_criteria>
+    <criterion id="1">Backend logs must be output in valid JSON format in production.</criterion>
+    <criterion id="2">Logs must capture HTTP method, path, status, time, and Correlation ID.</criterion>
+    <criterion id="3">Uncaught exceptions must be logged with full stack trace.</criterion>
+    <criterion id="4">Unhandled frontend exceptions must be reported.</criterion>
+  </acceptance_criteria>
+  <tasks>
+    <task id="1">Configure `backend/app/core/logging.py` with JSON formatter</task>
+    <task id="2">Implement Correlation ID middleware</task>
+    <task id="3">Implement global exception handler</task>
+    <task id="4">Integrate frontend logging service</task>
+    <task id="5">Verify log structure</task>
+  </tasks>
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Tech Spec</title>
+        <section>Detailed Design / Workflows</section>
+        <snippet>Comprehensive Logging: BackendApp -> Logger -> Monitor.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 5: backend/app/core/logging.py</snippet>
+      </doc>
+    </docs>
+    <dependencies>
+      <dependency>python-json-logger</dependency>
+      <dependency>FastAPI</dependency>
+    </dependencies>
+  </artifacts>
+  <constraints>
+    <constraint>Structured Logging: JSON format in production.</constraint>
+    <constraint>Request Tracing: Generate and propagate `Correlation-ID`.</constraint>
+    <constraint>Global Error Handling: Catch all unhandled exceptions.</constraint>
+  </constraints>
+  <tests>
+    <standard>Unit tests for log formatting. Integration tests for error handling.</standard>
+  </tests>
+</story-context>

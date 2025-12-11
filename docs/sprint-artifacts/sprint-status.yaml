@@ -63,17 +63,17 @@ development_status:
     3-3-incorporate-user-role-into-rag-prompt: ready-for-dev
     epic-3-retrospective: optional
 
-    # Epic 4: Robustness, Reliability & Feedback
-    epic-4: contexted
-    4-1-implement-automatic-fallback-mechanism: drafted
-    4-2-develop-user-feedback-mechanism-thumbs-up-down: drafted
-    4-3-implement-ambiguous-query-suggestion: drafted
-    epic-4-retrospective: optional
+  # Epic 4: Robustness, Reliability & Feedback
+  epic-4: contexted
+  4-1-implement-automatic-fallback-mechanism: ready-for-dev
+  4-2-develop-user-feedback-mechanism-thumbs-up-down: ready-for-dev
+  4-3-implement-ambiguous-query-suggestion: ready-for-dev
+  epic-4-retrospective: optional
 
-    # Epic 5: Production Readiness & Accessibility
-    epic-5: contexted
-    5-1-implement-api-rate-limiting: drafted
-    5-2-ensure-wcag-2-1-aa-compliance-for-frontend: drafted
-    5-3-implement-comprehensive-logging-and-monitoring: drafted
-    5-4-conduct-final-end-to-end-testing: drafted
-    epic-5-retrospective: optional
+  # Epic 5: Production Readiness & Accessibility
+  epic-5: contexted
+  5-1-implement-api-rate-limiting: ready-for-dev
+  5-2-ensure-wcag-2-1-aa-compliance-for-frontend: ready-for-dev
+  5-3-implement-comprehensive-logging-and-monitoring: ready-for-dev
+  5-4-conduct-final-end-to-end-testing: ready-for-dev
+  epic-5-retrospective: optional
