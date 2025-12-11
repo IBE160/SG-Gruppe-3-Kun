@@ -42,7 +42,7 @@ development_status:
     1-4-implement-basic-ci-cd-for-frontend-vercel: done
     1-5-implement-basic-ci-cd-for-backend-railway: done
     1-6-set-up-supabase-project-and-connect-to-backend: done
-    1-7-set-up-chromadb-vector-store: ready-for-dev
+    1-7-set-up-chromadb-vector-store: review
     epic-1-retrospective: optional
 
     # Epic 2: Core Conversational Experience & RAG Pipeline

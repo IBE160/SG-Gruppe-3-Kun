@@ -1,6 +1,6 @@
 # Story 1.7: Set up ChromaDB Vector Store
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -17,21 +17,21 @@ so that I can efficiently store and retrieve document embeddings for the RAG pip
 
 ## Tasks / Subtasks
 
-- [ ] **Install and Configure ChromaDB** (AC: 1)
-  - [ ] Add `chromadb` to `pyproject.toml` (already should be there, verify).
-  - [ ] Configure settings in `app/core/config.py` (e.g., `CHROMA_PERSIST_DIRECTORY`).
-- [ ] **Implement Vector Store Module** (AC: 3)
-  - [ ] Create `app/rag/vector_store.py`.
-  - [ ] Implement `get_chroma_client()` function.
-  - [ ] Define the collection name (e.g., `hmsreg_docs`).
-- [ ] **Configure Persistence** (AC: 2)
-  - [ ] For local dev: Use local file path.
-  - [ ] For Railway (Staging): Determine strategy (Docker volume or ephemeral for now if POC). *Note: Tech Spec implies persistent storage is required.*
-- [ ] **Verify Functionality** (AC: 4)
-  - [ ] Create a test script `tests/test_chroma_init.py`.
-  - [ ] Insert a mock vector.
-  - [ ] Query the mock vector.
-  - [ ] Assert results match.
+- [x] **Install and Configure ChromaDB** (AC: 1)
+  - [x] Add `chromadb` to `pyproject.toml` (already should be there, verify).
+  - [x] Configure settings in `app/core/config.py` (e.g., `CHROMA_PERSIST_DIRECTORY`).
+- [x] **Implement Vector Store Module** (AC: 3)
+  - [x] Create `app/rag/vector_store.py`.
+  - [x] Implement `get_chroma_client()` function.
+  - [x] Define the collection name (e.g., `hmsreg_docs`).
+- [x] **Configure Persistence** (AC: 2)
+  - [x] For local dev: Use local file path.
+  - [x] For Railway (Staging): Determine strategy (Docker volume or ephemeral for now if POC). *Note: Tech Spec implies persistent storage is required.*
+- [x] **Verify Functionality** (AC: 4)
+  - [x] Create a test script `tests/test_chroma_init.py`.
+  - [x] Insert a mock vector.
+  - [x] Query the mock vector.
+  - [x] Assert results match.
 
 ## Dev Notes
 
@@ -63,12 +63,25 @@ Gemini-2.5-Flash
 
 ### Debug Log References
 
+- cleanup error on Windows in `test_chroma_init.py` (file lock), but test functionality passed.
+
 ### Completion Notes List
 
+- ChromaDB installed and configured.
+- `vector_store.py` created with `get_chroma_client` and `get_collection`.
+- Persistence configured via `settings.CHROMA_PERSIST_DIRECTORY`.
+- Integration test `test_chroma_init.py` created and passed.
+
 ### File List
+
+- backend/pyproject.toml
+- backend/app/core/config.py
+- backend/app/rag/vector_store.py
+- backend/tests/test_chroma_init.py
 
 ## Change Log
 
 | Date | Author | Description |
 |---|---|---|
 | 2025-12-10 | BIP | Added Epics citation, Dev Agent Record, and initialized Change Log. |
+| 2025-12-12 | Amelia | Implemented ChromaDB integration, vector store module, and verification tests. |
