@@ -17,19 +17,19 @@ so that changes are automatically built and deployed to a staging environment up
 
 ## Tasks / Subtasks
 
-- [ ] **Configure Railway Project** (AC: 1)
-    - [ ] Create new project in Railway.
-    - [ ] Connect to GitHub repository.
-    - [ ] Set "Root Directory" to `/backend` in Service Settings.
+- [x] **Configure Railway Project** (AC: 1)
+    - [x] Create new project in Railway.
+    - [x] Connect to GitHub repository.
+    - [x] Set "Root Directory" to `/backend` in Service Settings.
 - [x] **Define Start Command** (AC: 2, 3)
     - [x] Configure Start Command in Railway Settings OR add `backend/Procfile`.
     - [x] Command: `poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- [ ] **Verify Build** (AC: 2)
-    - [ ] Trigger a deployment.
-    - [ ] Monitor build logs for Poetry installation and dependency resolution.
-- [ ] **Verify Deployment** (AC: 4)
-    - [ ] Access the generated public URL.
-    - [ ] Test `GET /health` endpoint.
+- [x] **Verify Build** (AC: 2)
+    - [x] Trigger a deployment.
+    - [x] Monitor build logs for Poetry installation and dependency resolution.
+- [x] **Verify Deployment** (AC: 4)
+    - [x] Access the generated public URL.
+    - [x] Test `GET /health` endpoint.
 
 ## Dev Notes
 
@@ -71,4 +71,5 @@ Gemini 2.5 Flash
 
 | Date | Author | Description |
 |---|---|---|
+| 2025-12-11 | Gemini | Verified Railway deployment, including `/health` endpoint status and content. |
 | 2025-12-10 | BIP | Added AC references to tasks, added References section with citations, added Dev Agent Record, and initialized Change Log. |
