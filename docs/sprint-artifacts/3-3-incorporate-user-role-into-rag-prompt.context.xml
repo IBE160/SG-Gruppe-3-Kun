@@ -1,0 +1,30 @@
+<storyContext>
+  <title>Incorporat User Role into RAG Prompt</title>
+  <story>
+    As a backend developer, I want to modify the RAG pipeline to include the user's selected role in the prompt sent to Gemini 2.5 Pro, so that the generated answers are tailored to the user's specific context.
+  </story>
+  <productGoalAlignment>
+    This story aims to refine the chatbot's response generation by incorporating user roles into the RAG prompt, ensuring that the answers are not only informed by documentation but also highly relevant and contextually appropriate for the specific user, thereby maximizing user utility and satisfaction.
+  </productGoalAlignment>
+  <keyStakeholders>
+    <stakeholder>Backend Developers</stakeholder>
+    <stakeholder>Chatbot Users</stakeholder>
+    <stakeholder>AI/ML Engineers</stakeholder>
+    <stakeholder>Product Owner/Manager</stakeholder>
+  </keyStakeholders>
+  <dependencies>
+    <dependency>Story 3.2: Pass User Role to Backend (provides the user_role to the backend)</dependency>
+    <dependency>backend/app/services/chat_service.py (the module to be modified)</dependency>
+    <dependency>Pydantic AI Agent (used for RAG pipeline)</dependency>
+    <dependency>Gemini 2.5 Pro (the LLM that will receive the role-enhanced prompt)</dependency>
+    <dependency>epics.md</dependency>
+    <dependency>sprint-artifacts/tech-spec-epic-3.md</dependency>
+    <dependency>architecture.md</dependency>
+  </dependencies>
+  <acceptanceCriteria>
+    <criterion>Service Layer: ChatService.generate_response (or equivalent) accepts user_role.</criterion>
+    <criterion>Prompt Injection: The role is successfully interpolated into the system prompt sent to Gemini.</criterion>
+    <criterion>Persona Adaptation: If role is "Construction Worker", the answer is practical, safety-focused, and concise. If role is "Project Manager", the answer focuses on compliance, overview, and reporting. If role is "Supplier", the answer focuses on requirements, invoicing, and access.</criterion>
+    <criterion>Verification: Manual verification of response tone/content differences based on role.</criterion>
+  </acceptanceCriteria>
+</storyContext>

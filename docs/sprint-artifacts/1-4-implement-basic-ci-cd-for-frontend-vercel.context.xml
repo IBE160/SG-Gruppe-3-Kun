@@ -1,0 +1,68 @@
+<story-context id="1-4" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>implement-basic-ci-cd-for-frontend-vercel</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-4-implement-basic-ci-cd-for-frontend-vercel.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>DevOps engineer</asA>
+    <iWant>configure a continuous integration and deployment pipeline for the frontend</iWant>
+    <soThat>changes are automatically built and deployed to a staging environment upon commit</soThat>
+    <tasks>
+- [ ] Sign up/Login to Vercel and link GitHub account (if not already done)
+- [ ] Create new Project in Vercel (AC: 1)
+  - [ ] Import `frontend` directory from the repository
+  - [ ] Configure build settings (Framework Preset: Next.js)
+  - [ ] Set Root Directory to `frontend`
+- [ ] Deploy the project (AC: 1)
+- [ ] Verify deployment URL is active and accessible (AC: 2, 3)
+- [ ] Add deployment URL to project documentation/README
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Push to `main` triggers Vercel deployment.
+2.  Staging URL is accessible and renders the app.
+3.  The "Hello World" page is accessible via the deployed URL.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/architecture.md" title="Architecture" section="Deployment Architecture">
+         Specifies Vercel for frontend hosting.
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Tech Spec Epic 1" section="Detailed Design">
+         Confirms Vercel CI/CD pipeline flow.
+      </doc>
+    </docs>
+    <code>
+      <file path="frontend/" kind="directory" symbol="Next.js Project" reason="Target for deployment" />
+    </code>
+    <dependencies>
+      <ecosystem name="platform">
+        <package name="Vercel" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Root Directory must be set to `frontend` in Vercel settings.
+- Automatic deployment on push to `main`.
+  </constraints>
+  <interfaces>
+    <!-- None -->
+  </interfaces>
+  <tests>
+    <standards>Manual Verification.</standards>
+    <locations>Vercel Dashboard, Web Browser</locations>
+    <ideas>
+1. Push a change to main and check Vercel dashboard for build trigger.
+2. Visit the deployed URL.
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,83 @@
+<story-context id="1-6" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>6</storyId>
+    <title>Set up Supabase Project and Connect to Backend</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-6-set-up-supabase-project-and-connect-to-backend.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>backend developer</asA>
+    <iWant>initialize a Supabase project and connect the FastAPI backend to its PostgreSQL database</iWant>
+    <soThat>I can store conversation logs, feedback, and analytics data</soThat>
+    <tasks>
+- [ ] **Initialize Supabase Project** (AC: 1)
+  - [ ] Create project in Supabase dashboard.
+  - [ ] Retrieve connection strings (Transaction Mode vs Session Mode - use Session mode for direct asyncpg connection if possible, or Transaction with prepared statements disabled).
+  - [ ] Add `DATABASE_URL` to local `.env` and Railway variables.
+- [ ] **Configure Backend Environment** (AC: 2)
+  - [ ] Update `app/core/config.py` to use `pydantic-settings` for `DATABASE_URL`.
+  - [ ] Ensure `python-dotenv` is active for local development.
+- [ ] **Implement Database Session** (AC: 3)
+  - [ ] Create `app/db/session.py`.
+  - [ ] Configure `create_async_engine` with `asyncpg` driver.
+  - [ ] Create `get_db` dependency for FastAPI routes.
+- [ ] **Verify Connection** (AC: 4)
+  - [ ] Create a temporary endpoint `GET /db-check` in `app/api/v1/endpoints/health.py` (or similar).
+  - [ ] Execute `SELECT 1` via the session.
+  - [ ] Verify successful response.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Supabase Project Initialized:** A new Supabase project is created with a provisioned PostgreSQL database.
+2. **Environment Configuration:** The FastAPI backend is configured with the `DATABASE_URL` in `app/core/config.py`, loaded from environment variables.
+3. **Database Session Manager:** `app/db/session.py` is implemented using `SQLAlchemy`'s async engine (`create_async_engine`) and `async_sessionmaker`.
+4. **Connection Verification:** A simple test endpoint (or script) successfully executes a read/write operation (e.g., `SELECT 1`) to the database.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/architecture.md" title="Architecture" section="Data Architecture">
+         Specifies Supabase (PostgreSQL) and SQLAlchemy + asyncpg.
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Tech Spec Epic 1" section="Detailed Design">
+         Confirms Database Connection Flow.
+      </doc>
+    </docs>
+    <code>
+      <file path="backend/app/core/config.py" kind="file" symbol="Settings" reason="Configuration loader" />
+      <file path="backend/app/db/" kind="directory" symbol="DB Module" reason="Database logic location" />
+    </code>
+    <dependencies>
+      <ecosystem name="platform">
+        <package name="Supabase" />
+      </ecosystem>
+      <ecosystem name="python">
+        <package name="sqlalchemy" />
+        <package name="asyncpg" />
+        <package name="pydantic-settings" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Use `asyncpg`.
+- Configure connection pooling appropriately (Session mode recommended for asyncpg).
+- Store `DATABASE_URL` in `.env` (locally) and Railway Variables (prod).
+  </constraints>
+  <interfaces>
+    <interface name="get_db" kind="function" signature="async Generator[AsyncSession, None]" path="backend/app/db/session.py" />
+  </interfaces>
+  <tests>
+    <standards>Integration Test.</standards>
+    <locations>backend/tests/test_db.py</locations>
+    <ideas>
+1. Test database connection string parsing.
+2. Test actual connection with SELECT 1.
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,78 @@
+<story-context id="1-5" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>5</storyId>
+    <title>Implement Basic CI/CD for Backend (Railway)</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-5-implement-basic-ci-cd-for-backend-railway.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>DevOps engineer</asA>
+    <iWant>configure a continuous integration and deployment pipeline for the backend</iWant>
+    <soThat>changes are automatically built and deployed to a staging environment upon commit</soThat>
+    <tasks>
+- [ ] **Configure Railway Project** (AC: 1)
+    - [ ] Create new project in Railway.
+    - [ ] Connect to GitHub repository.
+    - [ ] Set "Root Directory" to `/backend` in Service Settings.
+- [ ] **Define Start Command** (AC: 2, 3)
+    - [ ] Configure Start Command in Railway Settings OR add `backend/Procfile`.
+    - [ ] Command: `poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- [ ] **Verify Build** (AC: 2)
+    - [ ] Trigger a deployment.
+    - [ ] Monitor build logs for Poetry installation and dependency resolution.
+- [ ] **Verify Deployment** (AC: 4)
+    - [ ] Access the generated public URL.
+    - [ ] Test `GET /health` endpoint.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  **Automated Deployment Trigger:** Push to `main` triggers Railway deployment.
+2.  **Successful Build:** The build process completes without errors using `poetry`.
+3.  **Application Startup:** The application starts successfully using `uvicorn` on the host/port provided by Railway.
+4.  **Public Accessibility:** Staging API URL is reachable and the `/health` endpoint returns a `200 OK` JSON response.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/architecture.md" title="Architecture" section="Deployment Architecture">
+         Specifies Railway for backend hosting.
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Tech Spec Epic 1" section="Detailed Design">
+         Confirms Railway CI/CD pipeline flow.
+      </doc>
+    </docs>
+    <code>
+      <file path="backend/" kind="directory" symbol="FastAPI Project" reason="Target for deployment" />
+    </code>
+    <dependencies>
+      <ecosystem name="platform">
+        <package name="Railway" />
+      </ecosystem>
+      <ecosystem name="python">
+        <package name="poetry" />
+        <package name="uvicorn" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- Root Directory must be set to `backend` in Railway settings.
+- Must bind to 0.0.0.0 and $PORT.
+  </constraints>
+  <interfaces>
+    <interface name="GET /health" kind="REST Endpoint" signature="GET /health" path="backend/app/main.py" />
+  </interfaces>
+  <tests>
+    <standards>Manual Verification.</standards>
+    <locations>Railway Dashboard, API Client (curl/browser)</locations>
+    <ideas>
+1. Push a change to main and check Railway logs.
+2. curl https://<railway-url>/health
+    </ideas>
+  </tests>
+</story-context>

@@ -1,6 +1,6 @@
 # Story 1.6: Set up Supabase Project and Connect to Backend
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -56,7 +56,7 @@ so that I can store conversation logs, feedback, and analytics data.
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/1-6-set-up-supabase-project-and-connect-to-backend.context.xml
 
 ### Agent Model Used
 
