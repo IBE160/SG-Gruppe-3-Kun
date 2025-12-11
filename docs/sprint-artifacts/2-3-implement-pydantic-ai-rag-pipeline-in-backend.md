@@ -1,6 +1,6 @@
 # Story 2.3: Implement Pydantic AI RAG Pipeline in Backend
 
-Status: drafted
+Status: ready_for_dev
 
 ## Story
 

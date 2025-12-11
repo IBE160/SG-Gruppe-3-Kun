@@ -1,6 +1,6 @@
 # Story 2.2.a: Implement Core Chat Interface
 
-Status: drafted
+Status: ready_for_dev
 
 ## Story
 

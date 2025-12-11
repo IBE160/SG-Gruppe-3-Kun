@@ -1,6 +1,6 @@
 # Story 2.2.c: Implement Mobile Tabbed-Interface Layout
 
-Status: drafted
+Status: ready_for_dev
 
 ## Story
 

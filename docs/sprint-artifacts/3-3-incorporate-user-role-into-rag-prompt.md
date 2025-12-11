@@ -1,6 +1,6 @@
 # Story 3.3: Incorporate User Role into RAG Prompt
 
-**Status:** Drafted
+**Status:** ready_for_dev
 **Epic:** Epic 3: User Context & Personalization
 **Sprint:** 2 (Estimated)
 **Feature:** Role-Based Personalization

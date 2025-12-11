@@ -1,6 +1,6 @@
 # Story 2.1: Implement Documentation Ingestion Pipeline
 
-Status: drafted
+Status: ready_for_dev
 
 ## Story
 

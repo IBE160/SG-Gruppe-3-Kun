@@ -1,6 +1,6 @@
 # Story 3.2: Pass User Role to Backend
 
-**Status:** Drafted
+**Status:** ready_for_dev
 **Epic:** Epic 3: User Context & Personalization
 **Sprint:** 2 (Estimated)
 **Feature:** Role-Based Personalization

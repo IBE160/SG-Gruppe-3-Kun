@@ -1,6 +1,6 @@
 # Story 2.2.b: Implement Desktop Three-Column Responsive Layout
 
-Status: drafted
+Status: ready_for_dev
 
 ## Story
 

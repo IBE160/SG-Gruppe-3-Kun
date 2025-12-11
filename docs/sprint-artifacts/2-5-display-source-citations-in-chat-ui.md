@@ -1,6 +1,6 @@
 # Story 2.5: Display Source Citations in Chat UI
 
-Status: drafted
+Status: ready_for_dev
 
 ## Story
 

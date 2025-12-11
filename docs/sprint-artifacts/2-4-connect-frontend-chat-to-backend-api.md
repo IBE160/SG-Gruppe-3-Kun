@@ -1,6 +1,6 @@
 # Story 2.4: Connect Frontend Chat to Backend API
 
-Status: drafted
+Status: ready_for_dev
 
 ## Story
 
