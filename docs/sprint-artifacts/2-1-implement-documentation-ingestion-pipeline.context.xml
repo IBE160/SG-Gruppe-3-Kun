@@ -1,0 +1,29 @@
+<storyContext>
+  <title>Implement Documentation Ingestion Pipeline</title>
+  <story>
+    As a backend developer, I want to create a pipeline to scrape and process official HMSREG documentation from docs.hmsreg.com, so that the chatbot has a comprehensive and up-to-date knowledge base to draw answers from.
+  </story>
+  <productGoalAlignment>
+    This story directly contributes to the overarching goal of providing the chatbot with accurate and current information, thereby enhancing its effectiveness and utility.
+  </productGoalAlignment>
+  <keyStakeholders>
+    <stakeholder>Backend Developers</stakeholder>
+    <stakeholder>Chatbot Users</stakeholder>
+    <stakeholder>Product Owner/Manager</stakeholder>
+    <stakeholder>Documentation Team/Content Creators</stakeholder>
+  </keyStakeholders>
+  <dependencies>
+    <dependency>docs.hmsreg.com (external documentation source)</dependency>
+    <dependency>LangChain (library for text splitting)</dependency>
+    <dependency>text-embedding-004 (via Google Gen AI SDK, for embedding generation)</dependency>
+    <dependency>ChromaDB (vector database for storing embeddings)</dependency>
+    <dependency>HMSREG Chatbot (the application relying on this knowledge base)</dependency>
+    <dependency>app/rag/ directory (expected code location)</dependency>
+  </dependencies>
+  <acceptanceCriteria>
+    <criterion>The ingestion script successfully scrapes all linked articles from docs.hmsreg.com.</criterion>
+    <criterion>Text is split into chunks of appropriate size (e.g., 500-1000 chars) with overlap using LangChain.</criterion>
+    <criterion>Each chunk is embedded using text-embedding-004.</criterion>
+    <criterion>The embeddings and metadata are stored in ChromaDB and persisted.</criterion>
+  </acceptanceCriteria>
+</storyContext>

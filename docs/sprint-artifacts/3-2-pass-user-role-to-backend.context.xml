@@ -1,0 +1,34 @@
+<storyContext>
+  <title>Pass User Role to Backend</title>
+  <story>
+    As a full-stack developer, I want to securely transmit the selected user role from the frontend to the backend, so that the backend can use this context for personalized RAG responses.
+  </story>
+  <productGoalAlignment>
+    This story enables the backend to receive and utilize user-defined roles, which is essential for delivering personalized RAG (Retrieval-Augmented Generation) responses, thereby enhancing the relevance and accuracy of the chatbot's output based on user context.
+  </productGoalAlignment>
+  <keyStakeholders>
+    <stakeholder>Full-stack Developers</stakeholder>
+    <stakeholder>Frontend Developers</stakeholder>
+    <stakeholder>Backend Developers</stakeholder>
+    <stakeholder>Chatbot Users</stakeholder>
+    <stakeholder>Product Owner/Manager</stakeholder>
+  </keyStakeholders>
+  <dependencies>
+    <dependency>Story 3.1: Implement Role Selection UI (provides the userRole on the frontend)</dependency>
+    <dependency>Frontend useChat hook (from Story 2.4, needs modification to include userRole in payload)</dependency>
+    <dependency>Next.js API route (app/api/chat/route.ts, proxies requests)</dependency>
+    <dependency>Backend API endpoint (/api/v1/chat, needs to accept user_role)</dependency>
+    <dependency>Pydantic ChatRequest model (backend/app/schemas/chat.py, needs user_role field)</dependency>
+    <dependency>FastAPI (backend framework)</dependency>
+    <dependency>epics.md</dependency>
+    <dependency>sprint-artifacts/tech-spec-epic-3.md</dependency>
+    <dependency>architecture.md#API-Backend</dependency>
+  </dependencies>
+  <acceptanceCriteria>
+    <criterion>Frontend Update: The useChat hook accepts userRole as an argument or prop.</criterion>
+    <criterion>API Payload: The POST request to /api/v1/chat includes {"role": "..."} (or matching schema field).</criterion>
+    <criterion>Backend Schema: The ChatRequest Pydantic model in backend/app/schemas/chat.py includes user_role: Optional[str].</criterion>
+    <criterion>Validation: The backend validates the role against allowed values (optional but good practice) or at least accepts the string.</criterion>
+    <criterion>Integration: Sending a message with a selected role results in a successful 200 OK (and SSE stream start), verifying the backend accepted the payload.</criterion>
+  </acceptanceCriteria>
+</storyContext>

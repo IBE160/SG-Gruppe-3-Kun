@@ -1,0 +1,31 @@
+<storyContext>
+  <title>Display Source Citations in Chat UI</title>
+  <story>
+    As a frontend developer, I want to display the source documentation links alongside the chatbot's answers, so that users can verify the information and explore the original context.
+  </story>
+  <productGoalAlignment>
+    This story enhances user trust and transparency by providing verifiable sources for chatbot answers, allowing users to delve deeper into the information and fostering a more reliable and informative user experience.
+  </productGoalAlignment>
+  <keyStakeholders>
+    <stakeholder>Frontend Developers</stakeholder>
+    <stakeholder>Chatbot Users</stakeholder>
+    <stakeholder>Backend Developers</stakeholder>
+    <stakeholder>Product Owner/Manager</stakeholder>
+  </keyStakeholders>
+  <dependencies>
+    <dependency>Backend chat_service (from Story 2.3 and 2.4, needs modification to extract and yield citations)</dependency>
+    <dependency>Frontend useChat hook (from Story 2.4, needs modification to handle citation events)</dependency>
+    <dependency>ChatBubble component (from Story 2.2.a, needs modification to render citations)</dependency>
+    <dependency>types/chat.ts (for defining SourceCitation data structure)</dependency>
+    <dependency>docs.hmsreg.com (the source of the documentation links)</dependency>
+    <dependency>docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design</dependency>
+    <dependency>docs/epics.md#Story-2.5</dependency>
+    <dependency>docs/architecture.md#Project-Structure</dependency>
+  </dependencies>
+  <acceptanceCriteria>
+    <criterion>Backend returns source URLs (citations) in the response metadata.</criterion>
+    <criterion>Frontend displays these as clickable links at the bottom of the bot's chat bubble.</criterion>
+    <criterion>Links are clearly labeled "Source:".</criterion>
+    <criterion>Clicking a link opens the docs.hmsreg.com page.</criterion>
+  </acceptanceCriteria>
+</storyContext>

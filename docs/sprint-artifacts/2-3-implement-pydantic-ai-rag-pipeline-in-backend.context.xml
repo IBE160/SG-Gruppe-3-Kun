@@ -1,0 +1,35 @@
+<storyContext>
+  <title>Implement Pydantic AI RAG Pipeline in Backend</title>
+  <story>
+    As a backend developer, I want to integrate the Pydantic AI RAG pipeline with Gemini 2.5 Pro, so that user questions can be processed to retrieve relevant documentation and generate informed responses.
+  </story>
+  <productGoalAlignment>
+    This story is crucial for enabling the chatbot to effectively answer user questions by leveraging a robust RAG (Retrieval-Augmented Generation) pipeline, ensuring accurate and informed responses based on the documentation, thereby enhancing the chatbot's core functionality and reliability.
+  </productGoalAlignment>
+  <keyStakeholders>
+    <stakeholder>Backend Developers</stakeholder>
+    <stakeholder>Chatbot Users</stakeholder>
+    <stakeholder>Product Owner/Manager</stakeholder>
+    <stakeholder>AI/ML Engineers</stakeholder>
+  </keyStakeholders>
+  <dependencies>
+    <dependency>pydantic-ai (library for AI RAG pipeline and agent)</dependency>
+    <dependency>google-generativeai (for Gemini 2.5 Pro model integration)</dependency>
+    <dependency>Gemini 2.5 Pro (the LLM used for response generation)</dependency>
+    <dependency>text-embedding-004 (for embedding user queries)</dependency>
+    <dependency>ChromaDB (vector store for retrieving relevant documentation chunks)</dependency>
+    <dependency>GOOGLE_API_KEY (environment variable for API access)</dependency>
+    <dependency>app/services/chat_service.py (where the chat service logic resides)</dependency>
+    <dependency>app/schemas/chat.py (for defining data models like ChatRequest and ChatResponse)</dependency>
+    <dependency>app/rag/vector_store.py (implied, for ChromaDB interaction, from Story 2.1)</dependency>
+    <dependency>docs/architecture.md#Backend-FastAPI</dependency>
+    <dependency>docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design</dependency>
+    <dependency>docs/epics.md#Story-2.3</dependency>
+  </dependencies>
+  <acceptanceCriteria>
+    <criterion>Questions sent to app/services/chat_service.py are embedded and used to query ChromaDB.</criterion>
+    <criterion>Retrieved chunks are passed to a pydantic-ai Agent configured with Gemini 2.5 Pro.</criterion>
+    <criterion>The response matches a defined Pydantic model (answer, confidence).</criterion>
+    <criterion>Gemini generates a coherent answer based only on the provided context (grounded).</criterion>
+  </acceptanceCriteria>
+</storyContext>
