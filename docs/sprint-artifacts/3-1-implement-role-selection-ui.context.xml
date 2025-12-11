@@ -1,0 +1,33 @@
+<storyContext>
+  <title>Implement Role Selection UI</title>
+  <story>
+    As a frontend developer, I want to provide a clear and intuitive interface for users to select their role at the beginning of a session, so that the chatbot can understand their context and personalize responses.
+  </story>
+  <productGoalAlignment>
+    This story aims to enable personalized chatbot interactions by allowing users to define their role, thereby providing context for the chatbot to deliver more relevant and tailored responses, enhancing user satisfaction and efficiency.
+  </productGoalAlignment>
+  <keyStakeholders>
+    <stakeholder>Frontend Developers</stakeholder>
+    <stakeholder>Chatbot Users</stakeholder>
+    <stakeholder>Product Owner/Manager</stakeholder>
+    <stakeholder>UX Designer</stakeholder>
+  </keyStakeholders>
+  <dependencies>
+    <dependency>Next.js (App Router), React (frontend framework)</dependency>
+    <dependency>Tailwind CSS, shadcn/ui (for styling and UI components)</dependency>
+    <dependency>useChat hook (future dependency for passing selected role, preparation for Story 3.2)</dependency>
+    <dependency>components/RoleSelector.tsx (new component to be created)</dependency>
+    <dependency>app/page.tsx (or main chat page layout)</dependency>
+    <dependency>epics.md</dependency>
+    <dependency>sprint-artifacts/tech-spec-epic-3.md</dependency>
+    <dependency>architecture.md#Project-Structure</dependency>
+  </dependencies>
+  <acceptanceCriteria>
+    <criterion>UI Rendering: The RoleSelector component renders correctly on the chat page.</criterion>
+    <criterion>Options: Three buttons are displayed: "Construction Worker", "Supplier", "Project Manager".</criterion>
+    <criterion>Selection: Clicking a button updates the application state to reflect the selected role.</criterion>
+    <criterion>Feedback: The selected role is visually highlighted or the selector dismisses after selection.</criterion>
+    <criterion>Accessibility: The component is keyboard navigable (Tab/Enter) and screen reader accessible (ARIA labels if needed).</criterion>
+    <criterion>Integration: The selection event is ready to be passed to the chat hook (preparation for Story 3.2).</criterion>
+  </acceptanceCriteria>
+</storyContext>

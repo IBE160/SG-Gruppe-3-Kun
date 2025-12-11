@@ -1,0 +1,30 @@
+<storyContext>
+  <title>Implement Mobile Tabbed-Interface Layout</title>
+  <story>
+    As a frontend developer, I want to implement the single-column, tabbed interface for mobile screens, so that mobile users can easily navigate between different content views on a small screen.
+  </story>
+  <productGoalAlignment>
+    This story aims to optimize the user experience for mobile users by providing an intuitive tabbed interface, enabling easy navigation between content views on smaller screens and ensuring accessibility and usability on mobile devices.
+  </productGoalAlignment>
+  <keyStakeholders>
+    <stakeholder>Frontend Developers</stakeholder>
+    <stakeholder>Mobile Users</stakeholder>
+    <stakeholder>Product Owner/Manager</stakeholder>
+    <stakeholder>UX Designer</stakeholder>
+  </keyStakeholders>
+  <dependencies>
+    <dependency>ChatWindow component (from Story 2.2.a)</dependency>
+    <dependency>Tailwind CSS (for responsive design and styling, specifically block lg:hidden)</dependency>
+    <dependency>shadcn/ui Tabs component (optional, but mentioned as potentially useful)</dependency>
+    <dependency>React useState (for managing tab selection state)</dependency>
+    <dependency>app/page.tsx or components/MobileLayout.tsx (where the layout logic will reside)</dependency>
+    <dependency>docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design</dependency>
+    <dependency>docs/epics.md#Story-2.2.c</dependency>
+  </dependencies>
+  <acceptanceCriteria>
+    <criterion>On screens narrower than 1024px, a single-column layout is displayed.</criterion>
+    <criterion>A tab bar is present (bottom or top) with options: "Links", "Article", "Chatbot".</criterion>
+    <criterion>Clicking a tab switches the main view content immediately.</criterion>
+    <criterion>Chatbot view renders the ChatWindow component.</criterion>
+  </acceptanceCriteria>
+</storyContext>

@@ -1,0 +1,31 @@
+<storyContext>
+  <title>Implement Core Chat Interface</title>
+  <story>
+    As a frontend developer, I want to create the foundational chat interface components, so that users have the basic tools to interact with the chatbot in a clean, professional environment.
+  </story>
+  <productGoalAlignment>
+    This story aims to provide users with basic tools to interact with the chatbot in a clean, professional environment, which is fundamental for user engagement and the chatbot's usability.
+  </productGoalAlignment>
+  <keyStakeholders>
+    <stakeholder>Frontend Developers</stakeholder>
+    <stakeholder>Chatbot Users</stakeholder>
+    <stakeholder>Product Owner/Manager</stakeholder>
+    <stakeholder>UX Designer</stakeholder>
+  </keyStakeholders>
+  <dependencies>
+    <dependency>shadcn/ui (for UI primitives like Input and Button)</dependency>
+    <dependency>lucide-react (for icons)</dependency>
+    <dependency>Tailwind CSS (for styling)</dependency>
+    <dependency>Backend API (implied, for actual chatbot responses, though mocked for this story)</dependency>
+    <dependency>components/ directory (for UI components)</dependency>
+    <dependency>components/ui/ directory (for shadcn/ui components)</dependency>
+    <dependency>docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design</dependency>
+    <dependency>docs/epics.md#Story-2.2.a</dependency>
+  </dependencies>
+  <acceptanceCriteria>
+    <criterion>A chat history panel is displayed when navigating to the chat page.</criterion>
+    <criterion>User and bot message bubbles are visually distinct (User: Primary Color/Teal, Bot: Neutral/Gray).</criterion>
+    <criterion>A "Loading..." indicator (subtle animation) appears while waiting for a response.</criterion>
+    <criterion>A text input field and "Send" button are present and functional.</criterion>
+  </acceptanceCriteria>
+</storyContext>
