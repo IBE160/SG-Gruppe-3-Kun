@@ -2,46 +2,37 @@ import pytest
 import shutil
 import os
 import chromadb
-from app.rag.vector_store import get_collection, get_chroma_client
+from app.rag.vector_store import get_collection
 from app.core.config import settings
 
-# Use a separate test directory for persistence to avoid messing up dev data
-TEST_PERSIST_DIR = "test_chroma_data"
-
 @pytest.fixture(scope="function")
-def setup_test_db():
+def chroma_client_fixture(tmp_path_factory):
+    # Use pytest's tmp_path_factory for a temporary directory
+    test_persist_dir = tmp_path_factory.mktemp("chroma_data")
+    
     # Override settings for the test
     original_persist_dir = settings.CHROMA_PERSIST_DIRECTORY
-    settings.CHROMA_PERSIST_DIRECTORY = TEST_PERSIST_DIR
+    settings.CHROMA_PERSIST_DIRECTORY = str(test_persist_dir)
     
-    # Ensure clean start
-    if os.path.exists(TEST_PERSIST_DIR):
-        shutil.rmtree(TEST_PERSIST_DIR)
-        
-    yield
+    # Initialize client and yield it
+    client = chromadb.PersistentClient(path=str(test_persist_dir))
+    yield client
     
-    # Cleanup after test
-    if os.path.exists(TEST_PERSIST_DIR):
-        shutil.rmtree(TEST_PERSIST_DIR)
+    # Cleanup after test - tmp_path_factory handles directory removal
+    client = None # Explicitly dereference
     # Restore settings
     settings.CHROMA_PERSIST_DIRECTORY = original_persist_dir
 
-def test_chroma_init_and_persistence(setup_test_db):
+def test_chroma_init_and_persistence(chroma_client_fixture):
     """
     Verifies that we can initialize the client, create a collection,
     add a document, and retrieve it.
     """
-    # 1. Initialize and get collection
-    collection = get_collection(name="test_integration_collection")
+    test_client = chroma_client_fixture
+    # 1. Get collection using the test client
+    collection = get_collection(client=test_client, name="test_integration_collection")
     
     # 2. Insert mock vector/document
-    # ChromaDB handles embedding generation by default if none provided, 
-    # or we can pass embeddings=... 
-    # For this basic test, letting the default embedding function work (if available) 
-    # or just checking the add/query mechanism is sufficient.
-    # However, default embedding function requires internet or local model download.
-    # To be safe and fast, we should provide dummy embeddings.
-    
     collection.add(
         embeddings=[[0.1, 0.2, 0.3]], # Dummy 3D embedding
         documents=["This is a test document"],
@@ -60,8 +51,16 @@ def test_chroma_init_and_persistence(setup_test_db):
     assert results['ids'][0][0] == "test_id_1"
     assert results['documents'][0][0] == "This is a test document"
     
+    # Explicitly delete collection reference
+    del collection
+    
     # 5. Verify persistence (basic check)
-    # Re-initialize client to simulate restart
-    client2 = chromadb.PersistentClient(path=TEST_PERSIST_DIR)
-    coll2 = client2.get_collection("test_integration_collection")
+    # Re-initialize client to simulate restart (needs a new client instance)
+    # Use the same path as the fixture to simulate restart on the same data
+    client2 = chromadb.PersistentClient(path=settings.CHROMA_PERSIST_DIRECTORY) 
+    coll2 = get_collection(client=client2, name="test_integration_collection")
     assert coll2.count() == 1
+    
+    # Explicitly delete client references
+    del client2
+    del coll2

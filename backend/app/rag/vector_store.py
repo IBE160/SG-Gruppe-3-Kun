@@ -1,20 +1,15 @@
-import chromadb
 from chromadb.api import ClientAPI
 from chromadb.api.models.Collection import Collection
-from app.core.config import settings
 
-def get_chroma_client() -> ClientAPI:
-    """
-    Returns a persistent ChromaDB client.
-    Persistence path is configured via settings.CHROMA_PERSIST_DIRECTORY.
-    """
-    return chromadb.PersistentClient(path=settings.CHROMA_PERSIST_DIRECTORY)
+# Note: The ChromaDB client is now initialized and managed by FastAPI's lifecycle events
+# in app.main.py, and provided via dependency injection.
 
-def get_collection(name: str = "hmsreg_docs") -> Collection:
+def get_collection(client: ClientAPI, name: str = "hmsreg_docs") -> Collection:
     """
     Returns the specific collection for HMSREG docs.
     Creates it if it doesn't exist.
+    The ChromaDB client is provided via FastAPI's dependency injection.
     """
-    client = get_chroma_client()
     # get_or_create_collection is the standard way to ensure it exists
     return client.get_or_create_collection(name=name)
+
