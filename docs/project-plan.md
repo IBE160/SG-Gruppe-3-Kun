@@ -78,7 +78,7 @@
                 -   [ ] Epic 4: Sebastian
                 -   [ ] Epic 5: Sebastian
             -   [ ] /run-agent-task sm \*story-ready-for-dev {prompt / user-input-file}
-                -   [ ] Epic 1: Oliver
+                -   [x] Epic 1: Oliver
                 -   [ ] Epic 2: Frida
                 -   [ ] Epic 3: Frida
                 -   [ ] Epic 4: Sebastian
