@@ -16,16 +16,20 @@ so that desktop users can efficiently see documentation, articles, and the chatb
 
 ## Tasks / Subtasks
 
-- [ ] Define Layout Structure (`app/layout.tsx` or `app/page.tsx`)
+- [ ] Define Layout Structure (`app/layout.tsx` or `app/page.tsx`) (AC: #1, #2)
   - [ ] Use Tailwind CSS Grid: `grid-cols-1 lg:grid-cols-3`.
   - [ ] Define column widths (e.g., 20% / 50% / 30% or similar proportions).
-- [ ] Implement Sections
+- [ ] Implement Sections (AC: #2)
   - [ ] Left Column: Placeholder for Navigation/Links.
   - [ ] Middle Column: Placeholder for Article Content (scrollable).
   - [ ] Right Column: Integrate `ChatWindow` component (sticky/fixed height).
-- [ ] Responsive Breakpoints
+- [ ] Responsive Breakpoints (AC: #1, #3)
   - [ ] Ensure this 3-col layout *only* activates on `lg` (1024px) breakpoint and up.
   - [ ] Test resizing window to ensure transition to single column (mobile) doesn't break.
+- [ ] Implement Testing (AC: #1, #2, #3)
+    - [ ] Write a test to verify that the three-column layout is applied on screens wider than 1024px. (AC: #1)
+    - [ ] Write a test to verify that the correct components are rendered in each of the three columns. (AC: #2)
+    - [ ] Write a test to verify that the layout switches to a single column on screens smaller than 1024px. (AC: #3)
 
 ## Dev Notes
 
@@ -38,6 +42,7 @@ so that desktop users can efficiently see documentation, articles, and the chatb
 
 ### References
 
+- [Source: docs/architecture.md#Project-Structure]
 - [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design]
 - [Source: docs/epics.md#Story-2.2.b]
 
@@ -54,3 +59,5 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log

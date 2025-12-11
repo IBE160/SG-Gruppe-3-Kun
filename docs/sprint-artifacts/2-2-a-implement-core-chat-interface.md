@@ -17,20 +17,25 @@ so that users have the basic tools to interact with the chatbot in a clean, prof
 
 ## Tasks / Subtasks
 
-- [ ] Create UI Components
+- [ ] Create UI Components (AC: #1, #2)
   - [ ] Implement `components/ChatBubble.tsx` with distinct styles for 'user' and 'assistant' roles.
   - [ ] Implement `components/ChatWindow.tsx` as the main container.
   - [ ] Add `Input` and `Button` from `shadcn/ui`.
-- [ ] Implement State Management
+- [ ] Implement State Management (AC: #1, #3, #4)
   - [ ] Manage message history array (initially empty or mock data).
   - [ ] Handle input change and form submission.
   - [ ] Toggle `isLoading` state on submission.
-- [ ] Implement Interactions
+- [ ] Implement Interactions (AC: #1, #4)
   - [ ] Auto-scroll to bottom when new messages arrive.
   - [ ] Disable input/button while loading.
-- [ ] Styling
+- [ ] Styling (AC: #2, #3)
   - [ ] Apply Tailwind CSS classes matching UX Spec (Deep Blue/Teal).
   - [ ] Ensure "Loading" animation (e.g., pulsing dots) is visible.
+- [ ] Implement Testing (AC: #1, #2, #3, #4)
+    - [ ] Write unit test to verify that `ChatBubble` renders different styles for user and assistant. (AC: #2)
+    - [ ] Write unit test for `ChatWindow` to ensure that messages are added to the history. (AC: #1)
+    - [ ] Write unit test to verify that the loading indicator is displayed when `isLoading` is true. (AC: #3)
+    - [ ] Write unit test to ensure the send button is disabled when the input is empty or loading. (AC: #4)
 
 ## Dev Notes
 
@@ -46,6 +51,7 @@ so that users have the basic tools to interact with the chatbot in a clean, prof
 
 ### References
 
+- [Source: docs/architecture.md#Project-Structure]
 - [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design]
 - [Source: docs/epics.md#Story-2.2.a]
 
@@ -62,3 +68,5 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log

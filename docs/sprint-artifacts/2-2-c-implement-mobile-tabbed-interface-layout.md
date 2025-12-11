@@ -17,19 +17,24 @@ so that mobile users can easily navigate between different content views on a sm
 
 ## Tasks / Subtasks
 
-- [ ] Implement Mobile Layout Wrapper
+- [ ] Implement Mobile Layout Wrapper (AC: #1)
   - [ ] Use `block lg:hidden` to show only on mobile.
   - [ ] Create state: `activeTab` ('links' | 'article' | 'chat').
-- [ ] Implement Tab Navigation Component
+- [ ] Implement Tab Navigation Component (AC: #2)
   - [ ] Create fixed tab bar (bottom favored for thumb access).
   - [ ] Style active tab to highlight current selection (Teal).
-- [ ] Implement View Switching Logic
+- [ ] Implement View Switching Logic (AC: #3, #4)
   - [ ] Conditionally render components based on `activeTab`.
   - [ ] `Links` -> Nav placeholder.
   - [ ] `Article` -> Content placeholder.
   - [ ] `Chat` -> `ChatWindow`.
-- [ ] Integration
+- [ ] Integration (AC: #1)
   - [ ] Ensure seamless switch between this and desktop layout when resizing.
+- [ ] Implement Testing (AC: #1, #2, #3, #4)
+    - [ ] Write a test to verify that the single-column layout is applied on screens smaller than 1024px. (AC: #1)
+    - [ ] Write a test to verify that the tab bar is present and contains the correct options. (AC: #2)
+    - [ ] Write a test to verify that clicking a tab switches the main view content. (AC: #3)
+    - [ ] Write a test to verify that the `ChatWindow` component is rendered when the "Chatbot" tab is active. (AC: #4)
 
 ## Dev Notes
 
@@ -42,6 +47,7 @@ so that mobile users can easily navigate between different content views on a sm
 
 ### References
 
+- [Source: docs/architecture.md#Project-Structure]
 - [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design]
 - [Source: docs/epics.md#Story-2.2.c]
 
@@ -58,3 +64,5 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log

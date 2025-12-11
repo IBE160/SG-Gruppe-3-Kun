@@ -17,20 +17,21 @@ so that user questions can be processed to retrieve relevant documentation and g
 
 ## Tasks / Subtasks
 
-- [ ] Define Data Models (`app/schemas/chat.py`)
+- [ ] Define Data Models (`app/schemas/chat.py`) (AC: #3)
   - [ ] `ChatRequest` (message, role).
   - [ ] `ChatResponse` (answer, citations).
-- [ ] Implement Chat Service (`app/services/chat_service.py`)
+- [ ] Implement Chat Service (`app/services/chat_service.py`) (AC: #2, #4)
   - [ ] Initialize `pydantic-ai` Agent with Gemini 2.5 Pro model.
   - [ ] Define system prompt: "You are a helpful assistant. Use the following context..."
   - [ ] Implement `generate_response(message: str)` function.
-- [ ] Implement Retrieval Logic
+- [ ] Implement Retrieval Logic (AC: #1)
   - [ ] Embed user query using `text-embedding-004`.
   - [ ] Query ChromaDB via `vector_store` for top K chunks.
   - [ ] Format chunks into the Agent's context.
-- [ ] Integration Testing
-  - [ ] Verify the pipeline runs end-to-end (Query -> Embed -> Retrieve -> Generate).
-  - [ ] Test with a simple question ("How do I login?") assuming data is ingested (Story 2.1).
+- [ ] Implement Testing (AC: #1, #2, #3, #4)
+  - [ ] Write unit test for `chat_service.py` to verify that a mock response is correctly generated. (AC: #2, #3, #4)
+  - [ ] Write unit test to verify that the retrieval logic correctly queries the vector store. (AC: #1)
+  - [ ] Write integration test for the full RAG pipeline with a mock vector store.
 
 ## Dev Notes
 
@@ -44,6 +45,7 @@ so that user questions can be processed to retrieve relevant documentation and g
 
 ### References
 
+- [Source: docs/architecture.md#Backend-FastAPI]
 - [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design]
 - [Source: docs/epics.md#Story-2.3]
 
@@ -60,3 +62,5 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log
