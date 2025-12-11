@@ -21,9 +21,9 @@ so that changes are automatically built and deployed to a staging environment up
     - [ ] Create new project in Railway.
     - [ ] Connect to GitHub repository.
     - [ ] Set "Root Directory" to `/backend` in Service Settings.
-- [ ] **Define Start Command** (AC: 2, 3)
-    - [ ] Configure Start Command in Railway Settings OR add `backend/Procfile`.
-    - [ ] Command: `poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- [x] **Define Start Command** (AC: 2, 3)
+    - [x] Configure Start Command in Railway Settings OR add `backend/Procfile`.
+    - [x] Command: `poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 - [ ] **Verify Build** (AC: 2)
     - [ ] Trigger a deployment.
     - [ ] Monitor build logs for Poetry installation and dependency resolution.
@@ -57,9 +57,15 @@ Gemini 2.5 Flash
 
 ### Debug Log References
 
+- Created `backend/Procfile` to define the start command for Railway.
+- Updated `backend/app/main.py` to match the `/health` endpoint specification (`{"status": "ok", "version": "0.1.0"}`).
+
 ### Completion Notes List
 
 ### File List
+
+- backend/Procfile
+- backend/app/main.py
 
 ## Change Log
 
