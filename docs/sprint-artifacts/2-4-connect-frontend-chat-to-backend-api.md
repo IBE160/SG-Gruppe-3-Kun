@@ -17,20 +17,24 @@ so that users can send questions and receive real-time streaming answers.
 
 ## Tasks / Subtasks
 
-- [ ] Backend: Create SSE Endpoint (`app/api/v1/chat.py`)
+- [ ] Backend: Create SSE Endpoint (`app/api/v1/chat.py`) (AC: 3)
   - [ ] Define `POST /stream` endpoint.
   - [ ] Use `StreamingResponse` to yield tokens from `chat_service`.
   - [ ] Format events: `data: {"type": "token", "content": "..."}`.
-- [ ] Frontend: Create API Proxy (`app/api/chat/route.ts`)
+- [ ] Frontend: Create API Proxy (`app/api/chat/route.ts`) (AC: 1, 2)
   - [ ] Forward request to backend URL.
   - [ ] Handle streaming response forwarding.
-- [ ] Frontend: Implement `useChat` Hook (`hooks/useChat.ts`)
+- [ ] Frontend: Implement `useChat` Hook (`hooks/useChat.ts`) (AC: 4)
   - [ ] Manage `EventSource` or `fetch` with readable stream.
   - [ ] Parse incoming SSE data.
   - [ ] Update message state with appended tokens.
 - [ ] Integration
-  - [ ] Connect `ChatWindow` to `useChat`.
-  - [ ] Verify "typing" effect in UI.
+  - [ ] Connect `ChatWindow` to `useChat` (AC: 4).
+  - [ ] Verify "typing" effect in UI (AC: 4).
+- [ ] Implement Testing
+    - [ ] Write integration test for frontend API route to verify it proxies correctly (AC: 1, 2).
+    - [ ] Write integration test for backend SSE endpoint to verify streaming (AC: 3).
+    - [ ] Write E2E test to verify UI updates in real-time (AC: 4).
 
 ## Dev Notes
 
@@ -46,6 +50,7 @@ so that users can send questions and receive real-time streaming answers.
 
 - [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design]
 - [Source: docs/epics.md#Story-2.4]
+- [Source: docs/architecture.md#API-Backend]
 
 ## Dev Agent Record
 
@@ -60,3 +65,9 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-11 | BIP | Added AC references to tasks, added detailed testing subtasks, formalized Source citations, and initialized Change Log. |

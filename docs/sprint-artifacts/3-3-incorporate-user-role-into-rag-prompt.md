@@ -37,7 +37,7 @@
 ## 4. Technical Implementation Tasks
 
 ### Backend Development
-- [ ] Modify `backend/app/services/chat_service.py`:
+- [ ] Modify `backend/app/services/chat_service.py` (AC: 1, 2, 3):
     - [ ] Update method signature to accept `user_role`.
     - [ ] Update the prompt construction logic.
     - [ ] Example Prompt Template:
@@ -52,11 +52,11 @@
       ...
       """
       ```
-- [ ] Update the `Agent` instantiation or `run` call to include this dependency/context.
+- [ ] Update the `Agent` instantiation or `run` call to include this dependency/context (AC: 1).
 
 ### Testing
-- [ ] Unit Test: Verify the prompt string contains the role.
-- [ ] Manual Verification: Ask "What do I need to know about HMS cards?" as different roles and observe the output differences.
+- [ ] Unit Test: Verify the prompt string contains the role (AC: 2).
+- [ ] Manual Verification: Ask "What do I need to know about HMS cards?" as different roles and observe the output differences (AC: 3, 4).
 
 ## 5. Development Notes & Learnings
 
@@ -66,5 +66,28 @@
 
 ---
 **Sources:**
-- [Epics Document](../epics.md)
-- [Tech Spec Epic 3](../sprint-artifacts/tech-spec-epic-3.md)
+- [Source: ../epics.md]
+- [Source: ../sprint-artifacts/tech-spec-epic-3.md]
+- [Source: ../architecture.md]
+
+## Dev Agent Record
+
+### Context Reference
+
+<!-- Path(s) to story context XML will be added here by context workflow -->
+
+### Agent Model Used
+
+{{agent_model_name_version}}
+
+### Debug Log References
+
+### Completion Notes List
+
+### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-11 | BIP | Added AC references to tasks, formalized Source citations, and initialized Dev Agent Record and Change Log. |

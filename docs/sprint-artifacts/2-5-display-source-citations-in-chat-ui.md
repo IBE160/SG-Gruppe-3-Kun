@@ -17,17 +17,20 @@ so that users can verify the information and explore the original context.
 
 ## Tasks / Subtasks
 
-- [ ] Backend: Update `chat_service`
+- [ ] Backend: Update `chat_service` (AC: 1)
   - [ ] Extract source metadata (URL, Title) from the ChromaDB chunks used in the answer.
   - [ ] Yield a final SSE event: `data: {"type": "citation", "content": [...]}`.
-- [ ] Frontend: Update `useChat` Hook
+- [ ] Frontend: Update `useChat` Hook (AC: 2)
   - [ ] Handle `citation` event type.
   - [ ] Append citations to the current message object.
-- [ ] Frontend: Update `ChatBubble` Component
+- [ ] Frontend: Update `ChatBubble` Component (AC: 2, 3)
   - [ ] Render a "Sources:" section if citations exist.
   - [ ] Map citations to `<a>` tags (styled as small, distinct links).
-- [ ] Testing
-  - [ ] Verify links are correct and clickable.
+- [ ] Implement Testing
+  - [ ] Write unit test for backend `chat_service` to ensure source metadata is extracted and yielded correctly (AC: 1).
+  - [ ] Write unit test for frontend `useChat` hook to ensure citations are appended to messages (AC: 2).
+  - [ ] Write unit test for `ChatBubble` component to verify rendering of clickable links (AC: 2, 3).
+  - [ ] Write E2E test to verify clicking a citation link opens the correct `docs.hmsreg.com` page (AC: 4).
 
 ## Dev Notes
 
@@ -42,6 +45,7 @@ so that users can verify the information and explore the original context.
 
 - [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Detailed-Design]
 - [Source: docs/epics.md#Story-2.5]
+- [Source: docs/architecture.md#Project-Structure]
 
 ## Dev Agent Record
 
@@ -56,3 +60,9 @@ Gemini 2.5 Flash
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-11 | BIP | Added AC references to tasks, added detailed testing subtasks, formalized Source citations, and initialized Change Log. |

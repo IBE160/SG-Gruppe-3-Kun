@@ -43,20 +43,20 @@
 ## 4. Technical Implementation Tasks
 
 ### Frontend Development
-- [ ] Create `components/RoleSelector.tsx`.
+- [ ] Create `components/RoleSelector.tsx` (AC: 1, 2).
     - [ ] Import `Button` from `@/components/ui/button`.
     - [ ] Define props: `onSelect: (role: string) => void`.
     - [ ] Render the three role buttons.
-- [ ] Update `app/page.tsx` (or the main chat page layout).
+- [ ] Update `app/page.tsx` (or the main chat page layout) (AC: 1, 3, 4).
     - [ ] Add state: `const [userRole, setUserRole] = useState<string | null>(null)`.
     - [ ] Conditionally render `RoleSelector` if `userRole` is null.
     - [ ] Pass `setUserRole` handler to `RoleSelector`.
-- [ ] Add basic styling/layout to center the selector or place it according to UX guidelines.
-- [ ] Verify accessibility (Tab order, focus states).
+- [ ] Add basic styling/layout to center the selector or place it according to UX guidelines (AC: 1, 4).
+- [ ] Verify accessibility (Tab order, focus states) (AC: 5).
 
 ### Testing
-- [ ] Component Test: Verify `onSelect` is called with the correct string when a button is clicked.
-- [ ] Manual Test: Verify UI responsiveness and visual state changes.
+- [ ] Component Test: Verify `onSelect` is called with the correct string when a button is clicked (AC: 3).
+- [ ] Manual Test: Verify UI responsiveness and visual state changes (AC: 4, 5).
 
 ## 5. Development Notes & Learnings
 
@@ -66,5 +66,28 @@
 
 ---
 **Sources:**
-- [Epics Document](../epics.md)
-- [Tech Spec Epic 3](../sprint-artifacts/tech-spec-epic-3.md)
+- [Source: ../epics.md]
+- [Source: ../sprint-artifacts/tech-spec-epic-3.md]
+- [Source: ../architecture.md#Project-Structure]
+
+## Dev Agent Record
+
+### Context Reference
+
+<!-- Path(s) to story context XML will be added here by context workflow -->
+
+### Agent Model Used
+
+{{agent_model_name_version}}
+
+### Debug Log References
+
+### Completion Notes List
+
+### File List
+
+## Change Log
+
+| Date | Author | Description |
+|---|---|---|
+| 2025-12-11 | BIP | Added AC references to tasks, formalized Source citations, and initialized Dev Agent Record and Change Log. |
