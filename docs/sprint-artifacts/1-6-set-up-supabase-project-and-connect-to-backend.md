@@ -1,6 +1,6 @@
 # Story 1.6: Set up Supabase Project and Connect to Backend
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -17,21 +17,21 @@ so that I can store conversation logs, feedback, and analytics data.
 
 ## Tasks / Subtasks
 
-- [ ] **Initialize Supabase Project** (AC: 1)
-  - [ ] Create project in Supabase dashboard.
-  - [ ] Retrieve connection strings (Transaction Mode vs Session Mode - use Session mode for direct asyncpg connection if possible, or Transaction with prepared statements disabled).
-  - [ ] Add `DATABASE_URL` to local `.env` and Railway variables.
-- [ ] **Configure Backend Environment** (AC: 2)
-  - [ ] Update `app/core/config.py` to use `pydantic-settings` for `DATABASE_URL`.
-  - [ ] Ensure `python-dotenv` is active for local development.
-- [ ] **Implement Database Session** (AC: 3)
-  - [ ] Create `app/db/session.py`.
-  - [ ] Configure `create_async_engine` with `asyncpg` driver.
-  - [ ] Create `get_db` dependency for FastAPI routes.
-- [ ] **Verify Connection** (AC: 4)
-  - [ ] Create a temporary endpoint `GET /db-check` in `app/api/v1/endpoints/health.py` (or similar).
-  - [ ] Execute `SELECT 1` via the session.
-  - [ ] Verify successful response.
+- [x] **Initialize Supabase Project** (AC: 1)
+  - [x] Create project in Supabase dashboard.
+  - [x] Retrieve connection strings (Transaction Mode vs Session Mode - use Session mode for direct asyncpg connection if possible, or Transaction with prepared statements disabled).
+  - [x] Add `DATABASE_URL` to local `.env` and Railway variables.
+- [x] **Configure Backend Environment** (AC: 2)
+  - [x] Update `app/core/config.py` to use `pydantic-settings` for `DATABASE_URL`.
+  - [x] Ensure `python-dotenv` is active for local development.
+- [x] **Implement Database Session** (AC: 3)
+  - [x] Create `app/db/session.py`.
+  - [x] Configure `create_async_engine` with `asyncpg` driver.
+  - [x] Create `get_db` dependency for FastAPI routes.
+- [x] **Verify Connection** (AC: 4)
+  - [x] Create a temporary endpoint `GET /db-check` in `app/api/v1/endpoints/health.py` (or similar).
+  - [x] Execute `SELECT 1` via the session.
+  - [x] Verify successful response.
 
 ## Dev Notes
 
@@ -65,11 +65,25 @@ Gemini-2.5-Flash
 ### Debug Log References
 
 ### Completion Notes List
+- Implemented Supabase connection using `asyncpg`.
+- Configured `DATABASE_URL` via `pydantic-settings` from `.env`.
+- Created `backend/app/db/session.py` for database session management.
+- Added `GET /api/v1/health/db-check` endpoint for connection verification.
+- Added unit test `backend/tests/api/v1/endpoints/test_health.py` for database connectivity.
+- Resolved hostname resolution issues by using Supabase Session Pooler URL.
 
 ### File List
+- `backend/.env`
+- `backend/pyproject.toml`
+- `backend/app/core/config.py`
+- `backend/app/db/session.py`
+- `backend/app/main.py`
+- `backend/app/api/v1/endpoints/health.py`
+- `backend/tests/api/v1/endpoints/test_health.py`
 
 ## Change Log
 
 | Date | Author | Description |
 |---|---|---|
+| 2025-12-11 | Amelia | Completed Supabase connection setup and verification. |
 | 2025-12-10 | BIP | Added Epics citation, Dev Agent Record, and initialized Change Log. |
