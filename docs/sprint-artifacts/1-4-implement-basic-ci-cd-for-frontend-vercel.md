@@ -1,6 +1,6 @@
 # Story 1.4: implement-basic-ci-cd-for-frontend-vercel
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -16,14 +16,14 @@ so that changes are automatically built and deployed to a staging environment up
 
 ## Tasks / Subtasks
 
-- [ ] Sign up/Login to Vercel and link GitHub account (if not already done)
-- [ ] Create new Project in Vercel (AC: 1)
-  - [ ] Import `frontend` directory from the repository
-  - [ ] Configure build settings (Framework Preset: Next.js)
-  - [ ] Set Root Directory to `frontend`
-- [ ] Deploy the project (AC: 1)
-- [ ] Verify deployment URL is active and accessible (AC: 2, 3)
-- [ ] Add deployment URL to project documentation/README
+- [x] Sign up/Login to Vercel and link GitHub account (if not already done)
+- [x] Create new Project in Vercel (AC: 1)
+  - [x] Import `frontend` directory from the repository
+  - [x] Configure build settings (Framework Preset: Next.js)
+  - [x] Set Root Directory to `frontend`
+- [x] Deploy the project (AC: 1)
+- [x] Verify deployment URL is active and accessible (AC: 2, 3)
+- [x] Add deployment URL to project documentation/README
 
 ## Dev Notes
 
@@ -60,11 +60,16 @@ Gemini 2.5 Flash
 ### Debug Log References
 
 ### Completion Notes List
+- Story 1.4: Frontend Vercel CI/CD implemented. User assisted with Vercel UI setup. Deployment verified, and README updated with the live URL. All ACs met.
 
 ### File List
+- README.md
+- docs/sprint-artifacts/1-4-implement-basic-ci-cd-for-frontend-vercel.md
 
 ## Change Log
 
 | Date | Author | Description |
+|---|---|---|
+| 2025-12-11 | Amelia | Completed Frontend Vercel CI/CD setup, deployment verified, README updated. |
 |---|---|---|
 | 2025-12-10 | BIP | Added AC references to tasks and initialized Change Log. |

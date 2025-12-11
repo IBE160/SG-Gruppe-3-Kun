@@ -57,6 +57,7 @@ npm run dev
 
 ### 4. Further Information
 
+*   **Frontend Deployment (Vercel):** https://sg-gruppe-3-kun.vercel.app/
 *   **Architecture:** See `docs/architecture.md` for detailed architectural decisions and project structure.
 *   **Epics & Stories:** See `docs/epics.md` for a breakdown of features and development stories.
 *   **UX Design:** See `docs/ux-design-specification.md` for user experience and design guidelines.
