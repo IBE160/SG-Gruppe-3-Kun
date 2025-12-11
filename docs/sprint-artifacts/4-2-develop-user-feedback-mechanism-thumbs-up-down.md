@@ -1,6 +1,6 @@
 # Story 4.2: Develop User Feedback Mechanism (Thumbs Up/Down)
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -39,6 +39,12 @@ so that we can continuously monitor and improve the chatbot's performance.
 
 ## Dev Notes
 
+### Architecture patterns and constraints
+
+- **RESTful API:** Implement feedback submission as a standard `POST` endpoint in `app/api/v1/feedback.py` following the project's API conventions.
+- **Database Access:** Use SQLAlchemy models (`app/db/models.py`) and session management (`app/db/session.py`) for persistence, avoiding raw SQL.
+- **Data Validation:** Ensure strict validation of the feedback payload using Pydantic models (`app/schemas/feedback.py`).
+
 - **Tech Spec Reference:** "User Feedback Submission" workflow in Tech Spec 4.
 - **Data Model:**
   ```python
@@ -53,16 +59,23 @@ so that we can continuously monitor and improve the chatbot's performance.
 - `app/api/v1/feedback.py`: New API module.
 - `components/FeedbackButtons.tsx`: New UI component.
 
+### Learnings from Previous Story
+
+- Previous story (4.1) is currently in drafted state. Ensure to check for any shared configuration changes in `app/core/config.py` if overlapping work occurs.
+
 ### References
 
 - [Source: docs/sprint-artifacts/tech-spec-epic-4.md#detailed-design]
 - [Source: docs/sprint-artifacts/tech-spec-epic-4.md#acceptance-criteria-authoritative]
+- [Source: docs/architecture.md]
+- [Source: docs/epics.md]
+- [Source: docs/PRD.md]
 
 ## Dev Agent Record
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/4-2-develop-user-feedback-mechanism-thumbs-up-down.context.xml
 
 ### Agent Model Used
 

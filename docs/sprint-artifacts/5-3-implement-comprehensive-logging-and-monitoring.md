@@ -1,6 +1,6 @@
 # Story 5.3: Implement Comprehensive Logging and Monitoring
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -25,6 +25,12 @@ so that operational issues can be quickly identified, diagnosed, and resolved.
 
 ## Dev Notes
 
+### Architecture patterns and constraints
+
+- **Structured Logging:** Enforce structured JSON logging in production using `backend/app/core/logging.py`.
+- **Request Tracing:** Middleware must generate and propagate a `Correlation-ID` header for full-stack traceability.
+- **Global Error Handling:** Use FastAPI's exception handlers to ensure all unhandled errors are logged with stack traces before returning a generic 500 response.
+
 - **Architecture**: `backend/app/core/logging.py` is the central configuration.
 - **Standard**: JSON format is required for production parsing.
 - **Correlation**: Essential for tracing requests across services.
@@ -33,16 +39,22 @@ so that operational issues can be quickly identified, diagnosed, and resolved.
 
 - **File**: `backend/app/core/logging.py`
 
+### Learnings from Previous Story
+
+- Previous story (5.2) is currently in drafted state.
+
 ### References
 
 - [Source: docs/sprint-artifacts/tech-spec-epic-5.md#Detailed Design]
 - [Source: docs/epics.md#Story 5.3: Implement Comprehensive Logging and Monitoring]
+- [Source: docs/architecture.md]
+- [Source: docs/PRD.md]
 
 ## Dev Agent Record
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/5-3-implement-comprehensive-logging-and-monitoring.context.xml
 
 ### Agent Model Used
 

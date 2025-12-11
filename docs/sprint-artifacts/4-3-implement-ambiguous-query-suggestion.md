@@ -1,6 +1,6 @@
 # Story 4.3: Implement Ambiguous Query Suggestion
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -37,6 +37,12 @@ so that users can refine their questions and find relevant information more easi
 
 ## Dev Notes
 
+### Architecture patterns and constraints
+
+- **Service Layer Logic:** Implement ambiguity detection and suggestion generation within `app/services/chat_service.py` to maintain separation of concerns.
+- **SSE Extension:** Deliver suggested queries via the existing Server-Sent Events stream by extending the `ChatResponse` schema, rather than creating a separate endpoint.
+- **Prompt Engineering:** Use the system prompt or a dedicated chain to generate suggestions, ensuring they are strictly relevant to the user's ambiguous input.
+
 - **Tech Spec Reference:** "Ambiguous Query Suggestion" workflow in Tech Spec 4.
 - **Prompt Engineering:**
   > "If the user's query is too broad or ambiguous (e.g., 'HMS'), provide 2-3 specific follow-up questions they might be interested in, such as 'Hva er kravene til HMS-kort?' or 'Hvordan registrerer jeg et prosjekt?'."
@@ -47,16 +53,23 @@ so that users can refine their questions and find relevant information more easi
 - `app/services/chat_service.py`: Logic.
 - `components/ChatBubble.tsx`: UI.
 
+### Learnings from Previous Story
+
+- Previous story (4.2) is currently in drafted state.
+
 ### References
 
 - [Source: docs/sprint-artifacts/tech-spec-epic-4.md#detailed-design]
 - [Source: docs/sprint-artifacts/tech-spec-epic-4.md#acceptance-criteria-authoritative]
+- [Source: docs/architecture.md]
+- [Source: docs/epics.md]
+- [Source: docs/PRD.md]
 
 ## Dev Agent Record
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- docs/sprint-artifacts/4-3-implement-ambiguous-query-suggestion.context.xml
 
 ### Agent Model Used
 

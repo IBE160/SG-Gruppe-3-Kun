@@ -1,0 +1,50 @@
+<story-context>
+  <story_id>5-2</story_id>
+  <story_title>Ensure WCAG 2.1 AA Compliance for Frontend</story_title>
+  <status>drafted</status>
+  <user_story>
+    <as_a>frontend developer</as_a>
+    <i_want>to ensure the web interface adheres to WCAG 2.1 AA accessibility standards</i_want>
+    <so_that>the chatbot is usable by individuals with disabilities</so_that>
+  </user_story>
+  <acceptance_criteria>
+    <criterion id="1">Automated accessibility audit must return zero "critical" or "serious" violations.</criterion>
+    <criterion id="2">All interactive elements must be fully navigable with keyboard alone.</criterion>
+    <criterion id="3">Screen readers must correctly announce all dynamic content.</criterion>
+    <criterion id="4">Text and interactive elements must meet minimum color contrast ratio of 4.5:1.</criterion>
+  </acceptance_criteria>
+  <tasks>
+    <task id="1">Set up automated accessibility testing tools</task>
+    <task id="2">Audit existing UI components</task>
+    <task id="3">Implement keyboard navigation support</task>
+    <task id="4">Verify screen reader announcements</task>
+    <task id="5">Remediate violations</task>
+  </tasks>
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Tech Spec</title>
+        <section>Detailed Design / Workflows</section>
+        <snippet>WCAG 2.1 AA Compliance: Dev -> UIComponents -> A11yTools (Audit) -> Remediate -> Manual Testing.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 5: frontend/tests/a11y/</snippet>
+      </doc>
+    </docs>
+    <dependencies>
+      <dependency>jest-axe</dependency>
+      <dependency>radix-ui</dependency>
+    </dependencies>
+  </artifacts>
+  <constraints>
+    <constraint>Component Design: Leverage `radix-ui` primitives.</constraint>
+    <constraint>Testing Pattern: Integrate `jest-axe` into unit tests.</constraint>
+  </constraints>
+  <tests>
+    <standard>Automated accessibility scans. Manual screen reader testing.</standard>
+  </tests>
+</story-context>

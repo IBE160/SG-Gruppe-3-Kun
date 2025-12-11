@@ -1,0 +1,50 @@
+<story-context>
+  <story_id>5-1</story_id>
+  <story_title>Implement API Rate Limiting</story_title>
+  <status>drafted</status>
+  <user_story>
+    <as_a>backend developer</as_a>
+    <i_want>to implement rate limiting on all API endpoints</i_want>
+    <so_that>the system is protected from abuse and denial-of-service attacks</so_that>
+  </user_story>
+  <acceptance_criteria>
+    <criterion id="1">Requests exceeding the limit (e.g., 60/min) must be rejected with HTTP status `429 Too Many Requests`.</criterion>
+    <criterion id="2">Responses should include standard rate limit headers.</criterion>
+    <criterion id="3">Rate limits must be configurable via environment variables.</criterion>
+    <criterion id="4">Internal services or whitelisted IPs exempt.</criterion>
+  </acceptance_criteria>
+  <tasks>
+    <task id="1">Install and configure `slowapi`</task>
+    <task id="2">Implement rate limiting logic in `backend/app/middleware/rate_limit.py`</task>
+    <task id="3">Configure rate limit parameters in `app/core/config.py`</task>
+    <task id="4">Apply rate limiting middleware</task>
+    <task id="5">Create unit/integration tests</task>
+  </tasks>
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic 5 Tech Spec</title>
+        <section>Detailed Design / APIs and Interfaces</section>
+        <snippet>Rate Limiting Middleware: backend/app/middleware/rate_limit.py will intercept all incoming API requests...</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 5: backend/app/middleware/rate_limit.py</snippet>
+      </doc>
+    </docs>
+    <dependencies>
+      <dependency>slowapi</dependency>
+      <dependency>FastAPI</dependency>
+    </dependencies>
+  </artifacts>
+  <constraints>
+    <constraint>Middleware Pattern: Rate limiting must be implemented as ASGI middleware.</constraint>
+    <constraint>Configuration Pattern: Rate limits must be defined in `app/core/config.py`.</constraint>
+  </constraints>
+  <tests>
+    <standard>Unit tests for middleware logic. Integration tests for API limits.</standard>
+  </tests>
+</story-context>

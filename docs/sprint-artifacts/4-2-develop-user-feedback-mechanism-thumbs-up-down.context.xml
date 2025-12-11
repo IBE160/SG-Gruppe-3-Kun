@@ -1,0 +1,73 @@
+<story-context>
+  <story_id>4-2</story_id>
+  <story_title>Develop User Feedback Mechanism (Thumbs Up/Down)</story_title>
+  <status>drafted</status>
+
+  <user_story>
+    <as_a>full-stack developer</as_a>
+    <i_want>to provide a simple way for users to give feedback on each chatbot response</i_want>
+    <so_that>we can continuously monitor and improve the chatbot's performance</so_that>
+  </user_story>
+
+  <acceptance_criteria>
+    <criterion id="1">UI Visibility: Thumbs up and Thumbs down buttons must be visible below every chatbot response bubble.</criterion>
+    <criterion id="2">Submission: Clicking a button must send a POST request to `/api/v1/feedback` with the correct `message_id`, `chat_session_id`, and `rating`.</criterion>
+    <criterion id="3">Persistence: The feedback must be successfully stored in the `feedback` database table.</criterion>
+    <criterion id="4">User Confirmation: The UI must provide immediate visual confirmation (e.g., button state change, "Thank you" toast) after submission.</criterion>
+    <criterion id="5">One Vote Per Message: Users should be prevented from submitting multiple conflicting votes for the same message.</criterion>
+  </acceptance_criteria>
+
+  <tasks>
+    <task id="1">Database Schema &amp; Model (AC: 3)</task>
+    <task id="2">Backend API Endpoint (AC: 2, 3)</task>
+    <task id="3">Frontend Component (AC: 1, 4, 5)</task>
+    <task id="4">Integration (AC: 1)</task>
+    <task id="5">Testing</task>
+  </tasks>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-4.md</path>
+        <title>Epic 4 Technical Specification</title>
+        <section>Detailed Design / Data Models</section>
+        <snippet>Feedback Model (backend/app/db/models.py): class Feedback(Base): ... rating = Column(String, nullable=False)</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-4.md</path>
+        <title>Epic 4 Technical Specification</title>
+        <section>Detailed Design / Workflows</section>
+        <snippet>User Feedback Submission: User -> Frontend -> BackendAPI -> Database. POST /api/v1/feedback.</snippet>
+      </doc>
+       <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>backend/app/api/v1/feedback.py: User feedback endpoints. frontend/components/FeedbackButtons.tsx: Reusable React UI component.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code files found. -->
+    </code>
+    <dependencies>
+      <dependency>FastAPI</dependency>
+      <dependency>SQLAlchemy</dependency>
+      <dependency>Next.js</dependency>
+      <dependency>shadcn/ui</dependency>
+      <dependency>lucide-react</dependency>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>RESTful API: Implement feedback submission as a standard `POST` endpoint in `app/api/v1/feedback.py`.</constraint>
+    <constraint>Database Access: Use SQLAlchemy models and session management for persistence.</constraint>
+    <constraint>Data Validation: Ensure strict validation of the feedback payload using Pydantic models.</constraint>
+    <constraint>UX: Keep it subtle. Small icons next to the timestamp or citations.</constraint>
+  </constraints>
+
+  <tests>
+    <standard>Unit tests for API. Component tests for UI. E2E test for feedback flow.</standard>
+    <idea>Backend: Test `POST /feedback` stores data.</idea>
+    <idea>Frontend: Test button click triggers API call.</idea>
+  </tests>
+</story-context>
