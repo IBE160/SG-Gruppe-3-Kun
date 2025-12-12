@@ -2,6 +2,7 @@ from typing import List, Dict, Any
 
 from chromadb.api import ClientAPI
 from chromadb.api.models.Collection import Collection
+from app.schemas.rag import QueryResult
 
 # Note: The ChromaDB client is now initialized and managed by FastAPI's lifecycle events
 # in app.main.py, and provided via dependency injection.
@@ -74,3 +75,34 @@ def add_chunks_to_collection(
     except Exception as e:
         print(f"Error adding chunks to ChromaDB: {e}")
         return 0
+
+def query_collection(
+    client: ClientAPI,
+    query_embedding: List[float],
+    n_results: int = 4,
+    collection_name: str = "hmsreg_docs"
+) -> QueryResult:
+    """
+    Queries the ChromaDB collection for relevant documents.
+
+    Args:
+        client: The ChromaDB client instance.
+        query_embedding: The embedding vector of the query.
+        n_results: Number of results to retrieve.
+        collection_name: The name of the ChromaDB collection.
+
+    Returns:
+        QueryResult object containing documents and metadata.
+    """
+    collection = get_collection(client, collection_name)
+    
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=n_results
+    )
+    
+    # Flatten the results (Chroma returns list of lists)
+    documents = results['documents'][0] if results['documents'] else []
+    metadatas = results['metadatas'][0] if results['metadatas'] else []
+    
+    return QueryResult(documents=documents, metadatas=metadatas)

@@ -70,13 +70,17 @@ def mock_httpx_client():
         yield mock_client_instance
 
 @pytest.fixture
-def mock_embeddings_model():
-    """Mocks GoogleGenerativeAIEmbeddings to return dummy embeddings."""
-    with patch('app.rag.ingestion.GoogleGenerativeAIEmbeddings') as mock_embed_class:
-        mock_instance = mock_embed_class.return_value
-        # Mock embed_documents to return a list of lists of floats (dummy embeddings)
-        mock_instance.embed_documents.side_effect = lambda texts: [[0.1 * i] * 768 for i in range(len(texts))]
-        yield mock_instance
+def mock_genai_embed_content():
+    """Mocks genai.embed_content to return dummy embeddings."""
+    with patch('app.rag.ingestion.genai.embed_content') as mock_embed:
+        def side_effect(model, content, task_type):
+            if isinstance(content, list):
+                return {'embedding': [[0.1] * 768 for _ in content]}
+            else:
+                return {'embedding': [0.1] * 768}
+                
+        mock_embed.side_effect = side_effect
+        yield mock_embed
 
 @pytest.fixture
 def mock_chroma_client():
@@ -142,30 +146,25 @@ def test_text_splitter_chunks_text():
 
 # --- Test Embedding Generation ---
 
-def test_embedding_generation(mock_embeddings_model):
-    """Verifies that embeddings are generated and returned."""
+def test_embedding_generation(mock_genai_embed_content):
+    """Verifies that embeddings are generated and returned using genai."""
     with patch.dict(os.environ, {"GOOGLE_API_KEY": "dummy_key"}):
         with httpx.Client(follow_redirects=True) as client:
             scraper = HMSREGDocumentationScraper(base_url="http://test.com", client=client)
             texts = ["hello world", "how are you"]
             embeddings = scraper._get_embeddings(texts)
             assert len(embeddings) == len(texts)
-            assert len(embeddings[0]) == 768 # Assuming 768 is the dummy embedding dimension
-            mock_embeddings_model.embed_documents.assert_called_once_with(texts)
+            assert len(embeddings[0]) == 768
+            mock_genai_embed_content.assert_called_once()
 
 def test_embedding_generation_no_api_key():
     """Verifies that embedding generation handles missing API key."""
     with patch.dict(os.environ, {}, clear=True): # Clear GOOGLE_API_KEY from env
-        with patch('app.rag.ingestion.GoogleGenerativeAIEmbeddings') as MockGoogleGenerativeAIEmbeddings:
-            # Configure the mock to return an instance of itself (or another mock)
-            # This prevents the ValidationError during HMSREGDocumentationScraper initialization
-            MockGoogleGenerativeAIEmbeddings.return_value = MagicMock()
-
-            with httpx.Client(follow_redirects=True) as client:
-                scraper = HMSREGDocumentationScraper(base_url="http://test.com", client=client)
-                texts = ["hello world"]
-                embeddings = scraper._get_embeddings(texts)
-                assert embeddings == [[]] # Should return empty list of lists
+        with httpx.Client(follow_redirects=True) as client:
+            scraper = HMSREGDocumentationScraper(base_url="http://test.com", client=client)
+            texts = ["hello world"]
+            embeddings = scraper._get_embeddings(texts)
+            assert embeddings == [[]]
 
 # --- Test Vector Storage (Mocked) ---
 
@@ -215,7 +214,7 @@ def test_add_chunks_to_collection_empty_embeddings(mock_chroma_client):
 
 def test_full_ingestion_pipeline_integration(
     mock_httpx_client, # This is the mocked client instance from the fixture
-    mock_embeddings_model,
+    mock_genai_embed_content,
     mock_chroma_client,
 ):
     """

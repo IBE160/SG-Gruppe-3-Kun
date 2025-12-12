@@ -8,7 +8,6 @@ import httpx
 from bs4 import BeautifulSoup, Tag
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import google.generativeai as genai
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 # Import ChromaDB client
 import chromadb
@@ -44,10 +43,10 @@ class HMSREGDocumentationScraper:
         api_key = os.getenv("GOOGLE_API_KEY") # Load API key from env variable
         if api_key is None:
             logger.warning("GOOGLE_API_KEY is not set. Embedding generation will be disabled.")
-            self.embeddings_model = None # Set to None if API key is missing
+            self.has_api_key = False
         else:
             genai.configure(api_key=api_key) # Use the loaded API key
-            self.embeddings_model = GoogleGenerativeAIEmbeddings(model=EMBEDDING_MODEL_NAME)
+            self.has_api_key = True
 
 
     def _is_internal_link(self, url: str) -> bool:
@@ -119,12 +118,25 @@ class HMSREGDocumentationScraper:
 
     def _get_embeddings(self, texts: List[str]) -> List[List[float]]:
         """Generates embeddings for a list of text chunks."""
-        if self.embeddings_model is None: # Check if model was initialized
+        if not self.has_api_key:
             logger.error("Embedding model is not initialized (missing GOOGLE_API_KEY). Cannot generate embeddings.")
             return [[] for _ in texts] # Return empty embeddings
 
         try:
-            embeddings = self.embeddings_model.embed_documents(texts)
+            # Using genai.embed_content to generate embeddings.
+            # Note: For batch processing, we can iterate or use batch methods if available.
+            # The API supports batch embedding via embed_content if content is a list?
+            # Documentation says content is str or list of str.
+            
+            result = genai.embed_content(
+                model=EMBEDDING_MODEL_NAME,
+                content=texts,
+                task_type="retrieval_document"
+            )
+            
+            # The result for a list input contains a list of embeddings under 'embedding'
+            embeddings = result.get('embedding', [])
+            
             logger.info(f"Generated embeddings for {len(texts)} chunks.")
             return embeddings
         except Exception as e:
