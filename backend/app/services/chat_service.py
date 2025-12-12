@@ -7,11 +7,18 @@ from chromadb.api import ClientAPI
 from pydantic_ai import Agent
 from app.schemas.chat import ChatRequest, ChatResponse, SourceCitation
 from app.rag.vector_store import query_collection
+from app.core.config import settings # Import settings
 
 load_dotenv()
 
 # Configure the generative AI model
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+FALLBACK_MESSAGE = (
+    "Jeg fant ikke et klart svar i dokumentasjonen for dette spørsmålet. "
+    "Kan du utdype spørsmålet? Du kan også søke direkte i "
+    "[dokumentasjonen](https://docs.hmsreg.com)."
+)
 
 class ChatService:
     def __init__(self):
@@ -98,6 +105,11 @@ class ChatService:
             # 5. Run the PydanticAI Agent
             result = await self.agent.run(prompt_with_context, system_prompt=system_prompt)
             
+            # Check confidence score as per AC 1 and 4
+            if result.data.confidence is not None and result.data.confidence < settings.RAG_CONFIDENCE_THRESHOLD:
+                result.data.answer = ""
+                result.data.citations = [] # Discard citations if answer is not confident
+                result.data.fallback_message = FALLBACK_MESSAGE # Set fallback message
             
             return result.data
 

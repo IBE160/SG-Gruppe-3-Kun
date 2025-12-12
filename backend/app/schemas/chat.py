@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 
 class UserRole(str, Enum):
@@ -18,3 +18,5 @@ class SourceCitation(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     citations: List[SourceCitation] = []
+    confidence: Optional[float] = None
+    fallback_message: Optional[str] = None
