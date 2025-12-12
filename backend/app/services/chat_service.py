@@ -61,18 +61,15 @@ class ChatService:
         seen_urls = set()
 
         if query_result.documents:
-            for i, doc_list in enumerate(query_result.documents):
-                # query_result.documents is a list of lists (one per query)
-                # Since we query one embedding, we take the first list
-                metas = query_result.metadatas[i]
-                for doc, meta in zip(doc_list, metas):
-                    source = meta.get('url', 'Unknown')
-                    title = meta.get('title', 'Untitled')
-                    formatted_chunks.append(f"Source: {title} ({source})\nContent: {doc}")
-                    
-                    if source not in seen_urls and source != 'Unknown':
-                        retrieved_citations.append(SourceCitation(title=title, url=source))
-                        seen_urls.add(source)
+            # Iterate directly over documents and metadatas lists
+            for doc, meta in zip(query_result.documents, query_result.metadatas):
+                source = meta.get('url', 'Unknown')
+                title = meta.get('title', 'Untitled')
+                formatted_chunks.append(f"Source: {title} ({source})\nContent: {doc}")
+                
+                if source not in seen_urls and source != 'Unknown':
+                    retrieved_citations.append(SourceCitation(title=title, url=source))
+                    seen_urls.add(source)
 
         context_str = "\n\n".join(formatted_chunks)
 

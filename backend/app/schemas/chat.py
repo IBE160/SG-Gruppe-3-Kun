@@ -1,9 +1,15 @@
+from enum import Enum
 from pydantic import BaseModel
 from typing import List, Optional
 
+class UserRole(str, Enum):
+    CONSTRUCTION_WORKER = "Construction Worker"
+    SUPPLIER_SUBCONTRACTOR = "Supplier / Subcontractor"
+    PROJECT_MANAGER_ADMIN = "Project Manager / Admin"
+
 class ChatRequest(BaseModel):
     message: str
-    user_role: Optional[str] = "General User"
+    user_role: Optional[UserRole] = None
 
 class SourceCitation(BaseModel):
     title: str

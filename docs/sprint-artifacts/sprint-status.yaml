@@ -60,7 +60,7 @@ development_status:
     # Epic 3: User Context & Personalization
     epic-3: contexted
     3-1-implement-role-selection-ui: done
-    3-2-pass-user-role-to-backend: ready-for-dev
+    3-2-pass-user-role-to-backend: done
     3-3-incorporate-user-role-into-rag-prompt: ready-for-dev
     epic-3-retrospective: optional
 
