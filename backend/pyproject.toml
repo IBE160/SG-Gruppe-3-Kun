@@ -12,6 +12,7 @@ dependencies = [
     "uvicorn[standard]",
     "sqlalchemy",
     "asyncpg",
+    "psycopg2-binary",
     "python-multipart",
     "pydantic-ai == 0.0.19",
     "pydantic-settings (>=2.12.0,<3.0.0)",
