@@ -42,6 +42,21 @@ MOCK_HTML_CONTENT_SHORT = """
 </html>
 """
 
+# Define a simple MockHttpResponse class to mimic httpx.Response for side_effect
+class MockHttpResponse:
+    def __init__(self, status_code, text_content, headers=None):
+        self.status_code = status_code
+        self._text_content = text_content
+        self.headers = headers if headers is not None else {}
+
+    @property
+    def text(self):
+        return self._text_content
+
+    def raise_for_status(self):
+        if 400 <= self.status_code < 600:
+            raise httpx.HTTPStatusError("Bad response", request=httpx.Request("GET", "http://test.com"), response=self)
+
 @pytest.fixture
 def mock_httpx_client():
     """Mocks the httpx.Client.get method."""
@@ -199,7 +214,7 @@ def test_add_chunks_to_collection_empty_embeddings(mock_chroma_client):
 # --- Integration Test ---
 
 def test_full_ingestion_pipeline_integration(
-    mock_httpx_client,
+    mock_httpx_client, # This is the mocked client instance from the fixture
     mock_embeddings_model,
     mock_chroma_client,
 ):
@@ -208,37 +223,34 @@ def test_full_ingestion_pipeline_integration(
     using mocked external dependencies.
     """
     base_url = "http://test.com"
-    # Configure mock_httpx_client to return specific content for the base_url
+    # Configure mock_httpx_client.get.side_effect
     mock_httpx_client.get.side_effect = [
-        # First call for health check
-        MagicMock(status_code=200, text=MOCK_HTML_CONTENT_SHORT, raise_for_status=lambda: None),
-        # Second call for scrape_site start_url
-        MagicMock(status_code=200, text=MOCK_HTML_CONTENT, raise_for_status=lambda: None),
-        # Third call for internal-link
-        MagicMock(status_code=200, text=MOCK_HTML_CONTENT_SHORT, raise_for_status=lambda: None),
+        MockHttpResponse(200, MOCK_HTML_CONTENT_SHORT),
+        MockHttpResponse(200, MOCK_HTML_CONTENT),
+        MockHttpResponse(200, MOCK_HTML_CONTENT_SHORT),
     ]
 
     mock_chroma_client_instance, mock_collection = mock_chroma_client
 
     with patch.dict(os.environ, {"GOOGLE_API_KEY": "dummy_key"}):
-        with httpx.Client(follow_redirects=True) as client:
-            scraper = HMSREGDocumentationScraper(base_url=base_url, client=client, chunk_size=50, chunk_overlap=10)
+        # Pass the mocked client from the fixture
+        scraper = HMSREGDocumentationScraper(base_url=base_url, client=mock_httpx_client, chunk_size=50, chunk_overlap=10)
             
-            # Manually call scrape_site which includes text splitting and embedding
-            processed_chunks = scraper.scrape_site()
+        # Manually call scrape_site which includes text splitting and embedding
+        processed_chunks = scraper.scrape_site()
 
-            # Then call add_chunks_to_collection
-            added_count = add_chunks_to_collection(
-                client=mock_chroma_client_instance,
-                chunks=processed_chunks,
-                collection_name="hmsreg_docs"
-            )
+        # Then call add_chunks_to_collection
+        added_count = add_chunks_to_collection(
+            client=mock_chroma_client_instance,
+            chunks=processed_chunks,
+            collection_name="hmsreg_docs"
+        )
 
-            assert added_count > 0
-            assert mock_collection.add.call_count == 1
-            
-            # Verify content and embeddings are passed to ChromaDB mock
-            args, kwargs = mock_collection.add.call_args
-            assert len(kwargs['documents']) == added_count
-            assert len(kwargs['embeddings']) == added_count
-            assert all(len(e) == 768 for e in kwargs['embeddings']) # Check embedding dimension
+        assert added_count > 0
+        assert mock_collection.add.call_count == 1
+        
+        # Verify content and embeddings are passed to ChromaDB mock
+        args, kwargs = mock_collection.add.call_args
+        assert len(kwargs['documents']) == added_count
+        assert len(kwargs['embeddings']) == added_count
+        assert all(len(e) == 768 for e in kwargs['embeddings']) # Check embedding dimension

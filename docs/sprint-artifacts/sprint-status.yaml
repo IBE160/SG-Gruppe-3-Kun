@@ -48,7 +48,7 @@ development_status:
 
     # Epic 2: Core Conversational Experience & RAG Pipeline
     epic-2: contexted
-    2-1-implement-documentation-ingestion-pipeline: in-progress
+    2-1-implement-documentation-ingestion-pipeline: review
     2-2-a-implement-core-chat-interface: ready-for-dev
     2-2-b-implement-desktop-three-column-responsive-layout: ready-for-dev
     2-2-c-implement-mobile-tabbed-interface-layout: ready-for-dev

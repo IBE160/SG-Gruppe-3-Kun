@@ -1,6 +1,6 @@
 # Story 2.1: Implement Documentation Ingestion Pipeline
 
-Status: review
+Status: ready_for_dev
 
 ## Story
 
@@ -152,7 +152,7 @@ Summary: 19 of 21 completed tasks verified, 2 questionable/partial due to robust
 
 **Code Changes Required:**
 - [x] [High] Modify `HMSREGDocumentationScraper.__init__` in `backend/app/rag/ingestion.py` to conditionally initialize `self.embeddings_model` to `None` if `GOOGLE_API_KEY` is not provided. Adjust `_get_embeddings` to check for `self.embeddings_model` before use. [file: `backend/app/rag/ingestion.py`:L29-L37, L134-L150]
-- [ ] [Medium] Implement explicit `httpx.Client` session management in `HMSREGDocumentationScraper` in `backend/app/rag/ingestion.py` to ensure resource cleanup. Consider passing an `httpx.Client` instance as a dependency or using a context manager. [file: `backend/app/rag/ingestion.py`:L28, L23-L260]
+- [x] [Medium] Implement explicit `httpx.Client` session management in `HMSREGDocumentationScraper` in `backend/app/rag/ingestion.py` to ensure resource cleanup. Consider passing an `httpx.Client` instance as a dependency or using a context manager. [file: `backend/app/rag/ingestion.py`:L28, L23-L260]
 
 **Advisory Notes:**
 - Note: No Epic 2 Tech Spec was available for this review.
