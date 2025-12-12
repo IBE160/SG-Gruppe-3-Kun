@@ -61,7 +61,7 @@ development_status:
     epic-3: contexted
     3-1-implement-role-selection-ui: done
     3-2-pass-user-role-to-backend: done
-    3-3-incorporate-user-role-into-rag-prompt: ready-for-dev
+    3-3-incorporate-user-role-into-rag-prompt: review
     epic-3-retrospective: optional
 
   # Epic 4: Robustness, Reliability & Feedback

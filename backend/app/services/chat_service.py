@@ -20,19 +20,10 @@ class ChatService:
         self.agent = Agent(
             'google-gla:gemini-1.5-flash',
             result_type=ChatResponse,
-            system_prompt=(
-                "You are a helpful assistant. Use the provided context to answer the user's question. "
-                "If you don't know the answer, just say that you don't know. "
-                "You must output a JSON object matching the ChatResponse schema."
-            ),
         )
         # Agent for streaming (returns text)
         self.streaming_agent = Agent(
             'google-gla:gemini-1.5-flash',
-            system_prompt=(
-                "You are a helpful assistant. Use the provided context to answer the user's question. "
-                "If you don't know the answer, just say that you don't know."
-            ),
         )
 
     async def _prepare_context(self, request: ChatRequest, chroma_client: ClientAPI) -> tuple[str, List[SourceCitation]]:
@@ -92,8 +83,21 @@ class ChatService:
             # Append specific instruction for JSON format if needed, though result_type handles it mostly
             prompt_with_context += " Provide citations as a list of source URLs used."
 
+            user_role = request.user_role.value if request.user_role else "General User"
+
+            system_prompt = (
+                f"You are a helpful assistant for HMSREG documentation.\n"
+                f"Target Audience Role: {user_role}\n\n"
+                f"Instructions:\n"
+                f"- Answer the user's question based strictly on the provided context.\n"
+                f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
+                f"If you don't know the answer, just say that you don't know. "
+                f"You must output a JSON object matching the ChatResponse schema."
+            )
+            
             # 5. Run the PydanticAI Agent
-            result = await self.agent.run(prompt_with_context)
+            result = await self.agent.run(prompt_with_context, system_prompt=system_prompt)
+            
             
             return result.data
 
@@ -113,10 +117,21 @@ class ChatService:
         try:
             prompt_with_context, retrieved_citations = await self._prepare_context(request, chroma_client)
             
+            user_role = request.user_role.value if request.user_role else "General User"
+
+            system_prompt = (
+                f"You are a helpful assistant for HMSREG documentation.\n"
+                f"Target Audience Role: {user_role}\n\n"
+                f"Instructions:\n"
+                f"- Answer the user's question based strictly on the provided context.\n"
+                f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
+                f"If you don't know the answer, just say that you don't know."
+            )
+            
             # Stream the response
             # Note: run_stream returns a context manager or async iterator depending on version. 
             # In v0.0.19 it likely returns a StreamedRunResult which we can iterate.
-            async with self.streaming_agent.run_stream(prompt_with_context) as result:
+            async with self.streaming_agent.run_stream(prompt_with_context, system_prompt=system_prompt) as result:
                 async for chunk in result.stream():
                     yield ("token", chunk)
 
