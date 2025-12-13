@@ -113,6 +113,7 @@ class HMSREGDocumentationScraper:
                 for tag in body.find_all(selector):
                     tag.decompose()
             return body.get_text(separator='\n', strip=True)
+        logger.debug(f"No significant content extracted by default selectors for {soup.title.string if soup.title else 'Untitled'}.")
         return None
 
     def _split_text(self, text: str) -> List[str]:
@@ -189,8 +190,9 @@ class HMSREGDocumentationScraper:
                 title_tag = soup.find('title')
                 title = title_tag.get_text(strip=True) if title_tag else "No Title"
                 content = self._extract_article_content(soup)
-
+                
                 if content:
+                    logger.debug(f"Extracted content (snippet): {content[:200]}...") # Log snippet
                     chunks = self._split_text(content)
                     logger.info(f"Split content from {current_url} into {len(chunks)} chunks.")
 
@@ -214,6 +216,10 @@ class HMSREGDocumentationScraper:
                     logger.warning(f"No significant content extracted from: {current_url}")
 
                 new_links = self._parse_links(soup)
+                if new_links:
+                    logger.debug(f"Found {len(new_links)} new links on {current_url}: {new_links}")
+                else:
+                    logger.debug(f"No new links found on {current_url}.")
                 for link in new_links:
                     if link not in self.visited_urls and link not in to_visit:
                         to_visit.append(link)
@@ -223,7 +229,7 @@ class HMSREGDocumentationScraper:
         return all_processed_chunks
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG) # Change to DEBUG for more verbosity
 
     parser = argparse.ArgumentParser(description="Scrape HMSREG documentation and store embeddings in ChromaDB.")
     parser.add_argument("--base_url", type=str, default="https://docs.hmsreg.com/",
@@ -241,10 +247,8 @@ if __name__ == "__main__":
         exit(1)
 
     with httpx.Client(follow_redirects=True) as client:
-        # Now that API key is checked, initialize scraper
         scraper = HMSREGDocumentationScraper(args.base_url, client=client)
 
-        # Perform health check
         health_status = scraper.health_check()
         if not health_status["site_reachable"] or not health_status["structure_ok"]:
             logger.error("Site not reachable or structure not as expected. Aborting ingestion.")
@@ -256,11 +260,9 @@ if __name__ == "__main__":
         if processed_chunks:
             logger.info(f"Scraped, chunked, and embedded {len(processed_chunks)} total chunks.")
 
-            # Initialize ChromaDB client for persistent storage
             chroma_client = chromadb.PersistentClient(path=args.chroma_path)
             logger.info(f"ChromaDB client initialized with persistent path: {args.chroma_path}")
 
-            # Add chunks to ChromaDB
             add_chunks_to_collection(
                 client=chroma_client,
                 chunks=processed_chunks,
@@ -268,4 +270,4 @@ if __name__ == "__main__":
             )
             logger.info("Ingestion process completed successfully.")
         else:
-            logger.warning("No chunks were processed or generated. ChromaDB not updated.")
+            logger.warning("No chunks were processed or generated. ChromaDB not updated. This could mean no content was extracted or no links were found on the starting page.")
