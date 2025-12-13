@@ -3,13 +3,13 @@ import os
 import argparse
 from urllib.parse import urljoin, urlparse
 from typing import List, Dict, Optional, Set, Any
-import asyncio # New import for async operations
+import asyncio
 
-from playwright.sync_api import sync_playwright, Browser, Page # New imports for Playwright
+from playwright.sync_api import sync_playwright, Browser, Page # Playwright imports
 from bs4 import BeautifulSoup, Tag
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import google.generativeai as genai
-from dotenv import load_dotenv # Add this import
+from dotenv import load_dotenv
 
 # Import ChromaDB client
 import chromadb
@@ -19,10 +19,9 @@ from app.rag.vector_store import add_chunks_to_collection
 
 logger = logging.getLogger(__name__)
 
-load_dotenv() # Add this line to load environment variables
+load_dotenv()
 
 # --- Configuration for Embeddings ---
-# GOOGLE_API_KEY will be loaded from environment variables or passed during runtime
 EMBEDDING_MODEL_NAME = "models/text-embedding-004"
 CHROMA_DB_PATH = "./chroma_data" # Local persistent storage for ChromaDB
 
@@ -33,7 +32,7 @@ class HMSREGDocumentationScraper:
     Uses Playwright for fetching dynamic content.
     """
 
-    def __init__(self, base_url: str, browser: Browser, chunk_size: int = 800, chunk_overlap: int = 100):
+    def __init__(self, base_url: str, browser: Browser, chunk_size: int = 800, chunk_overlap: int = 100, max_depth: int = 3):
         self.base_url = base_url
         self.visited_urls: Set[str] = set()
         self.domain = urlparse(base_url).netloc
@@ -44,13 +43,14 @@ class HMSREGDocumentationScraper:
             length_function=len,
             is_separator_regex=False,
         )
+        self.max_depth = max_depth # maximum crawling depth
 
-        api_key = os.getenv("GOOGLE_API_KEY") # Load API key from env variable
+        api_key = os.getenv("GOOGLE_API_KEY")
         if api_key is None:
             logger.warning("GOOGLE_API_KEY is not set. Embedding generation will be disabled.")
             self.has_api_key = False
         else:
-            genai.configure(api_key=api_key) # Use the loaded API key
+            genai.configure(api_key=api_key)
             self.has_api_key = True
 
 
@@ -61,14 +61,19 @@ class HMSREGDocumentationScraper:
     def _get_absolute_url(self, href: str) -> Optional[str]:
         """Converts a relative URL to an absolute URL and filters for internal links."""
         absolute_url = urljoin(self.base_url, href)
-        if self._is_internal_link(absolute_url):
-            return absolute_url
+        parsed_url = urlparse(absolute_url)
+        clean_url = parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
+        if parsed_url.query:
+            clean_url += "?" + parsed_url.query
+
+        if self._is_internal_link(clean_url):
+            return clean_url
         return None
 
     def _fetch_page(self, url: str) -> Optional[Page]: # Returns Playwright Page object
         """Fetches a page using Playwright and returns a Page object if successful."""
         if url in self.visited_urls:
-            return None # Already visited
+            return None
 
         logger.info(f"Fetching: {url} using Playwright")
         self.visited_urls.add(url)
@@ -76,41 +81,36 @@ class HMSREGDocumentationScraper:
         page = None
         try:
             page = self.browser.new_page()
-            page.goto(url, wait_until="domcontentloaded") # Wait for DOM to load
-
+            page.goto(url, wait_until="domcontentloaded")
             # Explicitly wait for the main content div to appear
             # Use the specific selector identified: div[data-object-id="dsProcedure"]
             page.wait_for_selector('div[data-object-id="dsProcedure"]', state='visible', timeout=10000)
             
-            return page # Return the Playwright Page object
+            return page
         except Exception as e:
             logger.error(f"Error fetching {url} with Playwright: {e}")
             if page:
-                page.close() # Close page on error
+                page.close()
         return None
 
     def _extract_article_content(self, page: Page) -> Optional[str]: # Takes Playwright Page object
         """
         Extracts the main article content from a Playwright Page object.
         """
-        # --- Prioritize specific div[data-object-id="dsProcedure"] as per user's finding ---
         main_content_locator = page.locator('div[data-object-id="dsProcedure"].content')
         if main_content_locator.count() > 0:
-            # Remove unwanted elements by evaluating JS or getting innerHTML and using BS4
-            # For simplicity, let's get outerHTML and then use BeautifulSoup to clean it
             html_content = main_content_locator.first.inner_html()
             soup = BeautifulSoup(html_content, 'html.parser')
-            for unwanted_tag in soup.find_all(['span']): # e.g., 'Hjem-side' span
+            for unwanted_tag in soup.find_all(['span']): # e.g., 'Hjem-side' span from your example
                 unwanted_tag.decompose()
             text_content = soup.get_text(separator='\n', strip=True)
             
-            if len(text_content) > 50: # Only consider if it's substantial
+            if len(text_content) > 50:
                 logger.debug(f"Extracted content from div[data-object-id='dsProcedure'] (length: {len(text_content)}).")
                 return text_content
             else:
                 logger.debug(f"Div[dsProcedure] content too short (length: {len(text_content)}).")
 
-        # Fallback to body content (less specific)
         body_content = page.locator('body').text_content(timeout=1000)
         if body_content and len(body_content) > 50:
             logger.debug(f"Extracted content from body fallback (length: {len(body_content)}).")
@@ -122,7 +122,6 @@ class HMSREGDocumentationScraper:
     def _parse_links(self, page: Page) -> List[str]: # Takes Playwright Page object
         """Extracts all unique, internal links from a Playwright Page object."""
         links = []
-        # Use Playwright to get all href attributes
         all_hrefs = page.evaluate("Array.from(document.querySelectorAll('a[href]')).map(a => a.href)")
         logger.debug(f"Found {len(all_hrefs)} raw hrefs via Playwright: {all_hrefs}")
 
@@ -130,10 +129,9 @@ class HMSREGDocumentationScraper:
             absolute_url = self._get_absolute_url(href)
             if absolute_url and absolute_url not in self.visited_urls:
                 links.append(absolute_url)
-        unique_links = list(set(links)) # Return unique links
+        unique_links = list(set(links))
         logger.debug(f"Found {len(unique_links)} unique internal links: {unique_links}")
         return unique_links
-
 
 
     def _split_text(self, text: str) -> List[str]:
@@ -144,29 +142,22 @@ class HMSREGDocumentationScraper:
         """Generates embeddings for a list of text chunks."""
         if not self.has_api_key:
             logger.error("Embedding model is not initialized (missing GOOGLE_API_KEY). Cannot generate embeddings.")
-            return [[] for _ in texts] # Return empty embeddings
+            return [[] for _ in texts]
 
         try:
-            # Using genai.embed_content to generate embeddings.
-            # Note: For batch processing, we can iterate or use batch methods if available.
-            # The API supports batch embedding via embed_content if content is a list?
-            # Documentation says content is str or list of str.
-            
             result = genai.embed_content(
                 model=EMBEDDING_MODEL_NAME,
                 content=texts,
                 task_type="retrieval_document"
             )
             
-            # The result for a list input contains a list of embeddings under 'embedding'
             embeddings = result.get('embedding', [])
             
             logger.info(f"Generated embeddings for {len(texts)} chunks.")
             return embeddings
         except Exception as e:
             logger.error(f"Error generating embeddings: {e}")
-            # In a production system, implement retry logic or more robust error handling
-            return [[] for _ in texts] # Return empty embeddings on error
+            return [[] for _ in texts]
 
 
     def health_check(self) -> Dict[str, bool]:
@@ -183,10 +174,8 @@ class HMSREGDocumentationScraper:
             
             site_reachable = True
             
-            # Check for specific content div
             has_specific_content_div = page.locator('div[data-object-id="dsProcedure"]').count() > 0
             
-            # Check for common article content tags or general body content - using Playwright locators
             has_article_tag = page.locator('article').count() > 0 or page.locator('main').count() > 0
             has_body_tag = page.locator('body').count() > 0
             has_main_content_div_class = page.locator('.docs-content').count() > 0 or \
@@ -211,54 +200,58 @@ class HMSREGDocumentationScraper:
         if start_url is None:
             start_url = self.base_url
 
-        to_visit = [start_url]
+        # Store (url, depth) tuples
+        to_visit = [(start_url, 0)]
         all_processed_chunks: List[Dict[str, Any]] = []
 
         while to_visit:
-            current_url = to_visit.pop(0)
-            if current_url in self.visited_urls:
+            current_url, current_depth = to_visit.pop(0)
+
+            if current_depth > self.max_depth:
+                logger.info(f"Skipping {current_url} due to max depth ({self.max_depth}) reached.")
                 continue
 
-            soup = None # BeautifulSoup object is not directly created here anymore
-            page = self._fetch_page(current_url) # Fetch returns Playwright Page object
+            if current_url in self.visited_urls:
+                continue
+            
+            page = self._fetch_page(current_url)
             if page:
-                title = page.title() if page.title() else "No Title" # Get title from Playwright Page
-                content = self._extract_article_content(page) # Pass Playwright Page
+                title = page.title() if page.title() else "No Title"
+                content = self._extract_article_content(page)
                 
                 if content:
-                    logger.debug(f"Extracted content (snippet): {content[:200]}...") # Log snippet
+                    logger.debug(f"Extracted content (snippet): {content[:200]}...")
                     chunks = self._split_text(content)
                     logger.info(f"Split content from {current_url} into {len(chunks)} chunks.")
 
                     if chunks:
-                        # Generate embeddings for all chunks from the current page
                         embeddings = self._get_embeddings(chunks)
                         if len(embeddings) != len(chunks):
                             logger.error(f"Mismatch between number of chunks ({len(chunks)}) and embeddings ({len(embeddings)}) for {current_url}. Skipping embeddings.")
-                            embeddings = [[] for _ in chunks] # Ensure list of lists for consistency
+                            embeddings = [[] for _ in chunks]
                         
                         for i, chunk in enumerate(chunks):
-                            chunk_embedding = embeddings[i] if embeddings and i < len(embeddings) else [] # Ensure index is valid
+                            chunk_embedding = embeddings[i] if embeddings and i < len(embeddings) else []
                             all_processed_chunks.append({
                                 "url": current_url,
                                 "title": title,
                                 "chunk_id": f"{current_url}#{i}",
                                 "content": chunk,
-                                "embedding": chunk_embedding, # Add the embedding to the chunk data
+                                "embedding": chunk_embedding,
                             })
                 else:
                     logger.warning(f"No significant content extracted from: {current_url}")
 
-                new_links = self._parse_links(page) # Pass Playwright Page
+                new_links = self._parse_links(page)
                 if new_links:
                     logger.debug(f"Found {len(new_links)} new links on {current_url}: {new_links}")
                 else:
                     logger.debug(f"No new links found on {current_url}.")
                 for link in new_links:
-                    if link not in self.visited_urls and link not in to_visit:
-                        to_visit.append(link)
+                    if link not in self.visited_urls and link not in [item[0] for item in to_visit]:
+                        to_visit.append((link, current_depth + 1))
                 
-                page.close() # Close page after processing
+                page.close()
             else:
                 logger.error(f"Failed to fetch or parse: {current_url}")
 
@@ -274,9 +267,10 @@ if __name__ == "__main__":
                         help="Path for ChromaDB persistent storage.")
     parser.add_argument("--collection_name", type=str, default="hmsreg_docs",
                         help="Name of the ChromaDB collection.")
+    parser.add_argument("--max_depth", type=int, default=3,
+                        help="Maximum depth for crawling links. Default is 3.")
     args = parser.parse_args()
 
-    # Attempt to load GOOGLE_API_KEY from environment variable
     google_api_key = os.getenv("GOOGLE_API_KEY")
     if not google_api_key:
         logger.error("GOOGLE_API_KEY environment variable is not set. Please set it to proceed with embedding generation.")
@@ -285,7 +279,7 @@ if __name__ == "__main__":
     with sync_playwright() as p:
         browser = p.chromium.launch() # Use chromium, can be headless=True/False
         try:
-            scraper = HMSREGDocumentationScraper(args.base_url, browser=browser)
+            scraper = HMSREGDocumentationScraper(args.base_url, browser=browser, max_depth=args.max_depth)
 
             health_status = scraper.health_check()
             if not health_status["site_reachable"] or not health_status["structure_ok"]:
