@@ -17,6 +17,12 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
   const { messages, sendMessage, isLoading } = useChat(userRole); // Pass userRole to useChat
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [chatSessionId, setChatSessionId] = useState<string>(""); // State for chatSessionId
+
+  // Generate chatSessionId once on mount
+  useEffect(() => {
+    setChatSessionId(Date.now().toString());
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -46,7 +52,14 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
         )}
         
         {messages.map((msg) => (
-          <ChatBubble key={msg.id} role={msg.role} content={msg.content} citations={msg.citations} />
+          <ChatBubble 
+            key={msg.id} 
+            role={msg.role} 
+            content={msg.content} 
+            citations={msg.citations} 
+            messageId={msg.id} // Pass messageId
+            chatSessionId={chatSessionId} // Pass chatSessionId
+          />
         ))}
         
         {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (

@@ -67,7 +67,7 @@ development_status:
   # Epic 4: Robustness, Reliability & Feedback
   epic-4: contexted
   4-1-implement-automatic-fallback-mechanism: done
-  4-2-develop-user-feedback-mechanism-thumbs-up-down: ready-for-dev
+  4-2-develop-user-feedback-mechanism-thumbs-up-down: done
   4-3-implement-ambiguous-query-suggestion: ready-for-dev
   epic-4-retrospective: optional
 

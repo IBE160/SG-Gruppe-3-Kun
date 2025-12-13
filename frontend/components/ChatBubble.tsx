@@ -2,15 +2,19 @@ import React from 'react';
 import Markdown from 'react-markdown';
 import { cn } from "@/lib/utils";
 import { SourceCitation } from "@/hooks/use-chat";
+import { FeedbackButtons } from "./FeedbackButtons"; // Import the new component
 
 export interface ChatBubbleProps {
   role: 'user' | 'assistant';
   content: string;
   citations?: SourceCitation[];
+  messageId: string; // Add messageId prop
+  chatSessionId: string; // Add chatSessionId prop
 }
 
-export function ChatBubble({ role, content, citations }: ChatBubbleProps) {
+export function ChatBubble({ role, content, citations, messageId, chatSessionId }: ChatBubbleProps) {
   const isUser = role === 'user';
+  const isAssistant = role === 'assistant'; // Explicitly check for assistant
 
   return (
     <div className={cn(
@@ -42,6 +46,13 @@ export function ChatBubble({ role, content, citations }: ChatBubbleProps) {
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+        
+        {/* Render FeedbackButtons only for assistant messages */}
+        {isAssistant && (
+          <div className="mt-2 pt-2 border-t border-black/10 dark:border-white/10">
+            <FeedbackButtons messageId={messageId} chatSessionId={chatSessionId} />
           </div>
         )}
       </div>
