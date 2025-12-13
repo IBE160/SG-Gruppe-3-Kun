@@ -293,7 +293,7 @@ class HMSREGDocumentationScraper:
         return all_processed_chunks
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO) # Changed back to INFO
+    logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser(description="Scrape HMSREG documentation and store embeddings in ChromaDB.")
     parser.add_argument("--base_url", type=str, default="https://docs.hmsreg.com/?Area-ID=10000&ID=10296",
