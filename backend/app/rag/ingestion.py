@@ -3,8 +3,9 @@ import os
 import argparse
 from urllib.parse import urljoin, urlparse
 from typing import List, Dict, Optional, Set, Any
+import asyncio # New import for async operations
 
-import httpx
+from playwright.sync_api import sync_playwright, Browser, Page # New imports for Playwright
 from bs4 import BeautifulSoup, Tag
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import google.generativeai as genai
@@ -29,13 +30,14 @@ class HMSREGDocumentationScraper:
     """
     A scraper for HMSREG documentation, designed to extract article content
     and links, and to perform a basic health check on the site structure.
+    Uses Playwright for fetching dynamic content.
     """
 
-    def __init__(self, base_url: str, client: httpx.Client, chunk_size: int = 800, chunk_overlap: int = 100):
+    def __init__(self, base_url: str, browser: Browser, chunk_size: int = 800, chunk_overlap: int = 100):
         self.base_url = base_url
         self.visited_urls: Set[str] = set()
         self.domain = urlparse(base_url).netloc
-        self.session = client # Use the externally managed httpx.Client
+        self.browser = browser # Playwright browser instance
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
@@ -63,70 +65,75 @@ class HMSREGDocumentationScraper:
             return absolute_url
         return None
 
-    def _fetch_page(self, url: str) -> Optional[BeautifulSoup]:
-        """Fetches a page and returns a BeautifulSoup object if successful."""
+    def _fetch_page(self, url: str) -> Optional[Page]: # Returns Playwright Page object
+        """Fetches a page using Playwright and returns a Page object if successful."""
         if url in self.visited_urls:
             return None # Already visited
 
-        logger.info(f"Fetching: {url}")
+        logger.info(f"Fetching: {url} using Playwright")
         self.visited_urls.add(url)
 
+        page = None
         try:
-            response = self.session.get(url, timeout=10)
-            response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
-            return BeautifulSoup(response.text, 'html.parser')
-        except httpx.HTTPStatusError as e:
-            logger.error(f"HTTP error fetching {url}: {e.response.status_code} - {e.response.text}")
-        except httpx.RequestError as e:
-            logger.error(f"Request error fetching {url}: {e}")
+            page = self.browser.new_page()
+            page.goto(url, wait_until="domcontentloaded") # Wait for DOM to load
+
+            # Explicitly wait for the main content div to appear
+            # Use the specific selector identified: div[data-object-id="dsProcedure"]
+            page.wait_for_selector('div[data-object-id="dsProcedure"]', state='visible', timeout=10000)
+            
+            return page # Return the Playwright Page object
+        except Exception as e:
+            logger.error(f"Error fetching {url} with Playwright: {e}")
+            if page:
+                page.close() # Close page on error
         return None
 
-    def _extract_article_content(self, soup: BeautifulSoup) -> Optional[str]:
+    def _extract_article_content(self, page: Page) -> Optional[str]: # Takes Playwright Page object
         """
-        Extracts the main article content from a BeautifulSoup object, prioritizing known documentation content structures.
+        Extracts the main article content from a Playwright Page object.
         """
-        # --- NEW: Prioritize specific div[data-object-id="dsProcedure"] as per user's finding ---
-        main_content_div = soup.find('div', attrs={"data-object-id": "dsProcedure"}, class_="content")
-        if main_content_div:
-            # Remove unwanted elements often found within main content (e.g., span for breadcrumbs)
-            for unwanted_tag in main_content_div.find_all(['span']):
+        # --- Prioritize specific div[data-object-id="dsProcedure"] as per user's finding ---
+        main_content_locator = page.locator('div[data-object-id="dsProcedure"].content')
+        if main_content_locator.count() > 0:
+            # Remove unwanted elements by evaluating JS or getting innerHTML and using BS4
+            # For simplicity, let's get outerHTML and then use BeautifulSoup to clean it
+            html_content = main_content_locator.first.inner_html()
+            soup = BeautifulSoup(html_content, 'html.parser')
+            for unwanted_tag in soup.find_all(['span']): # e.g., 'Hjem-side' span
                 unwanted_tag.decompose()
-            text_content = main_content_div.get_text(separator='\n', strip=True)
+            text_content = soup.get_text(separator='\n', strip=True)
+            
             if len(text_content) > 50: # Only consider if it's substantial
+                logger.debug(f"Extracted content from div[data-object-id='dsProcedure'] (length: {len(text_content)}).")
                 return text_content
+            else:
+                logger.debug(f"Div[dsProcedure] content too short (length: {len(text_content)}).")
 
-
-        # Original fallbacks: Prioritize known content areas
-        content_tags = soup.find(['article', 'main'], class_=['docs-content', 'article-content', 'main-content'])
-        if content_tags:
-            for unwanted_class in ['sidebar', 'nav', 'footer', 'header', 'meta-data']:
-                for tag in content_tags.find_all(class_=unwanted_class):
-                    tag.decompose()
-            text_content = content_tags.get_text(separator='\n', strip=True)
-            if len(text_content) > 50:
-                return text_content
-
-        # Fallback to body content, but try to remove common non-article elements
-        body = soup.find('body')
-        if body:
-            # Remove navigation, footer, header, sidebar elements if they are direct children or commonly found
-            for selector in ['nav', 'footer', 'header', 'aside', '.sidebar', '#sidebar', '.header', '#header', '.footer', '#footer']:
-                for tag in body.find_all(selector):
-                    tag.decompose()
-            text_content = body.get_text(separator='\n', strip=True)
-            if len(text_content) > 50:
-                return text_content
+        # Fallback to body content (less specific)
+        body_content = page.locator('body').text_content(timeout=1000)
+        if body_content and len(body_content) > 50:
+            logger.debug(f"Extracted content from body fallback (length: {len(body_content)}).")
+            return body_content
+        
+        logger.debug(f"No significant content extracted by any selector.")
         return None
 
-    def _parse_links(self, soup: BeautifulSoup) -> List[str]:
-        """Extracts all unique, internal links from a BeautifulSoup object."""
+    def _parse_links(self, page: Page) -> List[str]: # Takes Playwright Page object
+        """Extracts all unique, internal links from a Playwright Page object."""
         links = []
-        for a_tag in soup.find_all('a', href=True):
-            href = a_tag['href']
+        # Use Playwright to get all href attributes
+        all_hrefs = page.evaluate("Array.from(document.querySelectorAll('a[href]')).map(a => a.href)")
+        logger.debug(f"Found {len(all_hrefs)} raw hrefs via Playwright: {all_hrefs}")
+
+        for href in all_hrefs:
             absolute_url = self._get_absolute_url(href)
             if absolute_url and absolute_url not in self.visited_urls:
                 links.append(absolute_url)
-        return list(set(links)) # Return unique links
+        unique_links = list(set(links)) # Return unique links
+        logger.debug(f"Found {len(unique_links)} unique internal links: {unique_links}")
+        return unique_links
+
 
 
     def _split_text(self, text: str) -> List[str]:
@@ -168,19 +175,33 @@ class HMSREGDocumentationScraper:
         This checks if key elements (e.g., a main article tag or body) are present on the base page.
         """
         logger.info(f"Performing health check on {self.base_url}")
-        soup = self._fetch_page(self.base_url)
-        if not soup:
+        page = None
+        try:
+            page = self.browser.new_page()
+            page.goto(self.base_url, wait_until="domcontentloaded")
+            page.wait_for_selector('div[data-object-id="dsProcedure"]', state='visible', timeout=10000)
+            
+            site_reachable = True
+            
+            # Check for specific content div
+            has_specific_content_div = page.locator('div[data-object-id="dsProcedure"]').count() > 0
+            
+            # Check for common article content tags or general body content - using Playwright locators
+            has_article_tag = page.locator('article').count() > 0 or page.locator('main').count() > 0
+            has_body_tag = page.locator('body').count() > 0
+            has_main_content_div_class = page.locator('.docs-content').count() > 0 or \
+                                         page.locator('.article-content').count() > 0 or \
+                                         page.locator('.main-content').count() > 0
+
+            structure_ok = has_specific_content_div or has_article_tag or has_body_tag or has_main_content_div_class
+            logger.info(f"Health check result for {self.base_url}: reachable={site_reachable}, structure_ok={structure_ok}")
+            return {"site_reachable": site_reachable, "structure_ok": structure_ok}
+        except Exception as e:
+            logger.error(f"Health check failed for {self.base_url}: {e}")
             return {"site_reachable": False, "structure_ok": False}
-
-        site_reachable = True
-        # Check for common article content tags or general body content
-        has_article_tag = bool(soup.find(['article', 'main']))
-        has_body_tag = bool(soup.find('body'))
-        has_main_content_div = bool(soup.find(class_=['docs-content', 'article-content', 'main-content']))
-
-        structure_ok = has_article_tag or has_body_tag or has_main_content_div
-        logger.info(f"Health check result for {self.base_url}: reachable={site_reachable}, structure_ok={structure_ok}")
-        return {"site_reachable": site_reachable, "structure_ok": structure_ok}
+        finally:
+            if page:
+                page.close()
 
     def scrape_site(self, start_url: Optional[str] = None) -> List[Dict[str, Any]]:
         """
@@ -198,11 +219,11 @@ class HMSREGDocumentationScraper:
             if current_url in self.visited_urls:
                 continue
 
-            soup = self._fetch_page(current_url)
-            if soup:
-                title_tag = soup.find('title')
-                title = title_tag.get_text(strip=True) if title_tag else "No Title"
-                content = self._extract_article_content(soup)
+            soup = None # BeautifulSoup object is not directly created here anymore
+            page = self._fetch_page(current_url) # Fetch returns Playwright Page object
+            if page:
+                title = page.title() if page.title() else "No Title" # Get title from Playwright Page
+                content = self._extract_article_content(page) # Pass Playwright Page
                 
                 if content:
                     logger.debug(f"Extracted content (snippet): {content[:200]}...") # Log snippet
@@ -228,7 +249,7 @@ class HMSREGDocumentationScraper:
                 else:
                     logger.warning(f"No significant content extracted from: {current_url}")
 
-                new_links = self._parse_links(soup)
+                new_links = self._parse_links(page) # Pass Playwright Page
                 if new_links:
                     logger.debug(f"Found {len(new_links)} new links on {current_url}: {new_links}")
                 else:
@@ -236,6 +257,8 @@ class HMSREGDocumentationScraper:
                 for link in new_links:
                     if link not in self.visited_urls and link not in to_visit:
                         to_visit.append(link)
+                
+                page.close() # Close page after processing
             else:
                 logger.error(f"Failed to fetch or parse: {current_url}")
 
@@ -259,28 +282,32 @@ if __name__ == "__main__":
         logger.error("GOOGLE_API_KEY environment variable is not set. Please set it to proceed with embedding generation.")
         exit(1)
 
-    with httpx.Client(follow_redirects=True) as client:
-        scraper = HMSREGDocumentationScraper(args.base_url, client=client)
+    with sync_playwright() as p:
+        browser = p.chromium.launch() # Use chromium, can be headless=True/False
+        try:
+            scraper = HMSREGDocumentationScraper(args.base_url, browser=browser)
 
-        health_status = scraper.health_check()
-        if not health_status["site_reachable"] or not health_status["structure_ok"]:
-            logger.error("Site not reachable or structure not as expected. Aborting ingestion.")
-            exit(1)
+            health_status = scraper.health_check()
+            if not health_status["site_reachable"] or not health_status["structure_ok"]:
+                logger.error("Site not reachable or structure not as expected. Aborting ingestion.")
+                exit(1)
 
-        logger.info(f"Starting to scrape {args.base_url}...")
-        processed_chunks = scraper.scrape_site()
+            logger.info(f"Starting to scrape {args.base_url}...")
+            processed_chunks = scraper.scrape_site()
 
-        if processed_chunks:
-            logger.info(f"Scraped, chunked, and embedded {len(processed_chunks)} total chunks.")
+            if processed_chunks:
+                logger.info(f"Scraped, chunked, and embedded {len(processed_chunks)} total chunks.")
 
-            chroma_client = chromadb.PersistentClient(path=args.chroma_path)
-            logger.info(f"ChromaDB client initialized with persistent path: {args.chroma_path}")
+                chroma_client = chromadb.PersistentClient(path=args.chroma_path)
+                logger.info(f"ChromaDB client initialized with persistent path: {args.chroma_path}")
 
-            add_chunks_to_collection(
-                client=chroma_client,
-                chunks=processed_chunks,
-                collection_name=args.collection_name
-            )
-            logger.info("Ingestion process completed successfully.")
-        else:
-            logger.warning("No chunks were processed or generated. ChromaDB not updated. This could mean no content was extracted or no links were found on the starting page.")
+                add_chunks_to_collection(
+                    client=chroma_client,
+                    chunks=processed_chunks,
+                    collection_name=args.collection_name
+                )
+                logger.info("Ingestion process completed successfully.")
+            else:
+                logger.warning("No chunks were processed or generated. ChromaDB not updated. This could mean no content was extracted or no links were found on the starting page.")
+        finally:
+            browser.close()

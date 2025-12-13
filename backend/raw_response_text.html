@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en" class="documentation-public notranslate Unknown Unknown0">
+<head> 
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Language" content="en_GB">
+	<meta name="google" value="notranslate">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+	<meta name="viewport" content="width=device-width, user-scalable=yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<link href="/static/graphics/favicon.ico" rel="shortcut icon" type="image/x-icon">
+		
+	<title>Documentation Viewer </title>
+	
+	<!--[if lt IE 9]>
+		<script src="/js/lib/html5shiv-printshiv.js"></script>
+	<![endif]-->
+	
+
+	<link rel="preload" href="/lib/fontawesome/pro-5.12.0/css/all.min.css"  as="style" onload="this.rel='stylesheet'"> 
+
+	<script type="text/javascript" src="/file/site/script/1576328913.af.365.lib.jquery-3.6.0.min.js"></script>
+	<script type="text/javascript" src="/file/site/script/1419781745.af.lib.jquery-migrate-3.4.0.min.js"></script>
+	<script type="text/javascript" src="/file/site/script/1719597201.af.lib.popper-1.14.7.min.js"></script>
+	<script type="text/javascript" src="/file/site/script/1768442025.af.lib.bootstrap-4.4.1.min.js"></script>
+
+    <script type="text/javascript">
+        if(("standalone" in window.navigator) && window.navigator.standalone){
+            var noddy, remotes = false;
+            document.addEventListener('click', function(event) {
+                noddy = event.target;
+        
+                while(noddy.nodeName !== "A" && noddy.nodeName !== "HTML") {
+                    noddy = noddy.parentNode;
+                }
+        
+                if('href' in noddy && noddy.href.indexOf('http') !== -1 && (noddy.href.indexOf(document.location.host) !== -1 || remotes))
+                {
+                    event.preventDefault();
+                    document.location.href = noddy.href;
+                }
+            },false);
+        }
+    </script>
+	
+	
+	<link rel="stylesheet" href="/file/site/style/376883341.af.lib.bootstrap-4.4.1.spacelab.min.css">
+	<link href="/lib/froala/4.0.7/css/froala_style.min.css" rel="stylesheet" >
+	<link rel="preload" href="/lib/fontawesome/pro-5.12.0/css/v4-shims.min.css" as="style" onload="this.rel='stylesheet'">
+	<link rel="stylesheet" href="/file/site/style/-187777611.af.docs.libs.prism.css">
+	<link rel="stylesheet" href="/file/site/style/-1384573046.af.365.lib.pikaday.css">
+	<link rel="stylesheet" href="/file/site/style/1893662060.af.controls.lookup.less">
+	<link rel="stylesheet" href="/file/site/style/1232707.af.controls.grid.less">
+	<link rel="stylesheet" href="/file/site/style/1039085995.af.common.less">
+	<link rel="stylesheet" href="/file/site/style/1110854297.af.controls.dropdown.less">
+	<link rel="stylesheet" href="/file/site/style/418553832.af.controls.datepicker.less">
+	<link rel="stylesheet" href="/file/site/style/-1277845579.af.controls.cropper.less">
+	<link rel="stylesheet" href="/file/site/style/2098976142.af.controls.content.less">
+	<link rel="stylesheet" href="/file/site/style/1663395687.af.lib.intlTelInput.min.css">	
+	<link rel="stylesheet" href="/file/site/style/-761575566.af.lib.coloris.min.css">	
+
+	<!-- FileGroup: 'documentation-public' Type: 'ArticleStyle' Files: 2 -->
+<!--stylsheet with href="/file/article/static-style/documentation-public.610d97c3879cfdc32230b2dedadfac3166b58f73.less" was excluded because it is empty-->
+<link rel="stylesheet" href="/file/article/main-style/documentation-public.380a1653ca5711ad32801a3badeaaa1aef68ee19.less">
+
+
+	<script>
+        let documentRoot = document.querySelector(':root');
+
+        documentRoot.style.setProperty('--af-desktop-top', '0');
+    </script>
+</head>
+
+<body>
+
+
+
+
+<nav class="navbar-dark bg-primary navbar-expand px-2" style="font-size:1.225rem;">
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav w-100" data-object-id="dsAreas">
+            <li class="nav-item mr-1" data-repeat data-active>
+                <a class="nav-link" href="#" onclick="setArea(this)" data-attr="id:<%=PrimKey%>" data-field="Name"></a>
+            </li>
+            <li class="nav-item ml-auto">
+                <a class="nav-link log-in" href="/login?ReturnUrl=%2fdocumentation-public" >
+                    Log in
+                </a>
+                <a class="nav-link log-out" href="/logout?ReturnUrl=%2fdocumentation-public" >
+                    Log out
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container2" style="display:flex; flex-direction: row; max-width:1600px">
+	<div id="flexSplitLeft" data-flex-split="right" style="overflow:auto; min-width:375px!important; width: 375px; max-width: 500px; " class="position-relative">
+         <div class="bg-light py-1 border m-1">
+            <input type="text" class="form-control form-control-sm ml-1 search-treecontrol d-inline-block " placeholder = "search..." style="max-width:200px">
+            <div class="font-weight-bold text-muted ml-3 global-counter d-none" style="font-size:0.8em;">
+                <span class="navi-global-current">0</span>/<span class="navi-global-total">0</span>   
+                <a class="btn btn-sm btn-link ml-3 prev-global-hit" disabled="disabled"><i class="far fa-chevron-up text-info"></i></a>   
+                <a class="btn btn-sm btn-link next-global-hit"><i class="far fa-chevron-down text-info"></i></a>
+            </div>
+        </div>
+        <ul class="ml-2 mb-0"
+            data-object-id="dsProcedureTree"
+            data-tree="procedureTree"
+            data-field-parentid="Parent_ID"
+            data-field-id="ID"
+            data-custom-search-sortorder='[{"ParentSortOrder":"asc"},{"Name":"asc"}]'
+            data-custom-search="customSearch"
+            data-field-hasnodes="HasNodes"
+            data-field-display="Name"
+            data-field-icon="Icon"
+            data-field-level="Level"
+            data-field-tooltip="Name"
+            style="position:absolute;bottom:0px;left:0px;right:0px;top:59px;"
+        ></ul>
+    </div>
+    <div id="contentDiv" style="overflow:hidden;">
+        <div data-object-id="dsAreas" class="p-2 mt-n2 fr-view aria-home aria-home-div d-none" style="overflow-y:auto;height:1150px"  >
+            <div class="m-0 p-1 aria-home d-none" data-object-id='dsAreas' data-if="currentRow.EditPermissions && !currentEdit">
+                <a class="float-right btn btn-sm btn-link" data-attr="href:https://omega.omega365.com/area-home?ID=<%=ID%>">Edit</a>
+            </div>
+            <div data-field-html="HTMLContent"></div>
+        </div>
+        <div class="card proc-content" data-object-id="dsProcedureTree">
+            <div data-if="currentRow.Level === 2" class="proc-div-content">
+                <div data-object-id="dsProcedure" class="ml-3 content" style="overflow:auto;" >
+                    <div class="position-fixed pop-con "></div>
+                    <h2 class="border-bottom pop-cont  my-2" >
+                        <span data-field="Name"></span>
+                    </h2>
+                    <div>
+                        <button class="btn btn-sm btn-link float-right download-report pt-0 pr-0" onclick="window.print();" >
+                            <span class="mr-1" data-field="Type"></span><i class="fa fa-lg fa-file-pdf"></i>
+                        </button>
+                                                <a class="btn btn-sm btn-link float-right pt-0 pr-0 file-col" data-toggle="collapse" href="#fileCollapse">
+                            Attachments
+                        </a>
+                        <span class="text-muted">Author: 
+                            <span data-field="Author"></span>
+                            <span data-field="Reviewed" data-format="Short Date"></span>
+                        </span>
+                    </div>
+                    <div class="collapse" id="fileCollapse">
+                        <div data-object-id="dsProcedureTree">
+                            <div data-if="currentRow.Level === 2">
+                                <table data-grid class="table files" id="gridFiles" data-object-id="dsFiles" data-layout-version="1" 
+                                        data-no-search>
+                                    <thead>
+                                        <tr>
+                                            <th style="width:60%;" data-column="FileName" title = "File Name">File Name</th>
+                                            <th style="width:40%;" data-column="CreatedBy" title = "Created By">Created By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-repeat>
+                                            <td><a href="javascript:void(0)" data-field="FileName"></a></td>
+                                            <td data-field="CreatedBy"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                 <div class="d-inline-flex mt-1" style="font-size: 0.875em;" data-object-id="dsFiles">
+                                    <a href="javascript:void(0) " class="px-2 " data-action="first-page">       
+                                        <i class="fas fa-step-backward"></i>  
+                                    </a>   
+                                    <a href="javascript:void(0)" class="px-2 " data-action="prev-page">       
+                                        <i class="fas fa-chevron-left"></i>   
+                                    </a>   
+                                    <a href="javascript:void(0)" class="px-2 " data-action="next-page">      
+                                        <i class="fas fa-chevron-right"></i>  
+                                    </a>   
+                                    <a href="javascript:void(0)" class="px-2 " data-action="last-page">       
+                                        <i class="fas fa-step-forward"></i>   
+                                    </a>
+                                    <div data-page-counter class=""></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tree-content mt-4 fr-view" data-function="setContent"></div>
+                </div>
+            </div>
+            <div data-if="currentRow.Level != 2 && !currentRow.ManualContent">
+                <div class="ml-3 content" data-function="setHeight" style="overflow:auto;">
+                    <div data-object-id='dsProcedureTree2'>
+                        <div data-repeat> 
+                            <div data-if="currentRow.Level === 0"><h2 class="mt-2" data-field="Name"></h2></div>
+                            <div data-if="currentRow.Level === 1"><h5 class="mt-3 mb-0" data-field="Name"></h5></div>
+                            <div data-if="currentRow.Level === 2"><a data-attr="href:documentation-public?Area-ID=<%=Area_ID%>&ID=<%=ID%>"  data-field="Name"></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-if="currentRow.Level == 0 && currentRow.ManualContent">
+                <div class="mb-1 p-1 float-right">
+                    <a class="btn btn-sm btn-link" data-toggle="collapse" href="#contentCollapse" href="javascript:void(0);">Manual Content</a>
+                    <a class="btn btn-sm btn-link" data-attr="href:https://omega.omega365.com/manual-home?ID=<%=Manual_ID%>">Edit</a>
+                </div>
+                <div id="contentCollapse" class="collapse" data-object-id='dsProcedureTree2'>
+                    <div class="ml-3">
+                        <div data-repeat> 
+                            <div data-if="currentRow.Level === 0"><h2 class="mt-2" data-field="Name"></h2></div>
+                            <div data-if="currentRow.Level === 1"><h5 class="mt-3 mb-0" data-field="Name"></h5></div>
+                            <div data-if="currentRow.Level === 2"><a data-attr="href:documentation-public?Area-ID=<%=Area_ID%>&ID=<%=ID%>"  data-field="Name"></a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-view manual-home-div p-2 mt-5" style="overflow-y:auto;height:1150px;" data-field-html="ManualContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="af-doc-imgdlg" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+          <img class="doc-img-preview mt-n1" src="">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="overview-container anchor-main d-none" style="top: 365.176px; left: 284.659px; z-index:1!important;">  
+    <h5 class="ml-2">In this document</h5>
+    <div>
+        <div class="anchor-content" style="overflow-y:auto;">
+            <a class="btn btn-link d-block text-left" href="javascript:void(0)">Haloen</a>
+        </div>
+    </div>
+</div>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VZ4SFTG8WG"></script>
+<script>
+    if(location.host === "docs.omega365.com"){
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VZ4SFTG8WG');
+    }
+</script>
+
+
+
+
+<script type="text/javascript" src="/file/site/script/-2110437402.af.365.lib.jquery.hashchange.js" async></script>
+<script type="text/javascript" src="/file/site/script/1008810462.af.365.lib.augment-0.3.1.min.js" async></script>
+
+
+<script type="text/javascript" src="/file/site/script/920732467.af.lib.autoNumeric.min.js"></script>
+<script type="text/javascript" src="/file/site/script/1720393741.af.365.lib.pikaday.js"></script>
+<script type="text/javascript" src="/file/site/script/-771824610.af.365.lib.cropper.js" async></script>
+<script type="text/javascript" src="/file/site/script/1959864202.af.365.lib.highcharts.9.1.1.min.js"></script>
+<script type="text/javascript" src="/file/site/script/22542203.af.365.lib.highcharts-more.9.1.1.min.js"></script>
+<script type="text/javascript" src="/file/site/script/804376933.af.365.lib.json3.js" async></script>
+<script type="text/javascript" src="/file/site/script/-92229099.af.365.lib.xdate.js"></script>
+<script type="text/javascript" src="/file/site/script/1632539999.af.365.lib.xml.js"></script>
+
+
+<script type="text/javascript" src="/file/site/script/-183621891.af.365.min.js"></script>
+<script type="text/javascript" src="/file/site/script/-943925433.af.365.common.js"></script>
+<script type="text/javascript" src="/file/site/script/1370782618.af.365.common.base64.js"></script>
+<script type="text/javascript" src="/file/site/script/610465222.af.365.template.js"></script>
+<script type="text/javascript" src="/file/site/script/-1761932536.af.365.url.js"></script>
+<script type="text/javascript" src="/file/site/script/1935544324.af.365.data.js"></script>
+
+<script type="text/javascript" src="/file/site/script/-908543047.af.365.DataObject.js"></script>
+<script type="text/javascript" src="/file/site/script/1767621305.af.365.DataObject.extensions.js"></script>
+<script type="text/javascript" src="/file/site/script/-917474047.af.365.DataObject.bindDomRepeats.js"></script>
+<script type="text/javascript" src="/file/site/script/1943426250.af.365.DataObject.bindElements.js"></script>
+<script type="text/javascript" src="/file/site/script/1191676647.af.365.DataObject.bindFilterItems.js"></script>
+<script type="text/javascript" src="/file/site/script/1627105950.af.365.FilterObject.js"></script>
+<script type="text/javascript" src="/file/site/script/798927521.af.365.Procedure.js"></script>
+<script type="text/javascript" src="/file/site/script/835177765.af.365.Procedure.extensions.js"></script>
+<script type="text/javascript" src="/file/site/script/-431653224.af.365.components.ViewModel.Item.js"></script>
+<script type="text/javascript" src="/file/site/script/-217565798.af.365.components.ViewModel.js"></script>
+<script type="text/javascript" src="/file/site/script/-1679554413.af.365.components.DataObjectViewModel.js"></script>
+<script type="text/javascript" src="/file/site/script/-955824531.af.365.components.Paging.js"></script>
+<script type="text/javascript" src="/file/site/script/-1184410056.af.365.controls.js"></script>
+<script type="text/javascript" src="/file/site/script/517135316.af.365.controls.Paging.js"></script>
+<script type="text/javascript" src="/file/site/script/653759637.af.controls.toast.js"></script>
+<script type="text/javascript" src="/file/site/script/199480044.af.365.data.ArrayDataHandler.js"></script>
+<script type="text/javascript" src="/file/site/script/-309825266.af.365.dataBinding.AfTable.js"></script>
+<script type="text/javascript" src="/file/site/script/473710910.af.365.dataBinding.DataGrid.js"></script>
+<script type="text/javascript" src="/file/site/script/196696644.af.365.dataBinding.AfDatePicker.js"></script>
+<script type="text/javascript" src="/file/site/script/-2012127292.af.365.dataBinding.AfDateRangePicker.js"></script>
+<script type="text/javascript" src="/file/site/script/-65949577.af.365.dataBinding.AfTimePicker.js"></script>
+<script type="text/javascript" src="/file/site/script/-1298261113.af.365.dataBinding.BindValues.js"></script>
+<script type="text/javascript" src="/file/site/script/2064064596.af.365.dataBinding.Cropper.js"></script>
+<script type="text/javascript" src="/file/site/script/36395431.af.365.dataBinding.ErrorPopup.js"></script>
+<script type="text/javascript" src="/file/site/script/1835771148.af.365.dataBinding.Helpers.js"></script>
+<script type="text/javascript" src="/file/site/script/-1027009783.af.controls.ItemsInfo2.js"></script>
+<script type="text/javascript" src="/file/site/script/-2037696910.af.365.dataBinding.DataGridColumnMenu.js"></script>
+<script type="text/javascript" src="/file/site/script/659249864.af.365.dataBinding.Filters.js"></script>
+<script type="text/javascript" src="/file/site/script/-1853085904.af.365.dataBinding.FileUpload.js"></script>
+<script type="text/javascript" src="/file/site/script/-1758199386.af.365.dataBinding.ValueHelpers.js"></script>
+<script type="text/javascript" src="/file/site/script/-1842626251.af.controls.Lookup.js"></script>
+<script type="text/javascript" src="/file/site/script/1330619312.af.365.dataBinding.AutoUpload.js"></script>
+<script type="text/javascript" src="/file/site/script/570771413.af.365.dataBinding.FilterUtils.js"></script>
+<script type="text/javascript" src="/file/site/script/1238645260.af.365.dataBinding.FilterBuilder.js"></script>
+<script type="text/javascript" src="/file/site/script/815658116.af.controls.FieldFilter.js"></script>
+<script type="text/javascript" src="/file/site/script/-1310038234.af.365.dataBinding.RecordInfo.js"></script>
+<script type="text/javascript" src="/file/site/script/1387546901.af.365.controls.FieldsSelector.js"></script>
+
+
+<script type="text/javascript" src="/file/site/script/-504514007.af.365.controls.Gantt.js"></script>
+<script type="text/javascript" src="/file/site/script/-2118284567.af.365.controls.Wizard.js"></script>
+<script type="text/javascript" src="/file/site/script/2145378780.af.365.dataBinding.RouteHandler.js"></script>
+<script type="text/javascript" src="/file/site/script/-1142179957.af.365.dataBinding.Render.js"></script>
+<script type="text/javascript" src="/file/site/script/1479811696.af.365.dataBinding.SummaryItem.js"></script>
+<script type="text/javascript" src="/file/site/script/-92506809.af.365.dataBinding.HoverContainer.js"></script>
+<script type="text/javascript" src="/file/site/script/-524292569.af.365.dataBinding.ContentDiv.js"></script>
+<script type="text/javascript" src="/file/site/script/-361295972.af.365.dataBinding.Excel.js"></script>
+<script type="text/javascript" src="/file/site/script/616703521.af.controls.Messages.js"></script>
+<script type="text/javascript" src="/file/site/script/-1231239754.af.365.dataBinding.AfSplitBar.js"></script>
+<script type="text/javascript" src="/file/site/script/-1874059435.af.controls.Sizer.js"></script>
+<script type="text/javascript" src="/file/site/script/-158068623.af.365.dataBinding.DataObjectFromView.js"></script>
+<script type="text/javascript" src="/file/site/script/453816154.af.365.dataBinding.AfBatchUpdate.js"></script>
+<script type="text/javascript" src="/file/site/script/846642054.af.365.lib.exif.min.js" async></script>
+<script type="text/javascript" src="/file/site/script/-901079530.af.pwa.controls.afFreezeColumns.js" async></script>
+<script type="text/javascript" src="/file/site/script/-1944172858.af.pwa.dataBinding.bindFoxit.js"></script>
+<script type="text/javascript" src="/file/site/script/-435299711.af.controls.CustomLookups.js"></script>
+<script type="text/javascript" src="/file/site/script/-858777608.af.365.dataBinding.ReportFilters.js"></script>
+<script type="text/javascript" src="/file/site/script/-1792592964.af.365.dataBinding.AfContentEditor.js"></script>
+<script type="text/javascript" src="/file/site/script/725782492.af.controls.Tree.js"></script>
+<script type="text/javascript" src="/file/site/script/-1238140090.af.controls.TreeLookup.js"></script>
+<script type="text/javascript" src="/file/site/script/748577907.af.365.dataBinding.AfFlexSplitBar.js"></script>
+<script type="text/javascript" src="/file/site/script/-692521734.af.controls.OrgUnitLookup.js"></script>
+<script type="text/javascript" src="/file/site/script/318548131.af.365.lib.beautifier.js"></script>
+<script type="text/javascript" src="/file/site/script/819726229.af.365.dataBinding.BrowseImages.js"></script>
+<script type="text/javascript" src="/file/site/script/400354864.af.lib.intltelinput.min.js"></script>
+<script type="text/javascript" src="/file/site/script/-1718949.af.dataBinding.MustacheComments.js"></script>
+<script type="text/javascript" src="/file/site/script/-1101772564.af.docs.libs.prism.min.js"></script>
+<script type="text/javascript" src="/file/site/script/1027961698.af.365.dataBinding.dataCheckboxes.js"></script>
+<script type="text/javascript" src="/file/site/script/867295053.af.lib.coloris.min.js"></script>
+
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+af.userSession = new af.common.UserSession({"personID":0,"email":null,"name":null,"culture":"nb-NO","uiculture":"en-GB","groupSeparator":" ","decimalSeparator":",","shortDateFormat":"dd.MM.yyyy","formats":{"sql_date_time":"yyyy-MM-dd HH:mm:ss","123.1k":"0.0k","dd.MM.yy":"dd.MM.yy","1 234.1234":"0 000.0000","1 234.12":"0 000.00","*":"*","0.0%":"0.0%","General Date Short Time":"dd.MM.yyyy HH:mm","Full Date Short Time":"dddd d. MMMM yyyy HH:mm","dd.MMM":"dd.MMM","MM.yyyy":"MM.yyyy","$.00":"$0 000.00","yyyymmdd":"yyyyMMdd","/1000000.0":"/1000000.0","HH:mm":"HH:mm","1 234.1":"0 000.0","dd.MMM.yyyy":"dd.MMM.yyyy","1 234":"0 000","123.12b":"0.00b","Short Time":"HH:mm","yyyy-MM-dd":"yyyy-MM-dd","dd.MM":"dd.MM","%":"0%","Long Time":"HH:mm:ss","General Date Long Time":"dd.MM.yyyy HH:mm:ss","dd.MM.yyyy HH:mm":"dd.MM.yyyy HH:mm","Long Date":"dddd d. MMMM yyyy","dd.MMM.yyyy HH:mm":"dd.MMM.yyyy HH:mm","/1000.0":"/1000.0","123.12k":"0.00k","$":"$0 000","dd.MM.yyyy":"dd.MM.yyyy","Short Date":"dd.MM.yyyy","123.1b":"0.0b"},"monthNames":["januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember",""],"monthNamesShort":["jan","feb","mar","apr","mai","jun","jul","aug","sep","okt","nov","des",""],"dayNames":["søndag","mandag","tirsdag","onsdag","torsdag","fredag","lørdag"],"dayNamesShort":["søn.","man.","tir.","ons.","tor.","fre.","lør."],"amDesignator":"a.m.","pmDesignator":"p.m.","isDeveloper":false,"isSecurityAdmin":false,"canManageGridLayouts":false,"integratedSecurity":false,"loginType":"anonymous"});if(typeof XDate!=="undefined"){XDate.locales[''] = af.userSession;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<!-- FileGroup: 'documentation-public' Type: 'ArticleScript' Files: 3 -->
+<script src="/file/article/static-script/documentation-public.5fb45a0dfacaf702bc932710e4be36565e17df93.js"></script>
+<script src="/file/article/script/documentation-public/scrollto.c2f7a9a0fa3fba50d2223e219554227928fda797.js"></script>
+<script src="/file/article/main-script/documentation-public.1a8d0f541385c45a72f37438ec05ceb7c030c559.js"></script>
+
+
+
+
+
+</body>
+
+</html>
+
+
