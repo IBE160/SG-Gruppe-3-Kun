@@ -81,44 +81,22 @@ class HMSREGDocumentationScraper:
             logger.error(f"Request error fetching {url}: {e}")
         return None
 
-    def _parse_links(self, soup: BeautifulSoup) -> List[str]:
-        """
-        Extracts all unique, internal links from a BeautifulSoup object for debugging.
-        Does NOT check self.visited_urls to ensure all internal links are captured.
-        """
-        links = []
-        for a_tag in soup.find_all('a', href=True):
-            href = a_tag['href']
-            absolute_url = self._get_absolute_url(href)
-            if absolute_url: # Only filter for internal links
-                links.append(absolute_url)
-        unique_links = list(set(links)) # Ensure uniqueness
-        logger.debug(f"Found raw internal links: {unique_links}") # Log raw links
-        return unique_links
-
-
     def _extract_article_content(self, soup: BeautifulSoup) -> Optional[str]:
         """
-        Extracts the main article content from a BeautifulSoup object.
-        This method needs to be robust to the specific structure of docs.hmsreg.com.
+        Extracts the main article content from a BeautifulSoup object, prioritizing known documentation content structures.
         """
-        # --- NEW: Prioritize specific data-field-html="HTMLContent" div ---
-        html_content_div = soup.find('div', attrs={"data-field-html": "HTMLContent"})
-        if html_content_div:
-            # Remove unwanted elements often found within main content
-            for unwanted_tag in html_content_div.find_all(['nav', 'footer', 'header', 'aside']):
+        # --- NEW: Prioritize specific div[data-object-id="dsProcedure"] as per user's finding ---
+        main_content_div = soup.find('div', attrs={"data-object-id": "dsProcedure"}, class_="content")
+        if main_content_div:
+            # Remove unwanted elements often found within main content (e.g., span for breadcrumbs)
+            for unwanted_tag in main_content_div.find_all(['span']):
                 unwanted_tag.decompose()
-            for unwanted_class in ['sidebar', 'breadcrumb', 'table-of-contents', 'doc-navigation']: # Add more common unwanted classes if found
-                for tag in html_content_div.find_all(class_=unwanted_class):
-                    tag.decompose()
-            text_content = html_content_div.get_text(separator='\n', strip=True)
+            text_content = main_content_div.get_text(separator='\n', strip=True)
             if len(text_content) > 50: # Only consider if it's substantial
-                logger.debug(f"Extracted content from data-field-html div.")
                 return text_content
-            else:
-                logger.debug(f"Data-field-html div content too short. Trying other selectors.")
 
-        # Original: Prioritize known content areas
+
+        # Original fallbacks: Prioritize known content areas
         content_tags = soup.find(['article', 'main'], class_=['docs-content', 'article-content', 'main-content'])
         if content_tags:
             for unwanted_class in ['sidebar', 'nav', 'footer', 'header', 'meta-data']:
@@ -126,10 +104,7 @@ class HMSREGDocumentationScraper:
                     tag.decompose()
             text_content = content_tags.get_text(separator='\n', strip=True)
             if len(text_content) > 50:
-                logger.debug(f"Extracted content from generic content tags.")
                 return text_content
-            else:
-                logger.debug(f"Generic content tags content too short. Trying body fallback.")
 
         # Fallback to body content, but try to remove common non-article elements
         body = soup.find('body')
@@ -140,12 +115,19 @@ class HMSREGDocumentationScraper:
                     tag.decompose()
             text_content = body.get_text(separator='\n', strip=True)
             if len(text_content) > 50:
-                logger.debug(f"Extracted content from body fallback.")
                 return text_content
-            else:
-                logger.debug(f"Body fallback content too short.")
-        logger.debug(f"No significant content extracted by any selector.")
         return None
+
+    def _parse_links(self, soup: BeautifulSoup) -> List[str]:
+        """Extracts all unique, internal links from a BeautifulSoup object."""
+        links = []
+        for a_tag in soup.find_all('a', href=True):
+            href = a_tag['href']
+            absolute_url = self._get_absolute_url(href)
+            if absolute_url and absolute_url not in self.visited_urls:
+                links.append(absolute_url)
+        return list(set(links)) # Return unique links
+
 
     def _split_text(self, text: str) -> List[str]:
         """Splits a given text into chunks using the configured text splitter."""
@@ -260,10 +242,10 @@ class HMSREGDocumentationScraper:
         return all_processed_chunks
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG) # Change to DEBUG for more verbosity
+    logging.basicConfig(level=logging.INFO) # Changed back to INFO
 
     parser = argparse.ArgumentParser(description="Scrape HMSREG documentation and store embeddings in ChromaDB.")
-    parser.add_argument("--base_url", type=str, default="https://docs.hmsreg.com/",
+    parser.add_argument("--base_url", type=str, default="https://docs.hmsreg.com/?Area-ID=10000&ID=10296",
                         help="Base URL of the documentation site to scrape.")
     parser.add_argument("--chroma_path", type=str, default=CHROMA_DB_PATH,
                         help="Path for ChromaDB persistent storage.")
