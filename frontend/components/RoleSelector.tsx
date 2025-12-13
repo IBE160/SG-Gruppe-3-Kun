@@ -7,8 +7,8 @@ export interface RoleSelectorProps {
 
 const roles = [
   "Construction Worker",
-  "Supplier",
-  "Project Manager"
+  "Supplier / Subcontractor",
+  "Project Manager / Admin"
 ];
 
 export function RoleSelector({ onSelect }: RoleSelectorProps) {

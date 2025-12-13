@@ -14,8 +14,8 @@ describe('RoleSelector', () => {
     render(<RoleSelector onSelect={mockOnSelect} />);
     expect(screen.getByText('Select Your Role')).toBeInTheDocument();
     expect(screen.getByText('Construction Worker')).toBeInTheDocument();
-    expect(screen.getByText('Supplier')).toBeInTheDocument();
-    expect(screen.getByText('Project Manager')).toBeInTheDocument();
+    expect(screen.getByText('Supplier / Subcontractor')).toBeInTheDocument();
+    expect(screen.getByText('Project Manager / Admin')).toBeInTheDocument();
   });
 
   it('calls onSelect with correct role when Construction Worker is clicked', () => {
@@ -26,13 +26,13 @@ describe('RoleSelector', () => {
 
   it('calls onSelect with correct role when Supplier is clicked', () => {
     render(<RoleSelector onSelect={mockOnSelect} />);
-    fireEvent.click(screen.getByText('Supplier'));
-    expect(mockOnSelect).toHaveBeenCalledWith('Supplier');
+    fireEvent.click(screen.getByText('Supplier / Subcontractor'));
+    expect(mockOnSelect).toHaveBeenCalledWith('Supplier / Subcontractor');
   });
 
   it('calls onSelect with correct role when Project Manager is clicked', () => {
     render(<RoleSelector onSelect={mockOnSelect} />);
-    fireEvent.click(screen.getByText('Project Manager'));
-    expect(mockOnSelect).toHaveBeenCalledWith('Project Manager');
+    fireEvent.click(screen.getByText('Project Manager / Admin'));
+    expect(mockOnSelect).toHaveBeenCalledWith('Project Manager / Admin');
   });
 });

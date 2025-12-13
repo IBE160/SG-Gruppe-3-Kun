@@ -48,7 +48,7 @@ describe('ChatWindow', () => {
       const userMessageId = `user-${Date.now()}`;
       mockMessages = [...mockMessages, { id: userMessageId, role: 'user', content }];
       mockIsLoading = true;
-      act(() => { rerender(<ChatWindow userRole="Project Manager" />); });
+      act(() => { rerender(<ChatWindow userRole="Project Manager / Admin" />); });
       
       await new Promise(resolve => setTimeout(resolve, 50)); 
       
@@ -61,7 +61,7 @@ describe('ChatWindow', () => {
       };
       mockMessages = [...mockMessages, botResponse];
       mockIsLoading = false;
-      act(() => { rerender(<ChatWindow userRole="Project Manager" />); });
+      act(() => { rerender(<ChatWindow userRole="Project Manager / Admin" />); });
     });
 
     mockUseChat.mockImplementation((userRole: string | null) => ({
@@ -79,7 +79,7 @@ describe('ChatWindow', () => {
   });
 
   it('shows loading state after sending a message', async () => {
-    const renderResult = render(<ChatWindow userRole="Project Manager" />);
+    const renderResult = render(<ChatWindow userRole="Project Manager / Admin" />);
     rerender = renderResult.rerender;
 
     const input = screen.getByPlaceholderText('Type your question...');
@@ -102,7 +102,7 @@ describe('ChatWindow', () => {
   });
 
   it('displays bot response and citations after successful streaming', async () => {
-    const renderResult = render(<ChatWindow userRole="Project Manager" />);
+    const renderResult = render(<ChatWindow userRole="Project Manager / Admin" />);
     rerender = renderResult.rerender;
 
     const input = screen.getByPlaceholderText('Type your question...');
@@ -128,7 +128,7 @@ describe('ChatWindow', () => {
   });
 
   it('passes correct messageId and chatSessionId to ChatBubble', async () => {
-    const renderResult = render(<ChatWindow userRole="Project Manager" />);
+    const renderResult = render(<ChatWindow userRole="Project Manager / Admin" />);
     rerender = renderResult.rerender;
 
     const input = screen.getByPlaceholderText('Type your question...');
