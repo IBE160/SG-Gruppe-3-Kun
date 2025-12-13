@@ -37,9 +37,3 @@ app.include_router(feedback.router, prefix="/api/v1/feedback", tags=["feedback"]
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "version": "0.1.0"}
-app.include_router(chat.router, prefix="/api/v1/chat", tags=["chat"])
-app.include_router(feedback.router, prefix="/api/v1/feedback", tags=["feedback"])
-
-@app.get("/health")
-async def health_check():
-    return {"status": "ok", "version": "0.1.0"}

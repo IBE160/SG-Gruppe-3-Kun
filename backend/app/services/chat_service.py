@@ -57,17 +57,23 @@ class ChatService:
         formatted_chunks = []
         retrieved_citations: List[SourceCitation] = []
         seen_urls = set()
+        seen_chunks_content = set() # To track unique chunk content
 
         if query_result.documents:
             for doc, meta in zip(query_result.documents, query_result.metadatas):
                 if doc and meta: # Ensure doc and meta are not None/empty
                     source = meta.get('url', 'Unknown')
                     title = meta.get('title', 'Untitled')
-                    formatted_chunks.append(f"Title: {title}\nSource: {source}\nContent: {doc}")
                     
-                    if source not in seen_urls and source != 'Unknown':
-                        retrieved_citations.append(SourceCitation(title=title, url=source))
-                        seen_urls.add(source)
+                    # Create a unique representation of the chunk content for de-duplication
+                    chunk_content = f"Title: {title}\nSource: {source}\nContent: {doc}"
+                    if chunk_content not in seen_chunks_content:
+                        formatted_chunks.append(chunk_content)
+                        seen_chunks_content.add(chunk_content)
+                        
+                        if source not in seen_urls and source != 'Unknown':
+                            retrieved_citations.append(SourceCitation(title=title, url=source))
+                            seen_urls.add(source)
 
         context_str = "\n\n".join(formatted_chunks)
 
@@ -181,7 +187,9 @@ class ChatService:
                 f"You are a helpful assistant for HMSREG documentation.\n"
                 f"Target Audience Role: {user_role}\n\n"
                 f"Instructions:\n"
-                f"- Answer the user's question based strictly on the provided context.\n"
+                f"- Answer the user's question based strictly on the provided context. "
+                f"Synthesize information from multiple sources if necessary to provide a comprehensive answer, "
+                f"but avoid direct repetition or verbatim copying of content. Be concise and to the point.\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
                 f"If you don't know the answer, just say that you don't know."
             )
