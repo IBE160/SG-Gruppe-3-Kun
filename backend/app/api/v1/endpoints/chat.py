@@ -1,4 +1,5 @@
 import logging
+import traceback
 from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from chromadb.api import ClientAPI
@@ -24,17 +25,15 @@ async def stream_chat(
     logger.debug(f"Received chat request for user_role: {request.user_role}")
     async def event_generator():
         try:
-            # _prepare_context is called inside stream_chat_response, so we rely on stream_chat_response's error handling? 
-            # No, stream_chat_response yields. We need to handle errors *within* stream_chat_response or catch them here if they occur before the first yield.
-            # The current implementation of stream_chat_response has a try/except that yields ("error", msg).
-            # But let's look at chat_service.py again.
-            
             async for event_type, content in chat_service.stream_chat_response(request, chroma_client):
                 # Format as SSE
                 data = json.dumps({"type": event_type, "content": content})
                 yield f"data: {data}\n\n"
         except Exception as e:
             logger.error(f"Error in chat stream: {e}")
+            with open("backend_error.log", "w") as f:
+                traceback.print_exc(file=f)
+            
             # Yield an error event
             error_data = json.dumps({"type": "error", "content": f"Server Error: {str(e)}"})
             yield f"data: {error_data}\n\n"

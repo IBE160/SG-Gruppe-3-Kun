@@ -28,12 +28,12 @@ class ChatService:
         # Initialize the PydanticAI Agent
         # We use a static system prompt here, but context will be injected dynamically.
         self.agent = Agent(
-            'google-gla:gemini-1.5-flash',
-            result_type=ChatResponse,
+            'google-gla:gemini-2.5-flash',
+            output_type=ChatResponse,
         )
         # Agent for streaming (returns text)
         self.streaming_agent = Agent(
-            'google-gla:gemini-1.5-flash',
+            'google-gla:gemini-2.5-flash',
         )
 
     async def _prepare_context(self, request: ChatRequest, chroma_client: ClientAPI) -> tuple[str, List[SourceCitation]]:
@@ -63,8 +63,6 @@ class ChatService:
         except Exception as e:
              print(f"Error querying ChromaDB: {e}")
              raise Exception(f"Failed to query knowledge base: {str(e)}")
-        
-        # 3. Format context with source metadata for the model
         
         # 3. Format context with source metadata for the model
         formatted_chunks = []
@@ -120,15 +118,15 @@ class ChatService:
             )
             
             # 5. Run the PydanticAI Agent
-            result = await self.agent.run(prompt_with_context, system_prompt=system_prompt)
+            result = await self.agent.run(prompt_with_context, instructions=system_prompt)
             
             # Check confidence score as per AC 1 and 4
-            if result.data.confidence is not None and result.data.confidence < settings.RAG_CONFIDENCE_THRESHOLD:
-                result.data.answer = ""
-                result.data.citations = [] # Discard citations if answer is not confident
-                result.data.fallback_message = FALLBACK_MESSAGE # Set fallback message
+            if result.output.confidence is not None and result.output.confidence < settings.RAG_CONFIDENCE_THRESHOLD:
+                result.output.answer = ""
+                result.output.citations = [] # Discard citations if answer is not confident
+                result.output.fallback_message = FALLBACK_MESSAGE # Set fallback message
             
-            return result.data
+            return result.output
 
         except Exception as e:
             # Fallback for errors
@@ -163,8 +161,8 @@ class ChatService:
             )
             
             # First, get a complete ChatResponse object to check for fallback or suggestions
-            full_response_result = await self.agent.run(prompt_with_context, system_prompt=system_prompt)
-            full_response = full_response_result.data
+            full_response_result = await self.agent.run(prompt_with_context, instructions=system_prompt)
+            full_response = full_response_result.output # Changed from .data
 
             # Handle fallback message
             if full_response.fallback_message:
@@ -195,7 +193,7 @@ class ChatService:
                 f"If you don't know the answer, just say that you don't know."
             )
 
-            async with self.streaming_agent.run_stream(prompt_with_context, system_prompt=streaming_system_prompt) as result:
+            async with self.streaming_agent.run_stream(prompt_with_context, instructions=streaming_system_prompt) as result:
                 async for chunk in result.stream():
                     yield ("token", chunk)
 
@@ -205,4 +203,4 @@ class ChatService:
             
         except Exception as e:
             print(f"Error in streaming RAG pipeline: {e}")
-            yield ("error", "I encountered an error while processing your request.")
+            yield ("error", f"I encountered an error while processing your request: {str(e)}")

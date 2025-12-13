@@ -1,5 +1,7 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+import traceback
 from app.api.v1.endpoints import health, chat, feedback
 from app.core.config import settings
 from app.db.session import engine
@@ -27,6 +29,15 @@ async def lifespan(app: FastAPI):
     print("ChromaDB client shutdown.") # For debugging
 
 app = FastAPI(lifespan=lifespan)
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    with open("global_error.log", "w") as f:
+        traceback.print_exc(file=f)
+    return JSONResponse(
+        status_code=500,
+        content={"message": f"Internal Server Error: {str(exc)}"},
+    )
 
 app.include_router(health.router, prefix="/api/v1/health", tags=["health"])
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["chat"])

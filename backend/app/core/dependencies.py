@@ -1,6 +1,9 @@
 from fastapi import Request
 from chromadb.api import ClientAPI
 from app.services.chat_service import ChatService
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_chroma_client(request: Request) -> ClientAPI:
     """
@@ -8,6 +11,7 @@ def get_chroma_client(request: Request) -> ClientAPI:
     """
     client = getattr(request.app.state, "chroma_client", None)
     if client is None:
+        logger.error("ChromaDB client is NOT initialized in app state!")
         raise ValueError("ChromaDB client is not initialized in app state.")
     return client
 
