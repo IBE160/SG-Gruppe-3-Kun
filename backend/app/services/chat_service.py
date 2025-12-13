@@ -22,9 +22,6 @@ FALLBACK_MESSAGE = (
 
 class ChatService:
     def __init__(self):
-        if not os.getenv("GOOGLE_API_KEY"):
-            print("WARNING: GOOGLE_API_KEY is not set. ChatService will fail.")
-        
         # Initialize the PydanticAI Agent
         # We use a static system prompt here, but context will be injected dynamically.
         self.agent = Agent(
@@ -41,28 +38,20 @@ class ChatService:
         Shared logic to embed query and retrieve context.
         Returns (prompt_with_context, retrieved_citations)
         """
-        try:
-            # 1. Embed the user's query
-            embedding_result = genai.embed_content(
-                model="models/text-embedding-004",
-                content=request.message,
-                task_type="retrieval_query"
-            )
-            query_embedding = embedding_result["embedding"]
-        except Exception as e:
-            print(f"Error generating embedding: {e}")
-            raise Exception(f"Failed to generate embedding: {str(e)}")
+        # 1. Embed the user's query
+        embedding_result = genai.embed_content(
+            model="models/text-embedding-004",
+            content=request.message,
+            task_type="retrieval_query"
+        )
+        query_embedding = embedding_result["embedding"]
 
-        try:
-            # 2. Retrieve relevant chunks from ChromaDB
-            query_result = query_collection(
-                client=chroma_client,
-                query_embedding=query_embedding,
-                n_results=4
-            )
-        except Exception as e:
-             print(f"Error querying ChromaDB: {e}")
-             raise Exception(f"Failed to query knowledge base: {str(e)}")
+        # 2. Retrieve relevant chunks from ChromaDB
+        query_result = query_collection(
+            client=chroma_client,
+            query_embedding=query_embedding,
+            n_results=4
+        )
         
         # 3. Format context with source metadata for the model
         formatted_chunks = []

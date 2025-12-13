@@ -1,5 +1,4 @@
 import logging
-import traceback
 from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from chromadb.api import ClientAPI
@@ -31,11 +30,8 @@ async def stream_chat(
                 yield f"data: {data}\n\n"
         except Exception as e:
             logger.error(f"Error in chat stream: {e}")
-            with open("backend_error.log", "w") as f:
-                traceback.print_exc(file=f)
-            
             # Yield an error event
-            error_data = json.dumps({"type": "error", "content": f"Server Error: {str(e)}"})
+            error_data = json.dumps({"type": "error", "content": str(e)})
             yield f"data: {error_data}\n\n"
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")

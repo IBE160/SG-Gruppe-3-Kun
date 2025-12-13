@@ -30,16 +30,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    with open("global_error.log", "w") as f:
-        traceback.print_exc(file=f)
-    return JSONResponse(
-        status_code=500,
-        content={"message": f"Internal Server Error: {str(exc)}"},
-    )
-
 app.include_router(health.router, prefix="/api/v1/health", tags=["health"])
+app.include_router(chat.router, prefix="/api/v1/chat", tags=["chat"])
+app.include_router(feedback.router, prefix="/api/v1/feedback", tags=["feedback"])
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "version": "0.1.0"}
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["chat"])
 app.include_router(feedback.router, prefix="/api/v1/feedback", tags=["feedback"])
 
