@@ -40,7 +40,7 @@ export function useChat(userRole: string | null) { // Added userRole parameter
         body: JSON.stringify({ message: content, user_role: userRole }), // Changed 'role' to 'user_role' and used userRole
       });
 
-      if (!response.ok) throw new Error('Network response was not ok');
+      if (!response.ok) throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
       if (!response.body) throw new Error('No body');
 
       const reader = response.body.getReader();
@@ -107,12 +107,16 @@ export function useChat(userRole: string | null) { // Added userRole parameter
       }
       setIsLoading(false); // Set to false when stream is complete
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Chat error:', error);
+      let errorMessage = "Failed to connect to chat service.";
+      if (error instanceof Error) {
+          errorMessage += ` (${error.message})`;
+      }
       setMessages((prev) => 
         prev.map((msg) => 
           msg.id === assistantId 
-            ? { ...msg, content: msg.content + "\n\n[System Error: Failed to connect to chat service.]" } 
+            ? { ...msg, content: msg.content + `\n\n[System Error: ${errorMessage}]` } 
             : msg
         )
       );
