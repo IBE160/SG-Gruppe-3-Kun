@@ -38,20 +38,30 @@ class ChatService:
         Shared logic to embed query and retrieve context.
         Returns (prompt_with_context, retrieved_citations)
         """
-        # 1. Embed the user's query
-        embedding_result = genai.embed_content(
-            model="models/text-embedding-004",
-            content=request.message,
-            task_type="retrieval_query"
-        )
-        query_embedding = embedding_result["embedding"]
+        try:
+            # 1. Embed the user's query
+            embedding_result = genai.embed_content(
+                model="models/text-embedding-004",
+                content=request.message,
+                task_type="retrieval_query"
+            )
+            query_embedding = embedding_result["embedding"]
+        except Exception as e:
+            print(f"Error generating embedding: {e}")
+            raise Exception(f"Failed to generate embedding: {str(e)}")
 
-        # 2. Retrieve relevant chunks from ChromaDB
-        query_result = query_collection(
-            client=chroma_client,
-            query_embedding=query_embedding,
-            n_results=4
-        )
+        try:
+            # 2. Retrieve relevant chunks from ChromaDB
+            query_result = query_collection(
+                client=chroma_client,
+                query_embedding=query_embedding,
+                n_results=4
+            )
+        except Exception as e:
+             print(f"Error querying ChromaDB: {e}")
+             raise Exception(f"Failed to query knowledge base: {str(e)}")
+        
+        # 3. Format context with source metadata for the model
         
         # 3. Format context with source metadata for the model
         formatted_chunks = []
