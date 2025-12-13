@@ -22,6 +22,9 @@ FALLBACK_MESSAGE = (
 
 class ChatService:
     def __init__(self):
+        if not os.getenv("GOOGLE_API_KEY"):
+            print("WARNING: GOOGLE_API_KEY is not set. ChatService will fail.")
+        
         # Initialize the PydanticAI Agent
         # We use a static system prompt here, but context will be injected dynamically.
         self.agent = Agent(
