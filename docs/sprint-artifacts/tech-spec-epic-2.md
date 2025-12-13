@@ -206,3 +206,10 @@ export interface SourceCitation {
 *   **Manual Validation:**
     *   Verify responsive layout behavior on mobile and desktop.
     *   "Vibe check" the RAG responses for a set of 10 standard questions.
+
+## Post-Review Follow-ups
+
+### Story 2.4: Connect Frontend Chat to Backend API
+*   **[High]** Create integration test for frontend API route (`frontend/app/api/chat/route.ts`) to verify proxy logic (AC #1, #2).
+*   **[High]** Create E2E test (e.g., Playwright) to verify the full chat flow and real-time updates (AC #4).
+
