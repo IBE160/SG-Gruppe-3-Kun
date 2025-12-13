@@ -196,6 +196,7 @@ class ChatService:
 
             async with self.streaming_agent.run_stream(prompt_with_context, instructions=streaming_system_prompt) as result:
                 async for chunk in result.stream():
+                    print(f"Raw stream chunk: '{chunk}'") # Temporary debug print
                     yield ("token", chunk)
 
             # Yield citations after streaming is complete
