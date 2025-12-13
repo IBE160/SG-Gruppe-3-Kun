@@ -20,3 +20,4 @@ class ChatResponse(BaseModel):
     citations: List[SourceCitation] = []
     confidence: Optional[float] = None
     fallback_message: Optional[str] = None
+    suggested_queries: Optional[List[str]] = None

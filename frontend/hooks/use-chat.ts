@@ -10,6 +10,7 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   citations?: SourceCitation[];
+  suggestedQueries?: string[]; // Add suggestedQueries to Message interface
 }
 
 export function useChat(userRole: string | null) { // Added userRole parameter
@@ -77,6 +78,14 @@ export function useChat(userRole: string | null) { // Added userRole parameter
                   prev.map((msg) => 
                     msg.id === assistantId 
                       ? { ...msg, citations: data.content } 
+                      : msg
+                  )
+                );
+              } else if (data.type === 'suggestions') { // Handle suggested queries
+                setMessages((prev) => 
+                  prev.map((msg) => 
+                    msg.id === assistantId 
+                      ? { ...msg, suggestedQueries: data.content } 
                       : msg
                   )
                 );

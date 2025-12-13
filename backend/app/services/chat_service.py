@@ -98,6 +98,10 @@ class ChatService:
                 f"Instructions:\n"
                 f"- Answer the user's question based strictly on the provided context.\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
+                f"- If the user's query is too broad or ambiguous, identify it as such.\n"
+                f"- If ambiguous, generate 2-3 specific, relevant follow-up questions or topics.\n"
+                f"- Populate the 'suggested_queries' field of the ChatResponse with these suggestions if ambiguity is detected.\n"
+                f"- If suggested_queries are provided, the 'answer' field should be a concise statement acknowledging the ambiguity and guiding the user to the suggestions.\n"
                 f"If you don't know the answer, just say that you don't know. "
                 f"You must output a JSON object matching the ChatResponse schema."
             )
@@ -137,13 +141,48 @@ class ChatService:
                 f"Instructions:\n"
                 f"- Answer the user's question based strictly on the provided context.\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
-                f"If you don't know the answer, just say that you don't know."
+                f"- If the user's query is too broad or ambiguous, identify it as such.\n"
+                f"- If ambiguous, generate 2-3 specific, relevant follow-up questions or topics.\n"
+                f"- Populate the 'suggested_queries' field of the ChatResponse with these suggestions if ambiguity is detected.\n"
+                f"- If suggested_queries are provided, the 'answer' field should be a concise statement acknowledging the ambiguity and guiding the user to the suggestions.\n"
+                f"If you don't know the answer, just say that you don't know. "
+                f"You must output a JSON object matching the ChatResponse schema."
             )
             
-            # Stream the response
-            # Note: run_stream returns a context manager or async iterator depending on version. 
-            # In v0.0.19 it likely returns a StreamedRunResult which we can iterate.
-            async with self.streaming_agent.run_stream(prompt_with_context, system_prompt=system_prompt) as result:
+            # First, get a complete ChatResponse object to check for fallback or suggestions
+            full_response_result = await self.agent.run(prompt_with_context, system_prompt=system_prompt)
+            full_response = full_response_result.data
+
+            # Handle fallback message
+            if full_response.fallback_message:
+                yield ("fallback", full_response.fallback_message)
+                return
+
+            # Handle suggested queries
+            if full_response.suggested_queries:
+                yield ("suggestions", full_response.suggested_queries)
+                # If suggestions are provided, the answer might be very short or empty,
+                # so we might not need to stream anything further, or just stream the short answer.
+                # For now, let's assume if suggestions are primary, the main answer streaming is secondary/empty.
+                if full_response.answer:
+                    # Yield a very short answer if any, before citations
+                    yield ("token", full_response.answer)
+                citations_data = [c.model_dump() for c in retrieved_citations]
+                yield ("citation", citations_data)
+                return
+
+            # If no fallback or suggestions, proceed with streaming the main answer
+            # We still need a system prompt that doesn't expect a Pydantic object for the streaming agent
+            streaming_system_prompt = (
+                f"You are a helpful assistant for HMSREG documentation.\n"
+                f"Target Audience Role: {user_role}\n\n"
+                f"Instructions:\n"
+                f"- Answer the user's question based strictly on the provided context.\n"
+                f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
+                f"If you don't know the answer, just say that you don't know."
+            )
+
+            async with self.streaming_agent.run_stream(prompt_with_context, system_prompt=streaming_system_prompt) as result:
                 async for chunk in result.stream():
                     yield ("token", chunk)
 

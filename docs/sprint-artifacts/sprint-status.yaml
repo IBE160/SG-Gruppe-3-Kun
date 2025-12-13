@@ -68,7 +68,7 @@ development_status:
   epic-4: contexted
   4-1-implement-automatic-fallback-mechanism: done
   4-2-develop-user-feedback-mechanism-thumbs-up-down: done
-  4-3-implement-ambiguous-query-suggestion: ready-for-dev
+  4-3-implement-ambiguous-query-suggestion: done
   epic-4-retrospective: optional
 
   # Epic 5: Production Readiness & Accessibility

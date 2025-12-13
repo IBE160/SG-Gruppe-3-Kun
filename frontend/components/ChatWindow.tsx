@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChatBubble } from "./ChatBubble";
@@ -16,7 +16,7 @@ interface ChatWindowProps {
 export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destructure userRole
   const { messages, sendMessage, isLoading } = useChat(userRole); // Pass userRole to useChat
   const [inputValue, setInputValue] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLHTMLDivElement>(null);
   const [chatSessionId, setChatSessionId] = useState<string>(""); // State for chatSessionId
 
   // Generate chatSessionId once on mount
@@ -32,14 +32,22 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
     scrollToBottom();
   }, [messages, isLoading]);
 
+  const handleSendMessage = async (content: string) => {
+    if (!content.trim()) return;
+    setInputValue(""); // Clear input immediately
+    await sendMessage(content);
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
-
-    const content = inputValue;
-    setInputValue(""); // Clear input immediately
-    await sendMessage(content);
+    await handleSendMessage(inputValue);
   };
+
+  const handleSuggestionClick = useCallback(async (query: string) => {
+    if (isLoading) return;
+    await handleSendMessage(query);
+  }, [isLoading, handleSendMessage]);
 
   return (
     <div className={cn("flex flex-col h-[600px] w-full max-w-2xl border rounded-xl bg-background shadow-sm overflow-hidden mx-auto", className)}>
@@ -59,6 +67,8 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
             citations={msg.citations} 
             messageId={msg.id} // Pass messageId
             chatSessionId={chatSessionId} // Pass chatSessionId
+            suggestedQueries={msg.suggestedQueries} // Pass suggestedQueries
+            onSuggestionClick={handleSuggestionClick} // Pass the handler
           />
         ))}
         

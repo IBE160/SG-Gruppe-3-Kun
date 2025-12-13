@@ -82,3 +82,35 @@ async def test_generate_chat_response_high_confidence_no_fallback(chat_service, 
     assert response.fallback_message is None
     assert response.confidence is not None
     assert response.confidence >= settings.RAG_CONFIDENCE_THRESHOLD
+
+@pytest.mark.asyncio
+async def test_generate_chat_response_ambiguous_query_suggestions(chat_service, mock_chroma_client):
+    """
+    Test that ambiguous queries trigger suggestion generation.
+    """
+    # Mocking the _prepare_context to return a dummy prompt and no citations initially
+    chat_service._prepare_context = AsyncMock(return_value=("dummy prompt for ambiguous query", []))
+
+    # Mock the agent.run to return a ChatResponse with suggested queries
+    expected_suggestions = [
+        "What are the rules for vehicle access on site?",
+        "How do I properly dispose of chemical waste?"
+    ]
+    expected_answer = "Your query is broad. Here are some suggestions:"
+    mock_chat_response_data = ChatResponse(
+        answer=expected_answer,
+        citations=[],
+        confidence=0.8, # Confidence can be anything if suggestions are present
+        fallback_message=None,
+        suggested_queries=expected_suggestions
+    )
+    chat_service.agent.run.return_value.data = mock_chat_response_data
+
+    request = ChatRequest(message="Tell me about rules")
+    response = await chat_service.generate_chat_response(request, mock_chroma_client)
+
+    assert response.answer == expected_answer
+    assert response.citations == []
+    assert response.fallback_message is None
+    assert response.suggested_queries == expected_suggestions
+    assert response.confidence == 0.8

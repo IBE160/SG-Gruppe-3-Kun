@@ -3,6 +3,7 @@ import Markdown from 'react-markdown';
 import { cn } from "@/lib/utils";
 import { SourceCitation } from "@/hooks/use-chat";
 import { FeedbackButtons } from "./FeedbackButtons"; // Import the new component
+import { Button } from '@/components/ui/button'; // Import Button component
 
 export interface ChatBubbleProps {
   role: 'user' | 'assistant';
@@ -10,9 +11,11 @@ export interface ChatBubbleProps {
   citations?: SourceCitation[];
   messageId: string; // Add messageId prop
   chatSessionId: string; // Add chatSessionId prop
+  suggestedQueries?: string[]; // Add suggestedQueries prop
+  onSuggestionClick?: (query: string) => void; // Add onSuggestionClick prop
 }
 
-export function ChatBubble({ role, content, citations, messageId, chatSessionId }: ChatBubbleProps) {
+export function ChatBubble({ role, content, citations, messageId, chatSessionId, suggestedQueries, onSuggestionClick }: ChatBubbleProps) {
   const isUser = role === 'user';
   const isAssistant = role === 'assistant'; // Explicitly check for assistant
 
@@ -46,6 +49,25 @@ export function ChatBubble({ role, content, citations, messageId, chatSessionId 
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {suggestedQueries && suggestedQueries.length > 0 && onSuggestionClick && (
+          <div className="mt-3 pt-2 border-t border-black/10 dark:border-white/10">
+            <p className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-1">Suggested:</p>
+            <div className="flex flex-wrap gap-2">
+              {suggestedQueries.map((query, idx) => (
+                <Button 
+                  key={idx} 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-auto px-2 py-1 text-xs"
+                  onClick={() => onSuggestionClick(query)} // Attach click handler
+                >
+                  {query}
+                </Button>
+              ))}
+            </div>
           </div>
         )}
         
