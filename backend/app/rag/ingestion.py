@@ -8,6 +8,7 @@ import httpx
 from bs4 import BeautifulSoup, Tag
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import google.generativeai as genai
+from dotenv import load_dotenv # Add this import
 
 # Import ChromaDB client
 import chromadb
@@ -16,6 +17,8 @@ import chromadb
 from app.rag.vector_store import add_chunks_to_collection
 
 logger = logging.getLogger(__name__)
+
+load_dotenv() # Add this line to load environment variables
 
 # --- Configuration for Embeddings ---
 # GOOGLE_API_KEY will be loaded from environment variables or passed during runtime
