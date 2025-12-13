@@ -82,28 +82,54 @@ class HMSREGDocumentationScraper:
         return None
 
     def _parse_links(self, soup: BeautifulSoup) -> List[str]:
-        """Extracts all unique, internal links from a BeautifulSoup object."""
+        """
+        Extracts all unique, internal links from a BeautifulSoup object for debugging.
+        Does NOT check self.visited_urls to ensure all internal links are captured.
+        """
         links = []
         for a_tag in soup.find_all('a', href=True):
             href = a_tag['href']
             absolute_url = self._get_absolute_url(href)
-            if absolute_url and absolute_url not in self.visited_urls:
+            if absolute_url: # Only filter for internal links
                 links.append(absolute_url)
-        return list(set(links)) # Return unique links
+        unique_links = list(set(links)) # Ensure uniqueness
+        logger.debug(f"Found raw internal links: {unique_links}") # Log raw links
+        return unique_links
+
 
     def _extract_article_content(self, soup: BeautifulSoup) -> Optional[str]:
         """
         Extracts the main article content from a BeautifulSoup object.
         This method needs to be robust to the specific structure of docs.hmsreg.com.
-        Placeholder implementation: Tries common article content selectors.
         """
-        # Prioritize known content areas
+        # --- NEW: Prioritize specific data-field-html="HTMLContent" div ---
+        html_content_div = soup.find('div', attrs={"data-field-html": "HTMLContent"})
+        if html_content_div:
+            # Remove unwanted elements often found within main content
+            for unwanted_tag in html_content_div.find_all(['nav', 'footer', 'header', 'aside']):
+                unwanted_tag.decompose()
+            for unwanted_class in ['sidebar', 'breadcrumb', 'table-of-contents', 'doc-navigation']: # Add more common unwanted classes if found
+                for tag in html_content_div.find_all(class_=unwanted_class):
+                    tag.decompose()
+            text_content = html_content_div.get_text(separator='\n', strip=True)
+            if len(text_content) > 50: # Only consider if it's substantial
+                logger.debug(f"Extracted content from data-field-html div.")
+                return text_content
+            else:
+                logger.debug(f"Data-field-html div content too short. Trying other selectors.")
+
+        # Original: Prioritize known content areas
         content_tags = soup.find(['article', 'main'], class_=['docs-content', 'article-content', 'main-content'])
         if content_tags:
             for unwanted_class in ['sidebar', 'nav', 'footer', 'header', 'meta-data']:
                 for tag in content_tags.find_all(class_=unwanted_class):
                     tag.decompose()
-            return content_tags.get_text(separator='\n', strip=True)
+            text_content = content_tags.get_text(separator='\n', strip=True)
+            if len(text_content) > 50:
+                logger.debug(f"Extracted content from generic content tags.")
+                return text_content
+            else:
+                logger.debug(f"Generic content tags content too short. Trying body fallback.")
 
         # Fallback to body content, but try to remove common non-article elements
         body = soup.find('body')
@@ -112,8 +138,13 @@ class HMSREGDocumentationScraper:
             for selector in ['nav', 'footer', 'header', 'aside', '.sidebar', '#sidebar', '.header', '#header', '.footer', '#footer']:
                 for tag in body.find_all(selector):
                     tag.decompose()
-            return body.get_text(separator='\n', strip=True)
-        logger.debug(f"No significant content extracted by default selectors for {soup.title.string if soup.title else 'Untitled'}.")
+            text_content = body.get_text(separator='\n', strip=True)
+            if len(text_content) > 50:
+                logger.debug(f"Extracted content from body fallback.")
+                return text_content
+            else:
+                logger.debug(f"Body fallback content too short.")
+        logger.debug(f"No significant content extracted by any selector.")
         return None
 
     def _split_text(self, text: str) -> List[str]:
