@@ -59,15 +59,15 @@ class ChatService:
         seen_urls = set()
 
         if query_result.documents:
-            # Iterate directly over documents and metadatas lists
             for doc, meta in zip(query_result.documents, query_result.metadatas):
-                source = meta.get('url', 'Unknown')
-                title = meta.get('title', 'Untitled')
-                formatted_chunks.append(f"Source: {title} ({source})\nContent: {doc}")
-                
-                if source not in seen_urls and source != 'Unknown':
-                    retrieved_citations.append(SourceCitation(title=title, url=source))
-                    seen_urls.add(source)
+                if doc and meta: # Ensure doc and meta are not None/empty
+                    source = meta.get('url', 'Unknown')
+                    title = meta.get('title', 'Untitled')
+                    formatted_chunks.append(f"Title: {title}\nSource: {source}\nContent: {doc}")
+                    
+                    if source not in seen_urls and source != 'Unknown':
+                        retrieved_citations.append(SourceCitation(title=title, url=source))
+                        seen_urls.add(source)
 
         context_str = "\n\n".join(formatted_chunks)
 
@@ -75,7 +75,9 @@ class ChatService:
         prompt_with_context = (
             f"Context:\n{context_str}\n\n"
             f"Question: {request.message}\n\n"
-            f"Answer the question using the context above."
+            f"Answer the question using ONLY the provided context. "
+            f"Synthesize information from multiple sources if necessary to provide a comprehensive answer, "
+            f"but avoid direct repetition or verbatim copying of content. Be concise and to the point."
         )
         
         return prompt_with_context, retrieved_citations
@@ -87,8 +89,8 @@ class ChatService:
         try:
             prompt_with_context, _ = await self._prepare_context(request, chroma_client)
             
-            # Append specific instruction for JSON format if needed, though result_type handles it mostly
-            prompt_with_context += " Provide citations as a list of source URLs used."
+            # No need to append specific instruction for JSON format, output_type handles it.
+            # prompt_with_context += " Provide citations as a list of source URLs used."
 
             user_role = request.user_role.value if request.user_role else "General User"
 
@@ -96,13 +98,14 @@ class ChatService:
                 f"You are a helpful assistant for HMSREG documentation.\n"
                 f"Target Audience Role: {user_role}\n\n"
                 f"Instructions:\n"
-                f"- Answer the user's question based strictly on the provided context.\n"
+                f"- Answer the user's question based strictly on the provided context. "
+                f"Synthesize information from multiple sources if necessary to provide a comprehensive answer, "
+                f"but avoid direct repetition or verbatim copying of content. Be concise and to the point.\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
                 f"- If the user's query is too broad or ambiguous, identify it as such.\n"
-                f"- If ambiguous, generate 2-3 specific, relevant follow-up questions or topics.\n"
-                f"- Populate the 'suggested_queries' field of the ChatResponse with these suggestions if ambiguity is detected.\n"
-                f"- If suggested_queries are provided, the 'answer' field should be a concise statement acknowledging the ambiguity and guiding the user to the suggestions.\n"
-                f"If you don't know the answer, just say that you don't know. "
+                f"- Populate the 'suggested_queries' field of the ChatResponse with 2-3 specific, relevant follow-up questions or topics if ambiguity is detected.\n"
+                f"- If 'suggested_queries' are provided, the 'answer' field should be a concise statement acknowledging the ambiguity and guiding the user to the suggestions.\n"
+                f"If you don't know the answer based on the context, just say that you don't know. "
                 f"You must output a JSON object matching the ChatResponse schema."
             )
             
@@ -139,13 +142,14 @@ class ChatService:
                 f"You are a helpful assistant for HMSREG documentation.\n"
                 f"Target Audience Role: {user_role}\n\n"
                 f"Instructions:\n"
-                f"- Answer the user's question based strictly on the provided context.\n"
+                f"- Answer the user's question based strictly on the provided context. "
+                f"Synthesize information from multiple sources if necessary to provide a comprehensive answer, "
+                f"but avoid direct repetition or verbatim copying of content. Be concise and to the point.\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
                 f"- If the user's query is too broad or ambiguous, identify it as such.\n"
-                f"- If ambiguous, generate 2-3 specific, relevant follow-up questions or topics.\n"
-                f"- Populate the 'suggested_queries' field of the ChatResponse with these suggestions if ambiguity is detected.\n"
-                f"- If suggested_queries are provided, the 'answer' field should be a concise statement acknowledging the ambiguity and guiding the user to the suggestions.\n"
-                f"If you don't know the answer, just say that you don't know. "
+                f"- Populate the 'suggested_queries' field of the ChatResponse with 2-3 specific, relevant follow-up questions or topics if ambiguity is detected.\n"
+                f"- If 'suggested_queries' are provided, the 'answer' field should be a concise statement acknowledging the ambiguity and guiding the user to the suggestions.\n"
+                f"If you don't know the answer based on the context, just say that you don't know. "
                 f"You must output a JSON object matching the ChatResponse schema."
             )
             

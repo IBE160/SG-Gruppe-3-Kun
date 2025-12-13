@@ -6,10 +6,11 @@ from typing import List, Dict, Optional, Set, Any
 import asyncio
 
 from playwright.sync_api import sync_playwright, Browser, Page # Playwright imports
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag, Comment
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import google.generativeai as genai
 from dotenv import load_dotenv
+import re # Added for regex operations
 
 # Import ChromaDB client
 import chromadb
@@ -101,9 +102,23 @@ class HMSREGDocumentationScraper:
         if main_content_locator.count() > 0:
             html_content = main_content_locator.first.inner_html()
             soup = BeautifulSoup(html_content, 'html.parser')
-            for unwanted_tag in soup.find_all(['span']): # e.g., 'Hjem-side' span from your example
-                unwanted_tag.decompose()
-            text_content = soup.get_text(separator='\n', strip=True)
+
+            # Remove specific boilerplate/navigation elements
+            for selector in ['header', 'footer', 'nav', 'script', 'style', '.skip-link', '.breadcrumb']:
+                for tag in soup.find_all(selector):
+                    tag.decompose()
+            
+            # Remove comments
+            for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
+                comment.extract()
+
+            # Remove any remaining unwanted tags like empty spans or divs that are not structural
+            for unwanted_tag in soup.find_all(['span', 'div'], class_=False, id=False):
+                if not unwanted_tag.get_text(strip=True): # Remove empty or whitespace-only tags
+                    unwanted_tag.decompose()
+
+            text_content = soup.get_text(separator=' ', strip=True) # Use space separator to avoid word concatenation
+            text_content = re.sub(r'\s+', ' ', text_content).strip() # Normalize whitespace
             
             if len(text_content) > 50:
                 logger.debug(f"Extracted content from div[data-object-id='dsProcedure'] (length: {len(text_content)}).")
@@ -111,10 +126,25 @@ class HMSREGDocumentationScraper:
             else:
                 logger.debug(f"Div[dsProcedure] content too short (length: {len(text_content)}).")
 
-        body_content = page.locator('body').text_content(timeout=1000)
-        if body_content and len(body_content) > 50:
-            logger.debug(f"Extracted content from body fallback (length: {len(body_content)}).")
-            return body_content
+        # Fallback to body content if specific div is not sufficient, with similar cleaning
+        body_content_html = page.locator('body').inner_html(timeout=1000)
+        if body_content_html:
+            soup = BeautifulSoup(body_content_html, 'html.parser')
+            for selector in ['header', 'footer', 'nav', 'script', 'style', '.skip-link', '.breadcrumb']:
+                for tag in soup.find_all(selector):
+                    tag.decompose()
+            for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
+                comment.extract()
+            for unwanted_tag in soup.find_all(['span', 'div'], class_=False, id=False):
+                if not unwanted_tag.get_text(strip=True):
+                    unwanted_tag.decompose()
+            
+            text_content = soup.get_text(separator=' ', strip=True)
+            text_content = re.sub(r'\s+', ' ', text_content).strip()
+
+            if len(text_content) > 50:
+                logger.debug(f"Extracted content from body fallback (length: {len(text_content)}).")
+                return text_content
         
         logger.debug(f"No significant content extracted by any selector.")
         return None
@@ -220,6 +250,11 @@ class HMSREGDocumentationScraper:
                 content = self._extract_article_content(page)
                 
                 if content:
+                    # Attempt to extract a more specific title from the content
+                    content_soup = BeautifulSoup(content, 'html.parser')
+                    article_title_tag = content_soup.find(['h1', 'h2'])
+                    article_title = article_title_tag.get_text(strip=True) if article_title_tag else title
+
                     logger.debug(f"Extracted content (snippet): {content[:200]}...")
                     chunks = self._split_text(content)
                     logger.info(f"Split content from {current_url} into {len(chunks)} chunks.")
@@ -234,7 +269,7 @@ class HMSREGDocumentationScraper:
                             chunk_embedding = embeddings[i] if embeddings and i < len(embeddings) else []
                             all_processed_chunks.append({
                                 "url": current_url,
-                                "title": title,
+                                "title": article_title, # Use the more specific article title
                                 "chunk_id": f"{current_url}#{i}",
                                 "content": chunk,
                                 "embedding": chunk_embedding,
