@@ -104,9 +104,9 @@ class ChatService:
                 f"You are a helpful assistant for HMSREG documentation.\n"
                 f"Target Audience Role: {user_role}\n\n"
                 f"Instructions:\n"
-                f"- Answer the user's question based strictly on the provided context. "
-                f"Synthesize information from multiple sources if necessary to provide a comprehensive answer, "
-                f"but avoid direct repetition or verbatim copying of content. Be concise and to the point.\n"
+                f"- Answer the user's question by synthesizing and rephrasing information from the provided context. "
+                f"DO NOT directly copy sentences or paragraphs verbatim from the context. "
+                f"Avoid any repetition. Be concise and to the point.\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
                 f"- If the user's query is too broad or ambiguous, identify it as such.\n"
                 f"- Populate the 'suggested_queries' field of the ChatResponse with 2-3 specific, relevant follow-up questions or topics if ambiguity is detected.\n"
@@ -114,8 +114,6 @@ class ChatService:
                 f"If you don't know the answer based on the context, just say that you don't know. "
                 f"You must output a JSON object matching the ChatResponse schema."
             )
-            
-            # 5. Run the PydanticAI Agent
             result = await self.agent.run(prompt_with_context, instructions=system_prompt)
             
             # Check confidence score as per AC 1 and 4
@@ -187,9 +185,9 @@ class ChatService:
                 f"You are a helpful assistant for HMSREG documentation.\n"
                 f"Target Audience Role: {user_role}\n\n"
                 f"Instructions:\n"
-                f"- Answer the user's question based strictly on the provided context. "
-                f"Synthesize information from multiple sources if necessary to provide a comprehensive answer, "
-                f"but avoid direct repetition or verbatim copying of content. Be concise and to the point.\n"
+                f"- Answer the user's question by synthesizing and rephrasing information from the provided context. "
+                f"DO NOT directly copy sentences or paragraphs verbatim from the context. "
+                f"Avoid any repetition. Be concise and to the point.\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
                 f"If you don't know the answer, just say that you don't know."
             )
