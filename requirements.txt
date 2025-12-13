@@ -1,0 +1,8 @@
+requests
+beautifulsoup4
+langchain-text-splitters
+google-generativeai
+numpy
+python-dotenv
+chromadb
+pydantic-settings
