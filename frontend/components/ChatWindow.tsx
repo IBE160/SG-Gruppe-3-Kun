@@ -16,7 +16,7 @@ interface ChatWindowProps {
 export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destructure userRole
   const { messages, sendMessage, isLoading } = useChat(userRole); // Pass userRole to useChat
   const [inputValue, setInputValue] = useState("");
-  const messagesEndRef = useRef<HTMLHTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [chatSessionId, setChatSessionId] = useState<string>(""); // State for chatSessionId
 
   // Generate chatSessionId once on mount
