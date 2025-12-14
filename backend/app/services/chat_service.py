@@ -33,51 +33,109 @@ class ChatService:
             'google-gla:gemini-2.5-flash',
         )
 
+        # Domain-specific term expansions for better matching
+        self.term_expansions = {
+            'kort': ['kort', 'HMS kort', 'HMS-kort', 'HMSREG kort'],
+            'register': ['register', 'registrering', 'HMS register'],
+            'risiko': ['risiko', 'risikovurdering', 'risikostyring'],
+            'underleverandør': ['leverandør', 'underleverandører', 'entreprenør', 'underentreprenør'],
+            'hovedentreprenør': ['hovedleverandør', 'hovedbedrift'],
+        }
+
+    def _expand_query(self, query: str) -> str:
+        """Expand query with domain-specific terms for better matching."""
+        query_lower = query.lower()
+        expanded_terms = []
+
+        for term, expansions in self.term_expansions.items():
+            if term in query_lower:
+                # Add all expansion variations
+                expanded_terms.extend(expansions)
+
+        if expanded_terms:
+            # Combine original query with expansions
+            return f"{query} {' '.join(set(expanded_terms))}"
+
+        return query
+
     async def _prepare_context(self, request: ChatRequest, chroma_client: ClientAPI) -> tuple[str, List[SourceCitation]]:
         """
         Shared logic to embed query and retrieve context.
         Returns (prompt_with_context, retrieved_citations)
         """
-        # 1. Embed the user's query
+        # 1. Expand the query for better matching
+        expanded_query = self._expand_query(request.message)
+
+        # 2. Embed the expanded query
         embedding_result = genai.embed_content(
             model="models/text-embedding-004",
-            content=request.message,
+            content=expanded_query,
             task_type="retrieval_query"
         )
         query_embedding = embedding_result["embedding"]
 
-        # 2. Retrieve relevant chunks from ChromaDB
+        # 3. Retrieve MORE chunks (15) to allow better deduplication
         query_result = query_collection(
             client=chroma_client,
             query_embedding=query_embedding,
-            n_results=8
+            n_results=15
         )
         
-        # 3. Format context with source metadata for the model
+        # 4. Smart deduplication: remove similar chunks, not just exact matches
         formatted_chunks = []
         retrieved_citations: List[SourceCitation] = []
         seen_urls = set()
-        seen_chunks_content = set() # To track unique chunk content
+        unique_docs = []
 
         if query_result.documents:
             for doc, meta in zip(query_result.documents, query_result.metadatas):
-                if doc and meta: # Ensure doc and meta are not None/empty
-                    source = meta.get('url', 'Unknown')
-                    title = meta.get('title', 'Untitled')
-                    
-                    # Create a unique representation of the chunk content for de-duplication
-                    chunk_content = f"Title: {title}\nSource: {source}\nContent: {doc}"
-                    if chunk_content not in seen_chunks_content:
+                if doc and meta:
+                    # Check if this chunk is similar to any already selected chunk
+                    is_duplicate = False
+                    doc_normalized = doc.lower().strip()
+
+                    for existing_doc in unique_docs:
+                        existing_normalized = existing_doc.lower().strip()
+
+                        # Check for high similarity (>80% substring match)
+                        if doc_normalized == existing_normalized:
+                            is_duplicate = True
+                            break
+
+                        # Check if one is a substring of the other (likely duplicate)
+                        if (doc_normalized in existing_normalized or
+                            existing_normalized in doc_normalized):
+                            is_duplicate = True
+                            break
+
+                        # Check for very high word overlap
+                        doc_words = set(doc_normalized.split())
+                        existing_words = set(existing_normalized.split())
+                        if doc_words and existing_words:
+                            overlap = len(doc_words & existing_words) / len(doc_words | existing_words)
+                            if overlap > 0.85:  # 85% word overlap = likely duplicate
+                                is_duplicate = True
+                                break
+
+                    if not is_duplicate:
+                        source = meta.get('url', 'Unknown')
+                        title = meta.get('title', 'Untitled')
+
+                        chunk_content = f"Title: {title}\nSource: {source}\nContent: {doc}"
                         formatted_chunks.append(chunk_content)
-                        seen_chunks_content.add(chunk_content)
-                        
+                        unique_docs.append(doc)
+
                         if source not in seen_urls and source != 'Unknown':
                             retrieved_citations.append(SourceCitation(title=title, url=source))
                             seen_urls.add(source)
 
+                # Limit to best 8 chunks after deduplication
+                if len(formatted_chunks) >= 8:
+                    break
+
         context_str = "\n\n".join(formatted_chunks)
 
-        # 4. Construct the prompt with context
+        # 5. Construct the prompt with context
         prompt_with_context = (
             f"Context:\n{context_str}\n\n"
             f"Question: {request.message}\n\n"
