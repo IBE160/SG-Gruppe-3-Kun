@@ -68,7 +68,7 @@
                 -   [x] /run-agent-task dev \*code-review {prompt / user-input-file}
             -   [x] /run-agent-task dev \*story-done {prompt / user-input-file}
             -   [x] Not an existing command, tests have been run as part of code-review. /run-agent-task sm \*test-review {prompt / user-input-file}
-        -   [ ] /run-agent-task sm \*epic-retrospective {prompt / user-input-file}
+        -   [x] Somewhat pointless as we didnt run it after each epic as we should have. /run-agent-task sm \*epic-retrospective {prompt / user-input-file}
 
 ## BMAD workflow
 

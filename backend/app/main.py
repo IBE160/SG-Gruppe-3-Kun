@@ -25,9 +25,13 @@ async def lifespan(app: FastAPI):
     Initializes and cleans up resources like the ChromaDB client and DB tables.
     """
     # Initialize Logfire
-    logfire.configure()
+    if settings.LOGFIRE_TOKEN:
+        logfire.configure(token=settings.LOGFIRE_TOKEN)
+        logging.info("Logfire initialized with cloud logging enabled.")
+    else:
+        logfire.configure(send_to_logfire=False)
+        logging.info("Logfire initialized with cloud logging disabled.")
     configure_logging() # Call configure_logging
-    logging.info("Logfire initialized and custom logging configured.") # Update log message and use standard logging
 
     # Startup event
     app.state.chroma_client = chromadb.PersistentClient(path=settings.CHROMA_PERSIST_DIRECTORY)
