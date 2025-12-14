@@ -44,7 +44,7 @@ development_status:
     1-5-implement-basic-ci-cd-for-backend-railway: done
     1-6-set-up-supabase-project-and-connect-to-backend: done
     1-7-set-up-chromadb-vector-store: done
-    epic-1-retrospective: optional
+    epic-1-retrospective: completed
 
     # Epic 2: Core Conversational Experience & RAG Pipeline
     epic-2: contexted
@@ -55,7 +55,7 @@ development_status:
     2-3-implement-pydantic-ai-rag-pipeline-in-backend: done
     2-4-connect-frontend-chat-to-backend-api: done
     2-5-display-source-citations-in-chat-ui: done
-    epic-2-retrospective: optional
+    epic-2-retrospective: completed
 
     # Epic 3: User Context & Personalization
     epic-3: contexted
