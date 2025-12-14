@@ -28,15 +28,28 @@ def get_and_chunk_text(url: str):
 
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        if soup.main:
-            text = soup.main.get_text(separator='\n', strip=True)
-        elif soup.article:
-            text = soup.article.get_text(separator='\n', strip=True)
+        # Try to find the main content area by its ID
+        main_content_div = soup.select_one('main#main-content')
+        
+        extracted_texts = []
+        if main_content_div:
+            # Extract text from common content tags within the main content div
+            for tag in main_content_div.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'div']):
+                # Avoid navigation/boilerplate by checking parent elements or specific classes if needed
+                # For now, let's just get all text from these tags
+                text_from_tag = tag.get_text(separator='\n', strip=True)
+                if text_from_tag:
+                    extracted_texts.append(text_from_tag)
+            text = '\n\n'.join(extracted_texts)
         else:
+            # Fallback if the specific main content div is not found
+            print(f"Warning: Specific main content selector 'main#main-content' not found for {url}. Falling back to body.")
             text = soup.body.get_text(separator='\n', strip=True)
 
+        # Clean up extra whitespace globally
         text = '\n'.join(line.strip() for line in text.splitlines() if line.strip())
 
+        # Initialize the text splitter
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200,
@@ -78,6 +91,7 @@ def get_and_chunk_text(url: str):
             if not is_duplicate:
                 unique_chunks.append(current_chunk)
                 unique_chunk_embeddings.append(current_embedding)
+        
         
         print(f"Successfully fetched and split content from {url}.")
         print(f"Initial chunks: {len(initial_chunks)}. Unique chunks after de-duplication: {len(unique_chunks)}.")

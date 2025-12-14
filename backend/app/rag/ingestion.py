@@ -11,6 +11,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 import google.generativeai as genai
 from dotenv import load_dotenv
 import re # Added for regex operations
+import numpy as np # Added for semantic de-duplication
 
 # Import ChromaDB client
 import chromadb
@@ -32,6 +33,22 @@ class HMSREGDocumentationScraper:
     and links, and to perform a basic health check on the site structure.
     Uses Playwright for fetching dynamic content.
     """
+
+    @staticmethod
+    def calculate_cosine_similarity(embedding1, embedding2):
+        """Calculates the cosine similarity between two embedding vectors."""
+        if not isinstance(embedding1, np.ndarray):
+            embedding1 = np.array(embedding1)
+        if not isinstance(embedding2, np.ndarray):
+            embedding2 = np.array(embedding2)
+        
+        dot_product = np.dot(embedding1, embedding2)
+        norm_embedding1 = np.linalg.norm(embedding1)
+        norm_embedding2 = np.linalg.norm(embedding2)
+        
+        if norm_embedding1 == 0 or norm_embedding2 == 0:
+            return 0.0 # Handle zero-norm case to avoid division by zero
+        return dot_product / (norm_embedding1 * norm_embedding2)
 
     def __init__(self, base_url: str, browser: Browser, chunk_size: int = 800, chunk_overlap: int = 100, max_depth: int = 3):
         self.base_url = base_url
@@ -165,8 +182,60 @@ class HMSREGDocumentationScraper:
 
 
     def _split_text(self, text: str) -> List[str]:
-        """Splits a given text into chunks using the configured text splitter."""
-        return self.text_splitter.split_text(text)
+        """
+        Splits a given text into chunks using the configured text splitter
+        and performs semantic de-duplication on the generated chunks.
+        """
+        initial_chunks = self.text_splitter.split_text(text)
+        
+        # --- Semantic De-duplication ---
+        SIMILARITY_THRESHOLD = 0.95  # Tune this value as needed
+        unique_chunks = []
+
+        if not initial_chunks:
+            return []
+        
+        if not self.has_api_key:
+            logger.warning("GOOGLE_API_KEY is not set. Skipping semantic de-duplication.")
+            return initial_chunks
+
+        try:
+            # Generate embeddings for all initial chunks
+            all_chunk_embeddings_response = genai.embed_content(
+                model=EMBEDDING_MODEL_NAME,
+                content=initial_chunks,
+                task_type="retrieval_document"
+            )
+            all_chunk_embeddings = all_chunk_embeddings_response["embedding"]
+
+            if not all_chunk_embeddings:
+                logger.warning("No embeddings generated for initial chunks. Skipping semantic de-duplication.")
+                return initial_chunks
+
+            # Add the first chunk unconditionally
+            unique_chunks.append(initial_chunks[0])
+            unique_chunk_embeddings = [all_chunk_embeddings[0]]
+
+            for i in range(1, len(initial_chunks)):
+                current_chunk = initial_chunks[i]
+                current_embedding = all_chunk_embeddings[i]
+                
+                is_duplicate = False
+                for unique_embedding in unique_chunk_embeddings:
+                    similarity = self.calculate_cosine_similarity(current_embedding, unique_embedding)
+                    if similarity > SIMILARITY_THRESHOLD:
+                        is_duplicate = True
+                        break
+                
+                if not is_duplicate:
+                    unique_chunks.append(current_chunk)
+                    unique_chunk_embeddings.append(current_embedding)
+            
+            logger.info(f"De-duplicated chunks: {len(initial_chunks)} initial, {len(unique_chunks)} unique.")
+            return unique_chunks
+        except Exception as e:
+            logger.error(f"Error during semantic de-duplication: {e}. Returning all initial chunks.")
+            return initial_chunks
 
     def _get_embeddings(self, texts: List[str]) -> List[List[float]]:
         """Generates embeddings for a list of text chunks."""
@@ -296,7 +365,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser(description="Scrape HMSREG documentation and store embeddings in ChromaDB.")
-    parser.add_argument("--base_url", type=str, default="https://docs.hmsreg.com/?Area-ID=10000&ID=10296",
+    parser.add_argument("--base_url", type=str, default="https://docs.hmsreg.com/?Area-ID=10000&ID=10379",
                         help="Base URL of the documentation site to scrape.")
     parser.add_argument("--chroma_path", type=str, default=CHROMA_DB_PATH,
                         help="Path for ChromaDB persistent storage.")
@@ -304,6 +373,8 @@ if __name__ == "__main__":
                         help="Name of the ChromaDB collection.")
     parser.add_argument("--max_depth", type=int, default=3,
                         help="Maximum depth for crawling links. Default is 3.")
+    parser.add_argument("--urls_file", type=str,
+                        help="Path to a file containing a list of URLs to scrape, one per line. If provided, base_url and max_depth are ignored.")
     args = parser.parse_args()
 
     google_api_key = os.getenv("GOOGLE_API_KEY")
@@ -311,32 +382,324 @@ if __name__ == "__main__":
         logger.error("GOOGLE_API_KEY environment variable is not set. Please set it to proceed with embedding generation.")
         exit(1)
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch() # Use chromium, can be headless=True/False
+    urls_to_scrape: List[str] = []
+    if args.urls_file:
         try:
+            with open(args.urls_file, 'r') as f:
+                urls_to_scrape = [line.strip() for line in f if line.strip()]
+            logger.info(f"Loaded {len(urls_to_scrape)} URLs from {args.urls_file}")
+        except FileNotFoundError:
+            logger.error(f"URLs file not found at {args.urls_file}. Aborting.")
+            exit(1)
+    else:
+        # Use a default set of URLs if no file is provided, to ensure some data is processed
+        # In a production setup, this would typically be args.base_url and let the scraper crawl
+        urls_to_scrape = [
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10379",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10380",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10751",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10199",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10318",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10562",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10389",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10687",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10219",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10480",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10765",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10525",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10715",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10089",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10167",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10427",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10435",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10583",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10402",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10446",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10582",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10472",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10313",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10768",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10381",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10188",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10347",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10354",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10743",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10697",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10599",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10317",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10584",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10394",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10742",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10093",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10531",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10086",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10091",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10767",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10766",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10760",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10762",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10763",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10554",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10373",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10226",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10252",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10251",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10088",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10756",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10238",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10625",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10635",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10478",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10512",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10220",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10513",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10509",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10359",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10479",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10754",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10528",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10341",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10510",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10665",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10481",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10482",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10388",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10495",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10498",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10469",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10497",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10496",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10256",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10230",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10376",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10117",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10487",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10259",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10227",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10322",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10358",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10323",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10330",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10483",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10485",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10187",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10457",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10748",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10221",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10657",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10260",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10586",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10232",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10430",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10746",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10342",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10336",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10175",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10649",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10529",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10732",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10699",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10295",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10316",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10639",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10627",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10343",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10346",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10345",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10344",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10249",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10248",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10247",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10243",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10241",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10240",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10239",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10237",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10096",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10236",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10235",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10470",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10664",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10428",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10577",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10542",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10424",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10425",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10426",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10484",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10374",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10736",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10367",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10368",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10369",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10149",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10438",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10234",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10257",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10325",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10553",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10628",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10349",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10356",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10558",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10527",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10524",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10526",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10454",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10728",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10588",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10414",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10413",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10422",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10514",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10589",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10663",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10723",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10541",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10656",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10655",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10533",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10611",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10456",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10453",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10253",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10455",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10544",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10523",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10521",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10520",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10094",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10505",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10504",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10503",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10502",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10473",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10421",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10198",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10197",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10195",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10540",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10178",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10201",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10200",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10146",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10233",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10119",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10087",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10489",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10565",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10539",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10621",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10176",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10452",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10174",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10191",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10189",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10488",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10186",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10296",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10398",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10459",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10458",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10650",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10658",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10392",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10690",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10669",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10499",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10511",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10698",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10691",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10696",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10675",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10676",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10309",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10659",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10652",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10578",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10592",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10310",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10461",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10335",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10222",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10372",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10338",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10223",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10396",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10305",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10306",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10364",
+            "https://docs.hmsreg.com/?Area-ID=10000&ID=10304"
+        ]
+        
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch() 
+        try:
+            # Initialize scraper with the first URL as base_url, but process DEBUG_URLS directly
             scraper = HMSREGDocumentationScraper(args.base_url, browser=browser, max_depth=args.max_depth)
 
-            health_status = scraper.health_check()
-            if not health_status["site_reachable"] or not health_status["structure_ok"]:
-                logger.error("Site not reachable or structure not as expected. Aborting ingestion.")
-                exit(1)
+            # Health check on the first URL if not using a urls_file
+            if not args.urls_file:
+                health_status = scraper.health_check()
+                if not health_status["site_reachable"] or not health_status["structure_ok"]:
+                    logger.error("Site not reachable or structure not as expected. Aborting ingestion.")
+                    exit(1)
 
-            logger.info(f"Starting to scrape {args.base_url}...")
-            processed_chunks = scraper.scrape_site()
+            logger.info(f"Starting to scrape {len(urls_to_scrape)} URLs...")
+            all_processed_chunks_for_db: List[Dict[str, Any]] = []
 
-            if processed_chunks:
-                logger.info(f"Scraped, chunked, and embedded {len(processed_chunks)} total chunks.")
+            for url_to_process in urls_to_scrape:
+                page = scraper._fetch_page(url_to_process)
+                if page:
+                    title = page.title() if page.title() else "No Title"
+                    content = scraper._extract_article_content(page)
+                    
+                    if content:
+                        content_soup = BeautifulSoup(content, 'html.parser')
+                        article_title_tag = content_soup.find(['h1', 'h2'])
+                        article_title = article_title_tag.get_text(strip=True) if article_title_tag else title
+
+                        logger.debug(f"Extracted content (snippet): {content[:200]}...")
+                        chunks = scraper._split_text(content) # This now includes semantic de-duplication
+                        logger.info(f"Split content from {url_to_process} into {len(chunks)} chunks.")
+
+                        if chunks:
+                            embeddings = scraper._get_embeddings(chunks)
+                            if len(embeddings) != len(chunks):
+                                logger.error(f"Mismatch between number of chunks ({len(chunks)}) and embeddings ({len(embeddings)}) for {url_to_process}. Skipping embeddings.")
+                                embeddings = [[] for _ in chunks]
+                            
+                            for i, chunk in enumerate(chunks):
+                                chunk_embedding = embeddings[i] if embeddings and i < len(embeddings) else []
+                                all_processed_chunks_for_db.append({
+                                    "url": url_to_process,
+                                    "title": article_title, 
+                                    "chunk_id": f"{url_to_process}#{i}",
+                                    "content": chunk,
+                                    "embedding": chunk_embedding,
+                                })
+                    else:
+                        logger.warning(f"No significant content extracted from: {url_to_process}")
+                    
+                    page.close() # Close page after processing
+                else:
+                    logger.error(f"Failed to fetch or parse: {url_to_process}")
+
+
+            if all_processed_chunks_for_db:
+                logger.info(f"Scraped, chunked, and embedded {len(all_processed_chunks_for_db)} total chunks for DB ingestion.")
 
                 chroma_client = chromadb.PersistentClient(path=args.chroma_path)
                 logger.info(f"ChromaDB client initialized with persistent path: {args.chroma_path}")
 
                 add_chunks_to_collection(
                     client=chroma_client,
-                    chunks=processed_chunks,
+                    chunks=all_processed_chunks_for_db,
                     collection_name=args.collection_name
                 )
-                logger.info("Ingestion process completed successfully.")
+                logger.info("Ingestion process completed successfully for DEBUG_URLS.")
             else:
-                logger.warning("No chunks were processed or generated. ChromaDB not updated. This could mean no content was extracted or no links were found on the starting page.")
+                logger.warning("No chunks were processed or generated from DEBUG_URLS. ChromaDB not updated. This could mean no content was extracted or no links were found on the starting page.")
         finally:
             browser.close()
