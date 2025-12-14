@@ -97,7 +97,7 @@ class ChatService:
                     for existing_doc in unique_docs:
                         existing_normalized = existing_doc.lower().strip()
 
-                        # Check for high similarity (>80% substring match)
+                        # Check for exact match
                         if doc_normalized == existing_normalized:
                             is_duplicate = True
                             break
@@ -108,12 +108,21 @@ class ChatService:
                             is_duplicate = True
                             break
 
-                        # Check for very high word overlap
+                        # Check for high word overlap (lowered from 85% to 60%)
                         doc_words = set(doc_normalized.split())
                         existing_words = set(existing_normalized.split())
                         if doc_words and existing_words:
                             overlap = len(doc_words & existing_words) / len(doc_words | existing_words)
-                            if overlap > 0.85:  # 85% word overlap = likely duplicate
+                            if overlap > 0.60:  # 60% word overlap = likely duplicate
+                                is_duplicate = True
+                                break
+
+                        # Check for sentence-level duplication (first sentence match)
+                        doc_sentences = [s.strip() for s in doc_normalized.split('.') if s.strip()]
+                        existing_sentences = [s.strip() for s in existing_normalized.split('.') if s.strip()]
+                        if doc_sentences and existing_sentences:
+                            # If first sentences are very similar, likely duplicate
+                            if doc_sentences[0] == existing_sentences[0]:
                                 is_duplicate = True
                                 break
 
@@ -161,16 +170,19 @@ class ChatService:
             system_prompt = (
                 f"You are a helpful assistant for HMSREG documentation.\n"
                 f"Target Audience Role: {user_role}\n\n"
-                f"Instructions:\n"
-                f"- Answer the user's question in the same language as the question. "
-                f"Synthesize and fully rephrase information from the provided context. "
-                f"UNDER NO CIRCUMSTANCES should you directly copy sentences or paragraphs verbatim from the context. "
-                f"Avoid any repetition. Be concise and to the point.\n"
+                f"CRITICAL INSTRUCTIONS:\n"
+                f"- Answer the user's question in the same language as the question.\n"
+                f"- Synthesize information from ALL context sources into ONE cohesive, flowing answer.\n"
+                f"- DO NOT repeat the same information multiple times, even if it appears in multiple context sources.\n"
+                f"- Each piece of information should appear ONLY ONCE in your answer.\n"
+                f"- NEVER copy sentences or paragraphs verbatim from the context.\n"
+                f"- Be concise, clear, and to the point. Avoid redundancy.\n"
+                f"- If the context contains overlapping information, merge it into a single coherent explanation.\n"
+                f"- Complete your sentences - never cut off mid-sentence.\n\n"
+                f"Additional Guidelines:\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
-                f"- If the user's query is too broad or ambiguous, identify it as such.\n"
-                f"- Populate the 'suggested_queries' field of the ChatResponse with 2-3 specific, relevant follow-up questions or topics if ambiguity is detected.\n"
-                f"- If 'suggested_queries' are provided, the 'answer' field should be a concise statement acknowledging the ambiguity and guiding the user to the suggestions.\n"
-                f"If you don't know the answer based on the context, just say that you don't know. "
+                f"- If the user's query is too broad or ambiguous, identify it as such and populate 'suggested_queries' with 2-3 specific follow-up questions.\n"
+                f"- If you don't know the answer based on the context, say so.\n"
                 f"You must output a JSON object matching the ChatResponse schema."
             )
             result = await self.agent.run(prompt_with_context, instructions=system_prompt)
@@ -243,11 +255,15 @@ class ChatService:
             streaming_system_prompt = (
                 f"You are a helpful assistant for HMSREG documentation.\n"
                 f"Target Audience Role: {user_role}\n\n"
-                f"Instructions:\n"
-                f"- Answer the user's question in the same language as the question. "
-                f"Synthesize and fully rephrase information from the provided context. "
-                f"UNDER NO CIRCUMSTANCES should you directly copy sentences or paragraphs verbatim from the context. "
-                f"Avoid any repetition. Be concise and to the point.\n"
+                f"CRITICAL INSTRUCTIONS:\n"
+                f"- Answer the user's question in the same language as the question.\n"
+                f"- Synthesize information from ALL context sources into ONE cohesive, flowing answer.\n"
+                f"- DO NOT repeat the same information multiple times, even if it appears in multiple context sources.\n"
+                f"- Each piece of information should appear ONLY ONCE in your answer.\n"
+                f"- NEVER copy sentences or paragraphs verbatim from the context.\n"
+                f"- Be concise, clear, and to the point. Avoid redundancy.\n"
+                f"- If the context contains overlapping information, merge it into a single coherent explanation.\n"
+                f"- Complete your sentences - never cut off mid-sentence.\n"
                 f"- Adapt your tone and focus to be most helpful to a {user_role}.\n"
                 f"If you don't know the answer, just say that you don't know."
             )
