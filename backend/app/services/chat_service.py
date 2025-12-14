@@ -279,10 +279,23 @@ class ChatService:
                 f"If you don't know the answer, just say that you don't know."
             )
 
+            # Track accumulated text to only send new portions
+            accumulated_text = ""
+
             async with self.streaming_agent.run_stream(prompt_with_context, instructions=streaming_system_prompt) as result:
                 async for chunk in result.stream():
-                    print(f"Raw stream chunk: '{chunk}'") # Temporary debug print
-                    yield ("token", chunk)
+                    # Gemini returns full accumulated text, not deltas
+                    # We need to extract only the new portion
+                    if chunk and len(chunk) > len(accumulated_text):
+                        new_text = chunk[len(accumulated_text):]
+                        accumulated_text = chunk
+                        print(f"New chunk (delta): '{new_text}'") # Debug
+                        yield ("token", new_text)
+                    elif chunk != accumulated_text:
+                        # In case of unexpected format, send the chunk
+                        print(f"Unexpected chunk format: '{chunk}'")
+                        yield ("token", chunk)
+                        accumulated_text = chunk
 
             # Yield citations after streaming is complete
             citations_data = [c.model_dump() for c in retrieved_citations]
