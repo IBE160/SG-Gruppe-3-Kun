@@ -74,11 +74,11 @@ class ChatService:
         )
         query_embedding = embedding_result["embedding"]
 
-        # 3. Retrieve MORE chunks (15) to allow better deduplication
+        # 3. Retrieve chunks for deduplication (reduced from 15 to 10)
         query_result = query_collection(
             client=chroma_client,
             query_embedding=query_embedding,
-            n_results=15
+            n_results=10
         )
         
         # 4. Smart deduplication: remove similar chunks, not just exact matches
@@ -138,9 +138,14 @@ class ChatService:
                             retrieved_citations.append(SourceCitation(title=title, url=source))
                             seen_urls.add(source)
 
-                # Limit to best 8 chunks after deduplication
-                if len(formatted_chunks) >= 8:
+                # Limit to best 5 chunks after deduplication (reduced from 8 to reduce confusion)
+                if len(formatted_chunks) >= 5:
                     break
+
+        # Debug: Log how many chunks we're actually using
+        print(f"[DEBUG] Retrieved {len(query_result.documents) if query_result.documents else 0} chunks from DB")
+        print(f"[DEBUG] After deduplication: {len(formatted_chunks)} unique chunks")
+        print(f"[DEBUG] First chunk preview: {formatted_chunks[0][:200] if formatted_chunks else 'No chunks'}...")
 
         context_str = "\n\n".join(formatted_chunks)
 

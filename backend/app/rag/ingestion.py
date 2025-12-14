@@ -699,6 +699,13 @@ if __name__ == "__main__":
                 chroma_client = chromadb.PersistentClient(path=args.chroma_path)
                 logger.info(f"ChromaDB client initialized with persistent path: {args.chroma_path}")
 
+                # Delete old collection to avoid duplicates
+                try:
+                    chroma_client.delete_collection(name=args.collection_name)
+                    logger.info(f"Deleted old ChromaDB collection: {args.collection_name}")
+                except Exception as e:
+                    logger.info(f"No existing collection to delete (this is fine): {e}")
+
                 add_chunks_to_collection(
                     client=chroma_client,
                     chunks=all_processed_chunks_for_db,
