@@ -43,9 +43,16 @@ class ChatService:
         self.term_expansions = {
             'kort': ['kort', 'HMS kort', 'HMS-kort', 'HMSREG kort'],
             'register': ['register', 'registrering', 'HMS register'],
-            'risiko': ['risiko', 'risikovurdering', 'risikostyring'],
+            'risiko': ['risiko', 'risikovurdering', 'risikostyring', 'risikoanalyse'],
             'underleverandør': ['leverandør', 'underleverandører', 'entreprenør', 'underentreprenør'],
             'hovedentreprenør': ['hovedleverandør', 'hovedbedrift'],
+            'avvik': ['avvik', 'avvikshåndtering', 'HMS avvik', 'avviksmelding'],
+            'opplæring': ['opplæring', 'kurs', 'opplæringskurs', 'skolering'],
+            'sertifikat': ['sertifikat', 'sertifisering', 'kompetansebevis'],
+            'prosjekt': ['prosjekt', 'byggeprosjekt', 'anlegg', 'byggeplass'],
+            'mannskap': ['mannskap', 'mannskapsliste', 'arbeidere', 'ansatte'],
+            'godkjenning': ['godkjenning', 'godkjenne', 'godkjent', 'akseptert'],
+            'dokumentasjon': ['dokumentasjon', 'dokument', 'dokumenter'],
         }
 
     def _expand_query(self, query: str) -> str:
@@ -144,14 +151,9 @@ class ChatService:
                             retrieved_citations.append(SourceCitation(title=title, url=source))
                             seen_urls.add(source)
 
-                # Limit to best 3 chunks after deduplication (further reduced to test)
-                if len(formatted_chunks) >= 3:
+                # Limit to best 5 chunks after deduplication
+                if len(formatted_chunks) >= 5:
                     break
-
-        # Debug: Log how many chunks we're actually using
-        print(f"[DEBUG] Retrieved {len(query_result.documents) if query_result.documents else 0} chunks from DB")
-        print(f"[DEBUG] After deduplication: {len(formatted_chunks)} unique chunks")
-        print(f"[DEBUG] First chunk preview: {formatted_chunks[0][:200] if formatted_chunks else 'No chunks'}...")
 
         context_str = "\n\n".join(formatted_chunks)
 
@@ -289,11 +291,9 @@ class ChatService:
                     if chunk and len(chunk) > len(accumulated_text):
                         new_text = chunk[len(accumulated_text):]
                         accumulated_text = chunk
-                        print(f"New chunk (delta): '{new_text}'") # Debug
                         yield ("token", new_text)
                     elif chunk != accumulated_text:
                         # In case of unexpected format, send the chunk
-                        print(f"Unexpected chunk format: '{chunk}'")
                         yield ("token", chunk)
                         accumulated_text = chunk
 
