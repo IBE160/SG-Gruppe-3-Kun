@@ -25,7 +25,8 @@ dependencies = [
     "greenlet",
     "logfire (>=4.16.0,<5.0.0)",
     "playwright (>=1.40.0,<2.0.0)",
-    "fastapi-limiter~=0.1.5",
+    "slowapi (>=0.1.9,<0.2.0)",
+    "python-json-logger (>=4.0.0,<5.0.0)",
 ]
 
 [tool.poetry]

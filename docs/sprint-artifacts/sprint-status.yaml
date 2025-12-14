@@ -73,8 +73,8 @@ development_status:
 
   # Epic 5: Production Readiness & Accessibility
   epic-5: contexted
-  5-1-implement-api-rate-limiting: ready-for-dev
-  5-2-ensure-wcag-2-1-aa-compliance-for-frontend: ready-for-dev
-  5-3-implement-comprehensive-logging-and-monitoring: ready-for-dev
-  5-4-conduct-final-end-to-end-testing: ready-for-dev
+  5-1-implement-api-rate-limiting: done
+  5-2-ensure-wcag-2-1-aa-compliance-for-frontend: done
+  5-3-implement-comprehensive-logging-and-monitoring: done
+  5-4-conduct-final-end-to-end-testing: done
   epic-5-retrospective: optional

@@ -7,12 +7,11 @@ import json
 from app.schemas.chat import ChatRequest
 from app.services.chat_service import ChatService
 from app.core.dependencies import get_chroma_client, get_chat_service
-from fastapi_limiter.depends import RateLimiter
 
 router = APIRouter()
 logfire.instrument() # Instrument the module with Logfire
 
-@router.post("/stream", dependencies=[Depends(RateLimiter(times=5, seconds=60))])
+@router.post("/stream")
 async def stream_chat(
     request: ChatRequest,
     chroma_client: ClientAPI = Depends(get_chroma_client),

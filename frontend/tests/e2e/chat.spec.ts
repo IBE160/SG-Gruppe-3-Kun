@@ -52,5 +52,21 @@ test.describe('Chat Flow', () => {
     // The mock returns "To login..."
     // Frontend appends tokens: "To " + "login..." = "To login..."
     await expect(chatContainer.getByText('To login...')).toBeVisible();
+
+    // 8. Mock Feedback API
+    await page.route('/api/v1/feedback', async (route) => {
+      expect(route.request().method()).toBe('POST');
+      const postData = route.request().postDataJSON();
+      expect(postData.rating).toBe('thumbs_up');
+      await route.fulfill({ status: 201 });
+    });
+
+    // 9. Give Feedback
+    // Wait for feedback buttons to appear (they appear with the assistant message)
+    await expect(chatContainer.getByRole('button', { name: 'Thumbs up' })).toBeVisible();
+    await chatContainer.getByRole('button', { name: 'Thumbs up' }).click();
+    
+    // 10. Verify Feedback State
+    await expect(chatContainer.getByText('👍 Thanks!')).toBeVisible();
   });
 });

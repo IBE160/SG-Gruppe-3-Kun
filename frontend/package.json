@@ -10,9 +10,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@axe-core/react": "^4.11.0",
+    "@opentelemetry/auto-instrumentations-web": "^0.54.0",
+    "@pydantic/logfire-browser": "^0.12.1",
     "@radix-ui/react-slot": "^1.2.4",
+    "@testing-library/user-event": "^14.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jest-axe": "^10.0.0",
     "lucide-react": "^0.560.0",
     "next": "16.0.8",
     "react": "19.2.1",
