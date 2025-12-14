@@ -50,7 +50,7 @@ class ChatService:
         query_result = query_collection(
             client=chroma_client,
             query_embedding=query_embedding,
-            n_results=4
+            n_results=8
         )
         
         # 3. Format context with source metadata for the model

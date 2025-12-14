@@ -1,9 +1,15 @@
 import logging
 import os
+import sys
 import argparse
 from urllib.parse import urljoin, urlparse
 from typing import List, Dict, Optional, Set, Any
 import asyncio
+from pathlib import Path
+
+# Add backend directory to Python path
+backend_dir = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(backend_dir))
 
 from playwright.sync_api import sync_playwright, Browser, Page # Playwright imports
 from bs4 import BeautifulSoup, Tag, Comment
@@ -50,7 +56,7 @@ class HMSREGDocumentationScraper:
             return 0.0 # Handle zero-norm case to avoid division by zero
         return dot_product / (norm_embedding1 * norm_embedding2)
 
-    def __init__(self, base_url: str, browser: Browser, chunk_size: int = 800, chunk_overlap: int = 100, max_depth: int = 3):
+    def __init__(self, base_url: str, browser: Browser, chunk_size: int = 2000, chunk_overlap: int = 400, max_depth: int = 3):
         self.base_url = base_url
         self.visited_urls: Set[str] = set()
         self.domain = urlparse(base_url).netloc

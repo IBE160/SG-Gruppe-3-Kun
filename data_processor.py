@@ -51,8 +51,8 @@ def get_and_chunk_text(url: str):
 
         # Initialize the text splitter
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200,
+            chunk_size=2000,
+            chunk_overlap=400,
             length_function=len,
         )
 
