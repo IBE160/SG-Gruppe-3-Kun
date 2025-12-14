@@ -22,15 +22,21 @@ FALLBACK_MESSAGE = (
 
 class ChatService:
     def __init__(self):
-        # Initialize the PydanticAI Agent
-        # We use a static system prompt here, but context will be injected dynamically.
+        # Initialize the PydanticAI Agent with model settings
+        # Lower temperature to reduce repetition
+        from pydantic_ai.models.gemini import GeminiModelSettings
+
+        model_settings = GeminiModelSettings(temperature=0.3)
+
         self.agent = Agent(
             'google-gla:gemini-2.5-flash',
             output_type=ChatResponse,
+            model_settings=model_settings,
         )
         # Agent for streaming (returns text)
         self.streaming_agent = Agent(
             'google-gla:gemini-2.5-flash',
+            model_settings=model_settings,
         )
 
         # Domain-specific term expansions for better matching
@@ -138,8 +144,8 @@ class ChatService:
                             retrieved_citations.append(SourceCitation(title=title, url=source))
                             seen_urls.add(source)
 
-                # Limit to best 5 chunks after deduplication (reduced from 8 to reduce confusion)
-                if len(formatted_chunks) >= 5:
+                # Limit to best 3 chunks after deduplication (further reduced to test)
+                if len(formatted_chunks) >= 3:
                     break
 
         # Debug: Log how many chunks we're actually using
