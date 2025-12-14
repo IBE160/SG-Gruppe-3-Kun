@@ -20,17 +20,22 @@ export function ChatBubble({ role, content, citations, messageId, chatSessionId,
   const isAssistant = role === 'assistant'; // Explicitly check for assistant
 
   return (
-    <div className={cn(
-      "flex w-full mb-4",
-      isUser ? "justify-end" : "justify-start"
-    )}>
+    <div
+      className={cn(
+        "flex w-full mb-4",
+        isUser ? "justify-end" : "justify-start"
+      )}
+      aria-label={`${role} message`} // Added aria-label
+    >
       <div className={cn(
         "max-w-[80%] rounded-lg px-4 py-2 text-sm shadow-sm prose dark:prose-invert prose-sm break-words",
-        isUser 
+        isUser
           ? "bg-primary text-primary-foreground rounded-br-none prose-p:text-primary-foreground prose-headings:text-primary-foreground" 
           : "bg-muted text-muted-foreground rounded-bl-none"
       )}>
-        <Markdown>{content}</Markdown>
+        <div role="document"> {/* Wrapped Markdown with a div having role="document" */}
+          <Markdown>{content}</Markdown>
+        </div>
 
         {citations && citations.length > 0 && (
           <div className="mt-3 pt-2 border-t border-black/10 dark:border-white/10">
@@ -70,7 +75,7 @@ export function ChatBubble({ role, content, citations, messageId, chatSessionId,
             </div>
           </div>
         )}
-        
+
         {/* Render FeedbackButtons only for assistant messages */}
         {isAssistant && (
           <div className="mt-2 pt-2 border-t border-black/10 dark:border-white/10">

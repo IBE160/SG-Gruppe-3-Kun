@@ -6,8 +6,6 @@ import { TextEncoder } from 'util';
 global.fetch = jest.fn();
 // Polyfill TextDecoder if needed (JSDOM usually has it, but TextEncoder might need import in some envs)
 // But Jest JSDOM usually handles it. Explicit import from 'util' for node env just in case.
-global.TextDecoder = require('util').TextDecoder;
-
 
 describe('useChat', () => {
   beforeEach(() => {

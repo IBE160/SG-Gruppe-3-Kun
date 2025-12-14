@@ -4,11 +4,6 @@ test.describe('Chat Flow', () => {
   test('Complete user journey: Select role, ask question, receive stream', async ({ page }) => {
     // 1. Mock the API route to avoid backend dependency
     await page.route('/api/chat', async (route) => {
-      const json = {
-        message: 'Hello from mock backend',
-        user_role: 'Construction Worker' // Optional verify
-      };
-      
       // We need to verify the request body if we want to be strict
       const request = route.request();
       const postData = request.postDataJSON();

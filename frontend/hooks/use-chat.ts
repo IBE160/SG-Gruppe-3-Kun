@@ -107,7 +107,7 @@ export function useChat(userRole: string | null) { // Added userRole parameter
       }
       setIsLoading(false); // Set to false when stream is complete
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('Chat error:', error);
       let errorMessage = "Failed to connect to chat service.";
       if (error instanceof Error) {

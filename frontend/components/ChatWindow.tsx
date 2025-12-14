@@ -17,12 +17,10 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
   const { messages, sendMessage, isLoading } = useChat(userRole); // Pass userRole to useChat
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [chatSessionId, setChatSessionId] = useState<string>(""); // State for chatSessionId
+  
+  // Use useState with a functional lazy initializer to generate chatSessionId once purely
+  const [chatSessionId] = useState<string>(() => Date.now().toString());
 
-  // Generate chatSessionId once on mount
-  useEffect(() => {
-    setChatSessionId(Date.now().toString());
-  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,11 +30,11 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
     scrollToBottom();
   }, [messages, isLoading]);
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = useCallback(async (content: string) => {
     if (!content.trim()) return;
     setInputValue(""); // Clear input immediately
     await sendMessage(content);
-  }
+  }, [setInputValue, sendMessage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

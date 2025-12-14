@@ -3,7 +3,7 @@ import { render, screen, fireEvent, act, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom';
 import { ChatWindow } from '@/components/ChatWindow';
 import { useChat } from '@/hooks/use-chat';
-import { Message, SourceCitation } from '@/hooks/use-chat';
+import { Message } from '@/hooks/use-chat';
 
 // Mock scrollIntoView
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
@@ -64,7 +64,7 @@ describe('ChatWindow', () => {
       act(() => { rerender(<ChatWindow userRole="Project Manager / Admin" />); });
     });
 
-    mockUseChat.mockImplementation((userRole: string | null) => ({
+    mockUseChat.mockImplementation(() => ({ // Removed userRole parameter
       messages: mockMessages,
       sendMessage: mockSendMessage,
       isLoading: mockIsLoading,

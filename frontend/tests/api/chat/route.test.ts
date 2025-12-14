@@ -2,7 +2,6 @@
  * @jest-environment node
  */
 import { POST } from '@/app/api/chat/route';
-import { NextResponse } from 'next/server';
 
 // Mock global fetch
 global.fetch = jest.fn();

@@ -114,12 +114,12 @@ export default function Home() {
             <div className="flex-1 overflow-y-auto p-4">
                 <nav className="space-y-1">
                     <p className="px-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Getting Started</p>
-                    <a href="#" className="block px-2 py-1.5 text-sm font-medium text-slate-700 rounded-md hover:bg-slate-200">Introduction</a>
-                    <a href="#" className="block px-2 py-1.5 text-sm font-medium text-slate-700 rounded-md hover:bg-slate-200">Installation</a>
+                    <button className="block w-full text-left p-3 bg-white rounded-lg shadow-sm border hover:border-primary transition-colors text-sm font-medium text-slate-700">Introduction</button>
+                    <button className="block w-full text-left p-3 bg-white rounded-lg shadow-sm border hover:border-primary transition-colors text-sm font-medium text-slate-700">Installation</button>
                     
-                    <p className="px-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 mt-6">Core Concepts</p>
-                    <a href="#" className="block px-2 py-1.5 text-sm font-medium text-slate-700 rounded-md hover:bg-slate-200">Architecture</a>
-                    <a href="#" className="block px-2 py-1.5 text-sm font-medium text-slate-700 rounded-md hover:bg-slate-200">Authentication</a>
+                    <p className="px-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 mt-4">Core Concepts</p>
+                    <button className="w-full text-left p-3 bg-white rounded-lg shadow-sm border hover:border-primary transition-colors text-sm font-medium text-slate-700">Architecture</button>
+                    <button className="w-full text-left p-3 bg-white rounded-lg shadow-sm border hover:border-primary transition-colors text-sm font-medium text-slate-700">Authentication</button>
                 </nav>
             </div>
 
@@ -172,3 +172,5 @@ export default function Home() {
     </main>
   );
 }
+
+
