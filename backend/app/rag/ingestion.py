@@ -117,6 +117,38 @@ class HMSREGDocumentationScraper:
                 page.close()
         return None
 
+    def _extract_article_title(self, page: Page) -> Optional[str]:
+        """
+        Extracts the article title from h1/h2 tags in the page.
+        Returns None if no suitable title is found.
+        """
+        main_content_locator = page.locator('div[data-object-id="dsProcedure"].content')
+        if main_content_locator.count() > 0:
+            html_content = main_content_locator.first.inner_html()
+            soup = BeautifulSoup(html_content, 'html.parser')
+
+            # Try to find h1 or h2 tag for the title
+            title_tag = soup.find(['h1', 'h2'])
+            if title_tag:
+                title = title_tag.get_text(strip=True)
+                if title:
+                    logger.debug(f"Extracted title from content: {title}")
+                    return title
+
+        # Fallback: try to find h1/h2 in the whole body
+        body_content_html = page.locator('body').inner_html(timeout=1000)
+        if body_content_html:
+            soup = BeautifulSoup(body_content_html, 'html.parser')
+            title_tag = soup.find(['h1', 'h2'])
+            if title_tag:
+                title = title_tag.get_text(strip=True)
+                if title:
+                    logger.debug(f"Extracted title from body: {title}")
+                    return title
+
+        logger.debug("No title found in h1/h2 tags")
+        return None
+
     def _extract_article_content(self, page: Page) -> Optional[str]: # Takes Playwright Page object
         """
         Extracts the main article content from a Playwright Page object.
@@ -130,7 +162,7 @@ class HMSREGDocumentationScraper:
             for selector in ['header', 'footer', 'nav', 'script', 'style', '.skip-link', '.breadcrumb']:
                 for tag in soup.find_all(selector):
                     tag.decompose()
-            
+
             # Remove comments
             for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
                 comment.extract()
@@ -142,7 +174,7 @@ class HMSREGDocumentationScraper:
 
             text_content = soup.get_text(separator=' ', strip=True) # Use space separator to avoid word concatenation
             text_content = re.sub(r'\s+', ' ', text_content).strip() # Normalize whitespace
-            
+
             if len(text_content) > 50:
                 logger.debug(f"Extracted content from div[data-object-id='dsProcedure'] (length: {len(text_content)}).")
                 return text_content
@@ -161,14 +193,14 @@ class HMSREGDocumentationScraper:
             for unwanted_tag in soup.find_all(['span', 'div'], class_=False, id=False):
                 if not unwanted_tag.get_text(strip=True):
                     unwanted_tag.decompose()
-            
+
             text_content = soup.get_text(separator=' ', strip=True)
             text_content = re.sub(r'\s+', ' ', text_content).strip()
 
             if len(text_content) > 50:
                 logger.debug(f"Extracted content from body fallback (length: {len(text_content)}).")
                 return text_content
-        
+
         logger.debug(f"No significant content extracted by any selector.")
         return None
 
@@ -321,15 +353,14 @@ class HMSREGDocumentationScraper:
             
             page = self._fetch_page(current_url)
             if page:
-                title = page.title() if page.title() else "No Title"
-                content = self._extract_article_content(page)
-                
-                if content:
-                    # Attempt to extract a more specific title from the content
-                    content_soup = BeautifulSoup(content, 'html.parser')
-                    article_title_tag = content_soup.find(['h1', 'h2'])
-                    article_title = article_title_tag.get_text(strip=True) if article_title_tag else title
+                # Extract title from h1/h2 tags, fallback to page title
+                article_title = self._extract_article_title(page)
+                if not article_title:
+                    article_title = page.title() if page.title() else "No Title"
 
+                content = self._extract_article_content(page)
+
+                if content:
                     logger.debug(f"Extracted content (snippet): {content[:200]}...")
                     chunks = self._split_text(content)
                     logger.info(f"Split content from {current_url} into {len(chunks)} chunks.")
@@ -658,14 +689,14 @@ if __name__ == "__main__":
             for url_to_process in urls_to_scrape:
                 page = scraper._fetch_page(url_to_process)
                 if page:
-                    title = page.title() if page.title() else "No Title"
-                    content = scraper._extract_article_content(page)
-                    
-                    if content:
-                        content_soup = BeautifulSoup(content, 'html.parser')
-                        article_title_tag = content_soup.find(['h1', 'h2'])
-                        article_title = article_title_tag.get_text(strip=True) if article_title_tag else title
+                    # Extract title from h1/h2 tags, fallback to page title
+                    article_title = scraper._extract_article_title(page)
+                    if not article_title:
+                        article_title = page.title() if page.title() else "No Title"
 
+                    content = scraper._extract_article_content(page)
+
+                    if content:
                         logger.debug(f"Extracted content (snippet): {content[:200]}...")
                         chunks = scraper._split_text(content) # This now includes semantic de-duplication
                         logger.info(f"Split content from {url_to_process} into {len(chunks)} chunks.")
