@@ -34,7 +34,7 @@ export default function Home() {
               </Button>
           </header>
 
-          <div className="flex-1 overflow-hidden relative">
+          <div className="flex-1 min-h-0 overflow-hidden relative">
                {activeTab === 'links' && (
                    <div className="h-full overflow-y-auto p-4">
                        <h2 className="font-bold mb-4 text-lg px-1">Documentation</h2>
@@ -158,11 +158,11 @@ export default function Home() {
         </div>
 
         {/* Right Column: Chatbot (30% -> 3-4 cols out of 12) */}
-        <div data-testid="desktop-right-col" className="col-span-4 xl:col-span-3 border-l bg-white flex flex-col">
+        <div data-testid="desktop-right-col" className="col-span-4 xl:col-span-3 border-l bg-white flex flex-col min-h-0">
             <div className="p-4 border-b bg-white flex items-center justify-between">
                 <h2 className="font-semibold text-sm uppercase tracking-wider text-slate-500">AI Assistant</h2>
             </div>
-            <div className="flex-1 overflow-hidden relative">
+            <div className="flex-1 min-h-0 overflow-hidden relative">
                  {/* ChatWindow needs to fill this space */}
                  <ChatWindow className="h-full border-none shadow-none rounded-none max-w-none" userRole={userRole} />
             </div>
