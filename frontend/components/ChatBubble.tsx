@@ -1,4 +1,7 @@
+"use client"
+
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import Markdown from 'react-markdown';
 import { cn } from "@/lib/utils";
 import { SourceCitation } from "@/hooks/use-chat";
@@ -17,6 +20,7 @@ export interface ChatBubbleProps {
 }
 
 export function ChatBubble({ role, content, citations, messageId, chatSessionId, suggestedQueries, onSuggestionClick, isStreaming }: ChatBubbleProps) {
+  const t = useTranslations('chat');
   const isUser = role === 'user';
   const isAssistant = role === 'assistant'; // Explicitly check for assistant
 
@@ -47,7 +51,7 @@ export function ChatBubble({ role, content, citations, messageId, chatSessionId,
 
         {citations && citations.length > 0 && (
           <div className="mt-3 pt-2 border-t border-black/10 dark:border-white/10">
-            <p className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-1">Source:</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-1">{t('source')}</p>
             <ul className="space-y-1">
               {citations.map((citation, idx) => (
                 <li key={idx}>
@@ -67,7 +71,7 @@ export function ChatBubble({ role, content, citations, messageId, chatSessionId,
 
         {suggestedQueries && suggestedQueries.length > 0 && onSuggestionClick && (
           <div className="mt-3 pt-2 border-t border-black/10 dark:border-white/10">
-            <p className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-1">Suggested:</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-1">{t('suggested')}</p>
             <div className="flex flex-wrap gap-2">
               {suggestedQueries.map((query, idx) => (
                 <Button 

@@ -1,4 +1,7 @@
+'use client'
+
 import { useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 
 export interface SourceCitation {
   title: string;
@@ -14,6 +17,7 @@ export interface Message {
 }
 
 export function useChat(userRole: string | null) { // Added userRole parameter
+  const t = useTranslations('errors');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -90,11 +94,11 @@ export function useChat(userRole: string | null) { // Added userRole parameter
                   )
                 );
               } else if (data.type === 'error') {
-                 console.error("Backend error:", data.content);
-                 setMessages((prev) => 
-                    prev.map((msg) => 
-                      msg.id === assistantId 
-                        ? { ...msg, content: msg.content + "\n\n[Error: " + data.content + "]" } 
+                 console.error(t('backendError'), data.content);
+                 setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === assistantId
+                        ? { ...msg, content: msg.content + "\n\n[" + t('backendError') + " " + data.content + "]" }
                         : msg
                     )
                   );
@@ -109,20 +113,20 @@ export function useChat(userRole: string | null) { // Added userRole parameter
 
     } catch (error) {
       console.error('Chat error:', error);
-      let errorMessage = "Failed to connect to chat service.";
+      let errorMessage = t('networkError');
       if (error instanceof Error) {
           errorMessage += ` (${error.message})`;
       }
-      setMessages((prev) => 
-        prev.map((msg) => 
-          msg.id === assistantId 
-            ? { ...msg, content: msg.content + `\n\n[System Error: ${errorMessage}]` } 
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantId
+            ? { ...msg, content: msg.content + `\n\n[${t('systemError')} ${errorMessage}]` }
             : msg
         )
       );
       setIsLoading(false); // Also set to false on error
     }
-  }, [userRole]);
+  }, [userRole, t]);
 
   return { messages, sendMessage, isLoading };
 }

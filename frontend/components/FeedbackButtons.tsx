@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from 'next-intl';
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { cn } from "@/lib/utils"; // Assuming a utility for class names
 import { Button } from "@/components/ui/button"; // Assuming shadcn/ui button
@@ -11,6 +12,7 @@ interface FeedbackButtonsProps {
 }
 
 export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsProps) {
+  const t = useTranslations('feedback');
   const [feedbackGiven, setFeedbackGiven] = React.useState<"up" | "down" | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -45,7 +47,7 @@ export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsPro
       // Optional: show a toast notification "Thank you for your feedback!"
     } catch (err) {
       console.error("Failed to submit feedback:", err);
-      setError("Failed to submit feedback. Please try again.");
+      setError(t('error'));
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +57,7 @@ export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsPro
     <div className="flex space-x-2 items-center">
       {feedbackGiven ? (
         <span className="text-sm text-muted-foreground">
-          {feedbackGiven === "up" ? "👍 Thanks!" : "👎 Thanks!"}
+          {feedbackGiven === "up" ? t('thanksUp') : t('thanksDown')}
         </span>
       ) : (
         <>
@@ -68,7 +70,7 @@ export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsPro
               "text-muted-foreground hover:text-green-500",
               isLoading && "cursor-not-allowed opacity-50"
             )}
-            aria-label="Thumbs up"
+            aria-label={t('thumbsUp')}
           >
             <ThumbsUp className="h-4 w-4" />
           </Button>
@@ -81,7 +83,7 @@ export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsPro
               "text-muted-foreground hover:text-red-500",
               isLoading && "cursor-not-allowed opacity-50"
             )}
-            aria-label="Thumbs down"
+            aria-label={t('thumbsDown')}
           >
             <ThumbsDown className="h-4 w-4" />
           </Button>

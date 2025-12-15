@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "title": "HMSREG Documentation",
+    "description": "Interactive documentation assistant"
+  },
+  "roleSelector": {
+    "title": "HMSREG Documentation",
+    "subtitle": "Select your role to get started",
+    "heading": "Select Your Role",
+    "roles": {
+      "constructionWorker": "Construction Worker",
+      "supplier": "Supplier / Subcontractor",
+      "projectManager": "Project Manager / Admin"
+    }
+  },
+  "navigation": {
+    "docs": "Docs",
+    "article": "Article",
+    "chat": "Chat",
+    "aiAssistant": "AI Assistant",
+    "changeRole": "Change Role",
+    "gettingStarted": "Getting Started",
+    "coreConcepts": "Core Concepts"
+  },
+  "documentation": {
+    "title": "Documentation",
+    "introduction": "Introduction",
+    "installation": "Installation",
+    "architecture": "Architecture",
+    "authentication": "Authentication",
+    "welcomeTitle": "Welcome to the HMSREG Documentation",
+    "welcomeLead": "This is a placeholder for the main documentation content. In a full implementation, this area would render the Markdown content of the selected article.",
+    "welcomeMobile": "Welcome to HMSREG",
+    "welcomeMobileText": "This is the mobile article view.",
+    "articleContent": "Article Content",
+    "articleLoadsHere": "Article Content loads here",
+    "howToUse": "How to use this interface",
+    "howToUseText": "On the left, you can navigate through different topics. On the right, you can ask the AI assistant questions about the documentation you are reading."
+  },
+  "chat": {
+    "placeholder": "Type your question...",
+    "send": "Send",
+    "emptyState": "Ask a question about HMSREG documentation...",
+    "connecting": "Connecting...",
+    "source": "Source:",
+    "suggested": "Suggested:"
+  },
+  "feedback": {
+    "thumbsUp": "Thumbs up",
+    "thumbsDown": "Thumbs down",
+    "thanksUp": "👍 Thanks!",
+    "thanksDown": "👎 Thanks!",
+    "error": "Failed to submit feedback. Please try again."
+  },
+  "errors": {
+    "networkError": "Failed to connect to chat service.",
+    "systemError": "System Error:",
+    "backendError": "Backend error:"
+  }
+}

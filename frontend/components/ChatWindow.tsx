@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChatBubble } from "./ChatBubble";
@@ -14,10 +15,11 @@ interface ChatWindowProps {
 }
 
 export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destructure userRole
+  const t = useTranslations('chat');
   const { messages, sendMessage, isLoading } = useChat(userRole); // Pass userRole to useChat
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   // Use useState with a functional lazy initializer to generate chatSessionId once purely
   const [chatSessionId] = useState<string>(() => Date.now().toString());
 
@@ -57,7 +59,7 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
       <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4" aria-live="polite">
         {messages.length === 0 && (
           <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
-            Ask a question about HMSREG documentation...
+            {t('emptyState')}
           </div>
         )}
         
@@ -79,7 +81,7 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
              <div className="flex w-full justify-start mb-4" role="status" aria-live="polite">
                 <div className="bg-muted text-muted-foreground rounded-lg rounded-bl-none px-4 py-2 flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-xs">Connecting...</span>
+                  <span className="text-xs">{t('connecting')}</span>
                 </div>
               </div>
         )}
@@ -89,16 +91,16 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
       {/* Input Area */}
       <div className="border-t p-4 bg-card">
         <form onSubmit={handleSubmit} className="flex gap-2">
-          <Input 
-            value={inputValue} 
+          <Input
+            value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Type your question..."
+            placeholder={t('placeholder')}
             disabled={isLoading}
             className="flex-1"
           />
           <Button type="submit" disabled={isLoading || !inputValue.trim()} size="icon">
             <Send className="h-4 w-4" />
-            <span className="sr-only">Send</span>
+            <span className="sr-only">{t('send')}</span>
           </Button>
         </form>
       </div>

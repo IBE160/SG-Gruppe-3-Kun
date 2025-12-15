@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "title": "HMSREG Dokumentasjon",
+    "description": "Interaktiv dokumentasjonsassistent"
+  },
+  "roleSelector": {
+    "title": "HMSREG Dokumentasjon",
+    "subtitle": "Velg din rolle for å komme i gang",
+    "heading": "Velg din rolle",
+    "roles": {
+      "constructionWorker": "Anleggsarbeider",
+      "supplier": "Leverandør / Underleverandør",
+      "projectManager": "Prosjektleder / Administrator"
+    }
+  },
+  "navigation": {
+    "docs": "Dokumenter",
+    "article": "Artikkel",
+    "chat": "Chat",
+    "aiAssistant": "AI-assistent",
+    "changeRole": "Bytt rolle",
+    "gettingStarted": "Kom i gang",
+    "coreConcepts": "Grunnleggende konsepter"
+  },
+  "documentation": {
+    "title": "Dokumentasjon",
+    "introduction": "Introduksjon",
+    "installation": "Installasjon",
+    "architecture": "Arkitektur",
+    "authentication": "Autentisering",
+    "welcomeTitle": "Velkommen til HMSREG-dokumentasjonen",
+    "welcomeLead": "Dette er en plassholder for hoveddokumentasjonsinnholdet. I en full implementering ville dette området gjengi Markdown-innholdet til den valgte artikkelen.",
+    "welcomeMobile": "Velkommen til HMSREG",
+    "welcomeMobileText": "Dette er mobilartikkelvisningen.",
+    "articleContent": "Artikkelinnhold",
+    "articleLoadsHere": "Artikkelinnhold lastes her",
+    "howToUse": "Hvordan bruke dette grensesnittet",
+    "howToUseText": "Til venstre kan du navigere gjennom forskjellige emner. Til høyre kan du stille AI-assistenten spørsmål om dokumentasjonen du leser."
+  },
+  "chat": {
+    "placeholder": "Skriv spørsmålet ditt...",
+    "send": "Send",
+    "emptyState": "Still et spørsmål om HMSREG-dokumentasjonen...",
+    "connecting": "Kobler til...",
+    "source": "Kilde:",
+    "suggested": "Foreslått:"
+  },
+  "feedback": {
+    "thumbsUp": "Tommel opp",
+    "thumbsDown": "Tommel ned",
+    "thanksUp": "👍 Takk!",
+    "thanksDown": "👎 Takk!",
+    "error": "Kunne ikke sende tilbakemelding. Vennligst prøv igjen."
+  },
+  "errors": {
+    "networkError": "Kunne ikke koble til chat-tjenesten.",
+    "systemError": "Systemfeil:",
+    "backendError": "Backend-feil:"
+  }
+}
