@@ -40,7 +40,9 @@ export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsPro
       });
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        console.error(`Feedback submission failed: ${response.status} ${response.statusText}`, errorText);
+        throw new Error(`Error: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
       setFeedbackGiven(rating === "thumbs_up" ? "up" : "down");
