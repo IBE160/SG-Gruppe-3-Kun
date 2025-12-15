@@ -47,9 +47,10 @@ export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsPro
 
       setFeedbackGiven(rating === "thumbs_up" ? "up" : "down");
       // Optional: show a toast notification "Thank you for your feedback!"
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to submit feedback:", err);
-      setError(t('error'));
+      // specific error message for debugging
+      setError(err.message || t('error'));
     } finally {
       setIsLoading(false);
     }
