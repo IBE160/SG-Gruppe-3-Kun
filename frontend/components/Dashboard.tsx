@@ -21,11 +21,6 @@ export function Dashboard({ articles }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'links' | 'article' | 'chat'>('chat');
   const [selectedArticleSlug, setSelectedArticleSlug] = useState<string | null>(articles.length > 0 ? articles[0].slug : null);
 
-  // Get translated role label
-  const getRoleLabel = (roleKey: string) => {
-    return t(`roleSelector.roles.${roleKey}`);
-  };
-
   const selectedArticle = articles.find(a => a.slug === selectedArticleSlug);
 
   if (!userRole) {
@@ -55,7 +50,7 @@ export function Dashboard({ articles }: DashboardProps) {
                 <LanguageToggle />
                 <Button variant="ghost" size="sm" onClick={() => setUserRole(null)}>
                     <User className="h-4 w-4 mr-2" />
-                    <span className="truncate max-w-[100px]">{getRoleLabel(userRole)}</span>
+                    <span className="truncate max-w-[100px]">{userRole}</span>
                 </Button>
               </div>
           </header>
@@ -169,7 +164,7 @@ export function Dashboard({ articles }: DashboardProps) {
                 <div className="flex items-center justify-between mb-3">
                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                          <User className="h-4 w-4" />
-                         <span>{getRoleLabel(userRole)}</span>
+                         <span>{userRole}</span>
                      </div>
                      <Button variant="ghost" size="icon" onClick={() => setUserRole(null)} title={t('navigation.changeRole')}>
                          <Settings className="h-4 w-4" />

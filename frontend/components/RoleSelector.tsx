@@ -11,10 +11,17 @@ export interface RoleSelectorProps {
 export function RoleSelector({ onSelect }: RoleSelectorProps) {
   const t = useTranslations('roleSelector');
 
+  // Map keys to backend enum values (always English)
+  const backendRoleMap: Record<string, string> = {
+    'constructionWorker': 'Construction Worker',
+    'supplier': 'Supplier / Subcontractor',
+    'projectManager': 'Project Manager / Admin',
+  };
+
   const roles = [
-    { key: 'constructionWorker', label: t('roles.constructionWorker') },
-    { key: 'supplier', label: t('roles.supplier') },
-    { key: 'projectManager', label: t('roles.projectManager') },
+    { key: 'constructionWorker', label: t('roles.constructionWorker'), backendValue: backendRoleMap.constructionWorker },
+    { key: 'supplier', label: t('roles.supplier'), backendValue: backendRoleMap.supplier },
+    { key: 'projectManager', label: t('roles.projectManager'), backendValue: backendRoleMap.projectManager },
   ];
 
   return (
@@ -25,7 +32,7 @@ export function RoleSelector({ onSelect }: RoleSelectorProps) {
           <Button
             key={role.key}
             variant="outline"
-            onClick={() => onSelect(role.key)}
+            onClick={() => onSelect(role.backendValue)}
             className="w-full justify-center h-12 text-base"
           >
             {role.label}
