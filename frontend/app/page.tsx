@@ -23,9 +23,9 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="h-screen bg-background overflow-hidden">
       {/* Mobile View (< 1024px) */}
-      <div data-testid="mobile-view" className="lg:hidden flex flex-col h-screen bg-slate-50">
+      <div data-testid="mobile-view" className="lg:hidden flex flex-col h-full bg-slate-50">
           <header className="p-4 border-b bg-white flex justify-between items-center shadow-sm z-10">
               <h1 className="font-bold text-lg text-primary">HMSREG</h1>
               <Button variant="ghost" size="sm" onClick={() => setUserRole(null)}>
@@ -100,7 +100,7 @@ export default function Home() {
       </div>
 
       {/* Desktop View (>= 1024px) */}
-      <div data-testid="desktop-view" className="hidden lg:grid lg:grid-cols-12 h-screen overflow-hidden">
+      <div data-testid="desktop-view" className="hidden lg:grid lg:grid-cols-12 h-full overflow-hidden">
         
         {/* Left Column: Navigation (20% -> 2-3 cols out of 12) */}
         <div data-testid="desktop-left-col" className="col-span-3 xl:col-span-2 border-r bg-slate-50 flex flex-col">
