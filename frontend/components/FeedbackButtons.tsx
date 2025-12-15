@@ -26,7 +26,7 @@ export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsPro
     setError(null);
 
     try {
-      const response = await fetch("/api/v1/feedback", {
+      const response = await fetch("/api/v1/feedback/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -10,7 +10,9 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: process.env.NEXT_PUBLIC_BACKEND_URL
+        destination: process.env.BACKEND_API_URL
+          ? `${process.env.BACKEND_API_URL}/api/:path*`
+          : process.env.NEXT_PUBLIC_BACKEND_URL
           ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/:path*`
           : 'http://127.0.0.1:8000/api/:path*',
       },
