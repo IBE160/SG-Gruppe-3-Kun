@@ -25,8 +25,14 @@ export function FeedbackButtons({ messageId, chatSessionId }: FeedbackButtonsPro
     setIsLoading(true);
     setError(null);
 
+    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
+    // Ensure no double slashes if baseUrl has trailing slash
+    const endpoint = `${baseUrl.replace(/\/$/, '')}/api/v1/feedback/`;
+
+    console.log("Submitting feedback to:", endpoint);
+
     try {
-      const response = await fetch("/api/v1/feedback/", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
