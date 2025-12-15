@@ -49,8 +49,19 @@ async def lifespan(app: FastAPI):
 
 from app.middleware.correlation_id import CorrelationIdMiddleware # Add import
 
+from fastapi.middleware.cors import CORSMiddleware # Add import
+
 app = FastAPI(lifespan=lifespan)
 logfire.instrument(app) # Enable automatic instrumentation for FastAPI
+
+# Add CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Allow all origins for now, specific domains can be added later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Add Correlation ID middleware FIRST
 app.add_middleware(CorrelationIdMiddleware)
