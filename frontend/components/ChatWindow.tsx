@@ -23,7 +23,11 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
 
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "nearest"
+    });
   };
 
   useEffect(() => {
