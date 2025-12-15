@@ -40,7 +40,7 @@ export function Dashboard({ articles }: DashboardProps) {
   }
 
   return (
-    <main className="h-screen bg-background overflow-hidden">
+    <main className="h-[100dvh] bg-background overflow-hidden">
       {/* Mobile View (< 1024px) */}
       <div data-testid="mobile-view" className="lg:hidden flex flex-col h-full bg-background">
           <header className="p-4 border-b bg-card flex justify-between items-center shadow-sm z-10">
