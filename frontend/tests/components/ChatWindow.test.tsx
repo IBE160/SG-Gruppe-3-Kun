@@ -15,12 +15,13 @@ jest.mock('@/hooks/use-chat', () => ({
 
 // Mock the ChatBubble component to inspect props
 jest.mock('@/components/ChatBubble', () => ({
-  ChatBubble: jest.fn(({ role, content, citations, messageId, chatSessionId }) => (
-    <div data-testid="mock-chat-bubble" data-role={role} data-content={content} data-message-id={messageId} data-chat-session-id={chatSessionId}>
+  ChatBubble: jest.fn(({ role, content, citations, messageId, chatSessionId, isStreaming }) => (
+    <div data-testid="mock-chat-bubble" data-role={role} data-content={content} data-message-id={messageId} data-chat-session-id={chatSessionId} data-is-streaming={isStreaming}>
       {content}
       {citations && citations.length > 0 && (
         <div data-testid="mock-citations">Source: {citations[0].title}</div>
       )}
+      {isStreaming && <span data-testid="streaming-indicator">...</span>}
     </div>
   )),
 }));

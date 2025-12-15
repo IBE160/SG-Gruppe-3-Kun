@@ -44,11 +44,25 @@ describe('ChatBubble', () => {
   it('renders citations when provided', () => {
     const citations = [{ title: 'Source 1', url: 'http://source1.com' }];
     render(<ChatBubble role="assistant" content="Answer" citations={citations} messageId={defaultMessageId} chatSessionId={defaultChatSessionId} />);
-    
+
     expect(screen.getByText('Source:')).toBeInTheDocument();
-    
+
     const link = screen.getByRole('link', { name: 'Source 1' });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', 'http://source1.com');
+  });
+
+  it('renders typing indicator when isStreaming is true', () => {
+    render(<ChatBubble role="assistant" content="Typing" messageId={defaultMessageId} chatSessionId={defaultChatSessionId} isStreaming={true} />);
+
+    const typingIndicators = screen.getAllByText('.');
+    expect(typingIndicators.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('does not render typing indicator when isStreaming is false', () => {
+    const { container } = render(<ChatBubble role="assistant" content="Done" messageId={defaultMessageId} chatSessionId={defaultChatSessionId} isStreaming={false} />);
+
+    const typingIndicator = container.querySelector('.animate-bounce');
+    expect(typingIndicator).not.toBeInTheDocument();
   });
 });

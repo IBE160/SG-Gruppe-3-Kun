@@ -62,18 +62,19 @@ export function ChatWindow({ className, userRole }: ChatWindowProps) { // Destru
         )}
         
         {messages.map((msg) => (
-          <ChatBubble 
-            key={msg.id} 
-            role={msg.role} 
-            content={msg.content} 
-            citations={msg.citations} 
+          <ChatBubble
+            key={msg.id}
+            role={msg.role}
+            content={msg.content}
+            citations={msg.citations}
             messageId={msg.id} // Pass messageId
             chatSessionId={chatSessionId} // Pass chatSessionId
             suggestedQueries={msg.suggestedQueries} // Pass suggestedQueries
             onSuggestionClick={handleSuggestionClick} // Pass the handler
+            isStreaming={isLoading && msg.id === messages[messages.length - 1]?.id && msg.role === 'assistant'} // Add streaming indicator
           />
         ))}
-        
+
         {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
              <div className="flex w-full justify-start mb-4" role="status" aria-live="polite">
                 <div className="bg-muted text-muted-foreground rounded-lg rounded-bl-none px-4 py-2 flex items-center gap-2">

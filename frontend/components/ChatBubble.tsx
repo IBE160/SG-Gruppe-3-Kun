@@ -13,9 +13,10 @@ export interface ChatBubbleProps {
   chatSessionId: string; // Add chatSessionId prop
   suggestedQueries?: string[]; // Add suggestedQueries prop
   onSuggestionClick?: (query: string) => void; // Add onSuggestionClick prop
+  isStreaming?: boolean; // Add isStreaming prop
 }
 
-export function ChatBubble({ role, content, citations, messageId, chatSessionId, suggestedQueries, onSuggestionClick }: ChatBubbleProps) {
+export function ChatBubble({ role, content, citations, messageId, chatSessionId, suggestedQueries, onSuggestionClick, isStreaming }: ChatBubbleProps) {
   const isUser = role === 'user';
   const isAssistant = role === 'assistant'; // Explicitly check for assistant
 
@@ -35,6 +36,13 @@ export function ChatBubble({ role, content, citations, messageId, chatSessionId,
       )}>
         <div role="document"> {/* Wrapped Markdown with a div having role="document" */}
           <Markdown>{content}</Markdown>
+          {isStreaming && (
+            <span className="inline-flex items-center gap-1 ml-1 text-xs opacity-70">
+              <span className="animate-bounce inline-block" style={{ animationDelay: '0ms' }}>.</span>
+              <span className="animate-bounce inline-block" style={{ animationDelay: '150ms' }}>.</span>
+              <span className="animate-bounce inline-block" style={{ animationDelay: '300ms' }}>.</span>
+            </span>
+          )}
         </div>
 
         {citations && citations.length > 0 && (
