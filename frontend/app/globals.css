@@ -103,9 +103,9 @@
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
   
-  /* Dark Primary: #00205bf7 - Dark Blue */
-  --primary: oklch(0.28 0.12 265);
-  --primary-foreground: oklch(0.985 0 0);
+  /* Dark Primary: Brighter Blue for better contrast */
+  --primary: oklch(0.55 0.15 260);
+  --primary-foreground: oklch(0.145 0 0);
 
   /* Dark Secondary: #90CAF9 - Lighter Blue */
   --secondary: oklch(0.75 0.10 250);
