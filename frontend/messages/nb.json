@@ -56,5 +56,9 @@
     "networkError": "Kunne ikke koble til chat-tjenesten.",
     "systemError": "Systemfeil:",
     "backendError": "Backend-feil:"
+  },
+  "theme": {
+    "switchToDark": "Bytt til mørk modus",
+    "switchToLight": "Bytt til lys modus"
   }
 }

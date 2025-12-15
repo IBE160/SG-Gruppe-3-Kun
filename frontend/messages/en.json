@@ -56,5 +56,9 @@
     "networkError": "Failed to connect to chat service.",
     "systemError": "System Error:",
     "backendError": "Backend error:"
+  },
+  "theme": {
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode"
   }
 }

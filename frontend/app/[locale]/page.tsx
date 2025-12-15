@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { RoleSelector } from "@/components/RoleSelector";
 import { ChatWindow } from "@/components/ChatWindow";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Book, FileText, Settings, User, MessageSquare } from "lucide-react";
 
 export default function Home() {
@@ -26,7 +27,8 @@ export default function Home() {
              <p className="text-slate-600">{t('roleSelector.subtitle')}</p>
         </div>
         <RoleSelector onSelect={setUserRole} />
-        <div className="mt-6">
+        <div className="mt-6 flex items-center gap-2">
+          <ThemeToggle />
           <LanguageToggle />
         </div>
       </main>
@@ -40,6 +42,7 @@ export default function Home() {
           <header className="p-4 border-b bg-white flex justify-between items-center shadow-sm z-10">
               <h1 className="font-bold text-lg text-primary">HMSREG</h1>
               <div className="flex items-center gap-2">
+                <ThemeToggle />
                 <LanguageToggle />
                 <Button variant="ghost" size="sm" onClick={() => setUserRole(null)}>
                     <User className="h-4 w-4 mr-2" />
@@ -147,7 +150,10 @@ export default function Home() {
                          <Settings className="h-4 w-4" />
                      </Button>
                 </div>
-                <LanguageToggle />
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <LanguageToggle />
+                </div>
             </div>
         </div>
 
